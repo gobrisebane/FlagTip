@@ -1,5 +1,4 @@
-﻿using FlagTip.Models;
-using FlagTip.Utils;
+﻿using FlagTip.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,21 +10,17 @@ using static FlagTip.Utils.NativeMethods;
 
 namespace FlagTip.Helpers
 {
-    internal class TestHelper
+    internal class UIAExplorerHelper
     {
 
 
-        internal static bool TryGetCaretFromExplorerUIA(out RECT caretLocation, out string method)
+        internal static bool TryGetCaretFromExplorerUIA(out RECT caretLocation)
         {
             caretLocation = new RECT();
-            method = "None";
-
-
-          
 
             try
             {
-                UIAHelper.TryGetCaretFromUIA(out caretLocation, out method);
+                UIAHelper.TryGetCaretFromUIA(out caretLocation);
 
                 
 

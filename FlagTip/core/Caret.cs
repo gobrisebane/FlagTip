@@ -1,5 +1,4 @@
 ﻿using FlagTip.Helpers;
-using FlagTip.Models;
 using FlagTip.UI;
 using System;
 using System.Collections.Generic;
@@ -9,45 +8,33 @@ using System.Threading;
 using System.Threading.Tasks;
 using static FlagTip.Utils.NativeMethods;
 
+
+//using FlagTip.Models;
+using FlagTip.models;
+
+
+
 namespace FlagTip.caret
 {
     internal class Caret
     {
 
-
-
-        /*
-
         private IndicatorForm _indicatorForm;
+        internal static CaretMethod LastMethod { get; private set; } = CaretMethod.None;
+
+
 
         public Caret(IndicatorForm indicatorForm)
         {
             _indicatorForm = indicatorForm;
-        }
-        */
-
-        private IndicatorForm _indicatorForm;
-
-
-        public Caret(IndicatorForm indicatorForm)
-        {
-            //Console.WriteLine("caret start hello..");
-            _indicatorForm = indicatorForm;
-
-            //_indicatorForm = new IndicatorForm();
 
         }
-
-
 
 
         public async Task show(int delayMs = 50)
         {
 
             await Task.Delay(delayMs);  
-
-
-
 
 
             IntPtr hwnd = GetForegroundWindow();
@@ -57,42 +44,53 @@ namespace FlagTip.caret
             string method;
 
 
-            Console.WriteLine("processName : " + processName);
+            //Console.WriteLine("processName : " + processName);
 
 
             if (processName == "winword")
             {
                 Console.WriteLine("s1 - word");
-                UIAHelper.TryGetCaretFromUIA(out rect, out method);
+                UIAHelper.TryGetCaretFromUIA(out rect);
+                LastMethod = CaretMethod.UIA;
             }
             else if (processName == "explorer")
             {
                 Console.WriteLine("s2 - explorer");
-                TestHelper.TryGetCaretFromExplorerUIA(out rect, out method);
+                UIAExplorerHelper.TryGetCaretFromExplorerUIA(out rect);
+                LastMethod = CaretMethod.UIA;
             }
             else if (processName == "whatsapp" || processName == "whatsapp.root")
             {
                 Console.WriteLine("s3 - whatsapp..");
-                MouseHelper.TryGetCaretFromMouseClick(out rect, out method);
+                MouseHelper.TryGetCaretFromMouseClick(out rect);
+                LastMethod = CaretMethod.MouseClick;
+
             }
-            else if (GUIThreadHelper.TryGetCaretFromGUIThreadInfo(hwnd, out rect, out method))
+            else if (GUIThreadHelper.TryGetCaretFromGUIThreadInfo(hwnd, out rect))
             {
                 Console.WriteLine("t1 - GUIThreadInfo");
+                LastMethod = CaretMethod.GUIThreadInfo;
+
             }
 
-            else if (MSAAHelper.TryGetCaretFromMSAA(hwnd, out rect, out method))
+            else if (MSAAHelper.TryGetCaretFromMSAA(hwnd, out rect))
             {
                 Console.WriteLine("t2 - MSAA");
+                LastMethod = CaretMethod.MSAA;
+
             }
 
 
             /*
-            else if (UIAHelper.TryGetCaretFromUIA(out rect, out method))
+            else if (UIAHelper.TryGetCaretFromUIA(out rect))
             {
                 Console.WriteLine("t3 - UIA");
+                LastMethod = CaretMethod.UIA;
             }
             */
-            
+
+
+            /*
             else
             {
                 Console.WriteLine("tend - NONE");
@@ -100,6 +98,7 @@ namespace FlagTip.caret
                 rect = new RECT();
                 method = "None";
             }
+            */
 
 
 
@@ -108,7 +107,7 @@ namespace FlagTip.caret
                 _indicatorForm.SetPosition(rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top)
             ));
 
-            Console.WriteLine($"[{processName}] ({method}) Caret: L={rect.left}, T={rect.top}, R={rect.right}, B={rect.bottom}");
+            //Console.WriteLine($"[{processName}] ({LastMethod}) Caret: L={rect.left}, T={rect.top}, R={rect.right}, B={rect.bottom}");
 
 
 

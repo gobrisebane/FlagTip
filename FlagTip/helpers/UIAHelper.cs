@@ -7,18 +7,19 @@ using System.Windows.Automation;
 using System.Windows.Automation.Text;
 
 
-using FlagTip.Models;
 using FlagTip.Utils;
+using static FlagTip.Utils.NativeMethods;
+
 
 
 namespace FlagTip.Helpers
 {
     internal class UIAHelper
     {
-        internal static bool TryGetCaretFromUIA(out RECT rect, out string method)
+        internal static bool TryGetCaretFromUIA(out RECT rect)
         {
             rect = new RECT();
-            method = "None";
+            //method = "None";
 
             try
             {
@@ -54,7 +55,7 @@ namespace FlagTip.Helpers
                              if (CommonUtils.IsRectValid(rectUA))
                              {
                                  rect = rectUA;
-                                 method = "UIA";
+                                 //method = "UIA";
                                  return true;
                              }
                          }

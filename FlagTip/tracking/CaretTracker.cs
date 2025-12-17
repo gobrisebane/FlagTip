@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using static FlagTip.Utils.NativeMethods;
-using FlagTip.Models;
 using FlagTip.caret;
 
 
@@ -39,7 +38,8 @@ namespace FlagTip.Tracking
                 {
 
 
-                    _caret.show();
+                    _caret.show().GetAwaiter().GetResult();
+
 
 
                 }

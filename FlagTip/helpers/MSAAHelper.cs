@@ -12,8 +12,8 @@ using System.Diagnostics;
 using System.Windows.Automation;
 using System.Windows;
 
-using FlagTip.Models;
 
+using static FlagTip.Utils.NativeMethods;
 
 
 namespace FlagTip.Helpers
@@ -21,10 +21,9 @@ namespace FlagTip.Helpers
     internal class MSAAHelper
     {
 
-        internal static bool TryGetCaretFromMSAA(IntPtr hwnd, out RECT rect, out string method)
+        internal static bool TryGetCaretFromMSAA(IntPtr hwnd, out RECT rect)
         {
             rect = new RECT();
-            method = "None";
 
             try
             {
@@ -47,7 +46,6 @@ namespace FlagTip.Helpers
                     if (CommonUtils.IsRectValid(r))
                     {
                         rect = r;
-                        method = "MSAA";
                         return true;
                     }
                 }

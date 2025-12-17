@@ -7,8 +7,10 @@ using System.Windows.Automation;
 using System.Windows.Automation.Text;
 
 
-using FlagTip.Models;
 using FlagTip.Utils;
+
+using static FlagTip.Utils.NativeMethods;
+
 
 
 namespace FlagTip.Helpers

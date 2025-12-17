@@ -1,5 +1,4 @@
-﻿using FlagTip.Models;
-using FlagTip.Utils;
+﻿using FlagTip.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +7,9 @@ using System.Threading.Tasks;
 using System.Windows.Automation;
 using System.Windows.Automation.Text;
 using UIAutomationClient;
+
+using static FlagTip.Utils.NativeMethods;
+
 
 namespace FlagTip.Helpers
 {

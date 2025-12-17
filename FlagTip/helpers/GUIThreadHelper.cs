@@ -1,5 +1,4 @@
-﻿using FlagTip.Models;
-using FlagTip.Utils;
+﻿using FlagTip.Utils;
 
 
 using System;
@@ -9,6 +8,9 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
+
+
+using static FlagTip.Utils.NativeMethods;
 
 
 
@@ -21,10 +23,9 @@ namespace FlagTip.Helpers
 
 
 
-        internal static bool TryGetCaretFromGUIThreadInfo(IntPtr hwnd, out RECT rect, out string method)
+        internal static bool TryGetCaretFromGUIThreadInfo(IntPtr hwnd, out RECT rect)
         {
             rect = new RECT();
-            method = "None";
 
 
 
@@ -53,7 +54,6 @@ namespace FlagTip.Helpers
                     if (CommonUtils.IsRectValid(r))
                     {
                         rect = r;
-                        method = "GUIThreadInfo";
                         return true;
                     }
                 }

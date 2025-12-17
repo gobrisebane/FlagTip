@@ -9,7 +9,6 @@ using System.Management; // ManagementObjectSearcher 사용을 위해 필요
 using System.Windows; // System.Windows.Rect 사용을 위해 필요 (WPF 참조 필요)
 
 
-using FlagTip.Models; // 외부 모델 사용 가정
 using FlagTip.Utils; // 외부 유틸리티 사용 가정
 using static FlagTip.Utils.NativeMethods; // GetForegroundProcessId, RECT 정의 등이 있다고 가정
 

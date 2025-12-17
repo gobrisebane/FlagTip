@@ -60,6 +60,7 @@
     <Compile Include="helpers\MouseHelper.cs" />
     <Compile Include="helpers\UIAHelper.cs" />
     <Compile Include="hooking\MouseHook.cs" />
+    <Compile Include="models\CaretMethod.cs" />
     <Compile Include="models\Models.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

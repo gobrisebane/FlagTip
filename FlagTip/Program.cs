@@ -1,6 +1,5 @@
 ﻿using FlagTip.Helpers;
 using FlagTip.Hooking;
-using FlagTip.Models;
 using FlagTip.Tracking;
 using FlagTip.UI;
 using System;
@@ -40,13 +39,16 @@ namespace FlagTip
             //tracker.Start();
 
 
+
+
             _mouseProc = (nCode, wParam, lParam) =>
                 MouseHookCallback(nCode, wParam, lParam, _hookID, caret);
 
             _hookID = SetMouseHook(_mouseProc);
 
-            Application.Run(indicatorForm);
 
+
+            Application.Run(indicatorForm);
 
             UnhookWindowsHookEx(_hookID);
 

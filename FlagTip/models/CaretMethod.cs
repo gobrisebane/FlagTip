@@ -6,7 +6,14 @@ using System.Threading.Tasks;
 
 namespace FlagTip.models
 {
-    internal class Models
+    internal enum CaretMethod
     {
+        None,
+        UIA,
+        MSAA,
+        MouseClick,
+        GUIThreadInfo,
+        Fallback,
+        Error
     }
 }

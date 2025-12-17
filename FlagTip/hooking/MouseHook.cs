@@ -1,4 +1,6 @@
-﻿using FlagTip.UI;
+﻿using FlagTip.caret;
+using FlagTip.models;
+using FlagTip.UI;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -6,9 +8,8 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using static FlagTip.Utils.NativeMethods;
 using static FlagTip.caret.Caret;
-using FlagTip.caret;
+using static FlagTip.Utils.NativeMethods;
 
 
 namespace FlagTip.Hooking
@@ -22,21 +23,42 @@ namespace FlagTip.Hooking
             if (nCode >= 0 && (MouseMessages)wParam == MouseMessages.WM_LBUTTONDOWN)
             {
 
-                Console.WriteLine("Left mouse button clicked!");
+                Console.WriteLine(">> Left mouse button clicked!");
+                //Console.WriteLine("Caret.LastMethod : " + Caret.LastMethod);
 
 
-
-                //caret.show();
 
 
                 _ = Task.Run(async () =>
                 {
-                    for (int i = 0; i < 3; i++)
+
+/*
+                    int loopCount =
+                Caret.LastMethod == CaretMethod.MouseClick ? 1 : 3;
+
+                    for (int i = 0; i < loopCount; i++)
                     {
-                        caret.show();
+                        await caret.show();
                         await Task.Delay(70); // 30~60ms 권장
                     }
+*/
+
+
+
+                    await caret.show();
+
+                    int loopCount =
+                Caret.LastMethod == CaretMethod.MouseClick ? 0 : 2;
+
+                    for (int i = 0; i < loopCount; i++)
+                    {
+                        await Task.Delay(70); // 30~60ms 권장
+                        await caret.show();
+                    }
+
                 });
+
+
 
 
             }
