@@ -41,12 +41,13 @@ namespace FlagTip.caret
 
 
 
-        public async Task show()
+        public async Task show(int delayMs = 50)
         {
 
-            //Thread.Sleep(1000);
+            await Task.Delay(delayMs);  
 
-            Console.WriteLine("!!!!!!!!!!!!!!!!!1 caret show hello testing.");
+
+
 
 
             IntPtr hwnd = GetForegroundWindow();
@@ -54,6 +55,9 @@ namespace FlagTip.caret
 
             RECT rect;
             string method;
+
+
+            Console.WriteLine("processName : " + processName);
 
 
             if (processName == "winword")
@@ -66,6 +70,11 @@ namespace FlagTip.caret
                 Console.WriteLine("s2 - explorer");
                 TestHelper.TryGetCaretFromExplorerUIA(out rect, out method);
             }
+            else if (processName == "whatsapp" || processName == "whatsapp.root")
+            {
+                Console.WriteLine("s3 - whatsapp..");
+                MouseHelper.TryGetCaretFromMouseClick(out rect, out method);
+            }
             else if (GUIThreadHelper.TryGetCaretFromGUIThreadInfo(hwnd, out rect, out method))
             {
                 Console.WriteLine("t1 - GUIThreadInfo");
@@ -75,12 +84,19 @@ namespace FlagTip.caret
             {
                 Console.WriteLine("t2 - MSAA");
             }
+
+
+            /*
             else if (UIAHelper.TryGetCaretFromUIA(out rect, out method))
             {
                 Console.WriteLine("t3 - UIA");
             }
+            */
+            
             else
             {
+                Console.WriteLine("tend - NONE");
+
                 rect = new RECT();
                 method = "None";
             }

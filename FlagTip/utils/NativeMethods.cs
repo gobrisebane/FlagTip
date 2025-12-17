@@ -53,8 +53,18 @@ namespace FlagTip.Utils
             catch { return ""; }
         }
 
+        internal static uint GetForegroundProcessId()
+        {
+            IntPtr hwnd = GetForegroundWindow();
+            if (hwnd == IntPtr.Zero)
+                return 0;
 
-		internal static class ExplorerInfo
+            GetWindowThreadProcessId(hwnd, out uint pid);
+            return pid;
+        }
+
+
+        internal static class ExplorerInfo
 		{
 			[DllImport("user32.dll")]
 			static extern IntPtr GetForegroundWindow();

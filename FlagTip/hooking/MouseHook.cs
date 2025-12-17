@@ -23,7 +23,20 @@ namespace FlagTip.Hooking
             {
 
                 Console.WriteLine("Left mouse button clicked!");
-                caret.show();
+
+
+
+                //caret.show();
+
+
+                _ = Task.Run(async () =>
+                {
+                    for (int i = 0; i < 3; i++)
+                    {
+                        caret.show();
+                        await Task.Delay(70); // 30~60ms 권장
+                    }
+                });
 
 
             }

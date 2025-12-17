@@ -36,11 +36,13 @@ namespace FlagTip.Helpers
                     accessible.accLocation(out int left, out int top, out int width, out int height, 0);
                     RECT r = new RECT
                     {
-                        left = left,
-                        top = top,
-                        right = left + width,
-                        bottom = top + height
+                            left = left,
+                            top = top,
+                            right = left + width,
+                            bottom = top + height
+
                     };
+
 
                     if (CommonUtils.IsRectValid(r))
                     {

@@ -22,37 +22,49 @@ namespace FlagTip.Helpers
 
             try
             {
+
+
                 AutomationElement focused = AutomationElement.FocusedElement;
-                if (focused != null && focused.TryGetCurrentPattern(TextPattern.Pattern, out object patternObj))
-                {
-                    var textPattern = (TextPattern)patternObj;
-                    TextPatternRange[] selectionRanges = textPattern.GetSelection();
+                 if (focused != null && focused.TryGetCurrentPattern(TextPattern.Pattern, out object patternObj))
+                 {
+                     var textPattern = (TextPattern)patternObj;
+                     TextPatternRange[] selectionRanges = textPattern.GetSelection();
 
-                    if (selectionRanges != null && selectionRanges.Length > 0)
-                    {
-                        var range = selectionRanges[0];
-                        var rects = range.GetBoundingRectangles();
+                     if (selectionRanges != null && selectionRanges.Length > 0)
+                     {
+                         var range = selectionRanges[0];
+                         var rects = range.GetBoundingRectangles();
 
-                        if (rects != null && rects.Length > 0)
-                        {
-                            var r = rects[0];
-                            RECT rectUA = new RECT
-                            {
-                                left = (int)r.Left,
-                                top = (int)r.Top,
-                                right = (int)r.Right,
-                                bottom = (int)r.Bottom
-                            };
+                         if (rects != null && rects.Length > 0)
+                         {
+                             var r = rects[0];
 
-                            if (CommonUtils.IsRectValid(rectUA))
-                            {
-                                rect = rectUA;
-                                method = "UIA";
-                                return true;
-                            }
-                        }
-                    }
-                }
+                             //double width = r.Width;
+                             //int width = (int)r.Right - (int)r.Left;
+                             //Console.WriteLine("!!!!!!!!!33333 : " + range);
+
+                             RECT rectUA = new RECT
+                             {
+                                 left = (int)r.Left,
+                                 top = (int)r.Top,
+                                 right = (int)r.Right,
+                                 bottom = (int)r.Bottom
+                             };
+
+                             if (CommonUtils.IsRectValid(rectUA))
+                             {
+                                 rect = rectUA;
+                                 method = "UIA";
+                                 return true;
+                             }
+                         }
+                     }
+                 }
+
+               
+
+
+
             }
             catch
             {
