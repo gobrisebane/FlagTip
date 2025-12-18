@@ -44,8 +44,6 @@ namespace FlagTip.Hooking
                         X = hookStruct.pt.X,
                         Y = hookStruct.pt.Y
                     };
-
-                    //CaretContext.HasLastClickPoint = true;
                 }
 
 
@@ -53,6 +51,9 @@ namespace FlagTip.Hooking
                 {
                     _mouseDownTime = DateTime.UtcNow;
                 }
+
+                CaretContext.LastCaretInitator = CaretInitator.Mouse;
+
 
 
 
@@ -66,8 +67,6 @@ namespace FlagTip.Hooking
 
                     if (msg == MouseMessages.WM_LBUTTONDOWN)
                     {
-
-
 
                         if (CaretContext.CaretMouseLock)
                        //if (CaretContext.LastMethod == CaretMethod.MouseClick)

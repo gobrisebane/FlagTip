@@ -31,10 +31,12 @@ namespace FlagTip.Helpers
 
 
 
+                if (caretLocation.left == 0 && caretLocation.top == 0)
+                {
 
-/*
-                if (caretLocation.left == 0 && caretLocation.top == 0){
-                  Console.WriteLine("1.no caret detect");
+
+                    Console.WriteLine("1. explorer mode UIA가 잡는데 실패함");
+
 
 
                     CUIAutomation uia = new CUIAutomation();
@@ -50,77 +52,92 @@ namespace FlagTip.Helpers
                     string className = ExplorerInfo.GetForegroundWindowClassName();
                     //Console.WriteLine(">>> 111. className : " + className);
 
-                  
-                  if (controlType == 50004 || controlType == 50030)
-                    {                        
-                        caretLocation.right = prevCaretLocation.right;
-                        caretLocation.bottom = prevCaretLocation.bottom;
-                        caretLocation.left = prevCaretLocation.left;
-                        caretLocation.top = prevCaretLocation.top;
 
-                    }
+                    //if (CaretContext.LastCaretInitator == CaretInitator.Mouse)
+                    //{
 
-                } else {
-                  prevCaretLocation.left = caretLocation.left;
-                  prevCaretLocation.top = caretLocation.top;
-                  prevCaretLocation.right = caretLocation.right;
-                  prevCaretLocation.bottom = caretLocation.bottom;
-                }
+                        if ( controlType == 50004 || controlType == 50030  )
+                        {
+                            caretLocation.left = CaretContext.LastClickPoint.X;
+                            caretLocation.top = CaretContext.LastClickPoint.Y + 5;
+                            CaretContext.CaretMouseLock = true;
+                        }
+                        else
+                        {
+                            //CaretContext.CaretMouseLock = false;
+                        }
 
-*/
+                    //}
 
 
-
-
-
-
-
-
-
-
-
-
-                if (caretLocation.left == 0 && caretLocation.top == 0)
-                {
-                    Console.WriteLine("1.no caret detect");
-
-
-                    CUIAutomation uia = new CUIAutomation();
-                    IUIAutomationElement element = uia.GetFocusedElement();
-                    if (element == null)
-                    {
-                        Console.WriteLine("focused nothing");
-                        return false;
-                    }
-                    int controlType = element.CurrentControlType;
-                    Console.WriteLine(">>> 222. controlType : " + controlType);
-
-                    string className = ExplorerInfo.GetForegroundWindowClassName();
-                    Console.WriteLine(">>> 111. className : " + className);
-
-
-                    if (controlType == 50004 || controlType == 50030)
-                    {
-                        caretLocation.left = CaretContext.LastClickPoint.X;
-                        caretLocation.top = CaretContext.LastClickPoint.Y + 5;
-                        CaretContext.CaretMouseLock = true;
-
-                    }
-                    else
-                    {
-                        CaretContext.CaretMouseLock = false;
-                    }
                 }
                 else
                 {
+
+                    Console.WriteLine("2. explorer mode UIA가 잡는데 성공");
+
                     prevCaretLocation.left = caretLocation.left;
                     prevCaretLocation.top = caretLocation.top;
                     prevCaretLocation.right = caretLocation.right;
                     prevCaretLocation.bottom = caretLocation.bottom;
                     CaretContext.CaretMouseLock = false;
                 }
-                
-                
+
+
+
+
+
+
+
+                /*
+                                if (caretLocation.left == 0 && caretLocation.top == 0){
+                                  Console.WriteLine("1.no caret detect");
+
+
+                                    CUIAutomation uia = new CUIAutomation();
+                                    IUIAutomationElement element = uia.GetFocusedElement();
+                                    if (element == null)
+                                    {
+                                        Console.WriteLine("focused nothing");
+                                        return false;
+                                    }
+                                    int controlType = element.CurrentControlType;
+                                    //Console.WriteLine(">>> 222. controlType : " + controlType);
+
+                                    string className = ExplorerInfo.GetForegroundWindowClassName();
+                                    //Console.WriteLine(">>> 111. className : " + className);
+
+
+                                  if (controlType == 50004 || controlType == 50030)
+                                    {                        
+                                        caretLocation.right = prevCaretLocation.right;
+                                        caretLocation.bottom = prevCaretLocation.bottom;
+                                        caretLocation.left = prevCaretLocation.left;
+                                        caretLocation.top = prevCaretLocation.top;
+
+                                    }
+
+                                } else {
+                                  prevCaretLocation.left = caretLocation.left;
+                                  prevCaretLocation.top = caretLocation.top;
+                                  prevCaretLocation.right = caretLocation.right;
+                                  prevCaretLocation.bottom = caretLocation.bottom;
+                                }
+
+                */
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
