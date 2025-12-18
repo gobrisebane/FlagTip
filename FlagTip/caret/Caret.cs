@@ -45,8 +45,17 @@ namespace FlagTip.caret
 
 
 
-            if (CaretContext.LastProcessName != processName)
-            {
+            bool contextChanged =
+            CaretContext.LastProcessName != processName ||
+            CaretContext.LastHwnd != hwnd;
+
+
+
+            //if (contextChanged)
+                if (CaretContext.LastProcessName != processName)
+                {
+                CaretContext.CaretMouseLock = false;
+
                 if (processName == "winword" &&
                     UIAHelper.TryGetCaretFromUIA(out rect))
                 {
