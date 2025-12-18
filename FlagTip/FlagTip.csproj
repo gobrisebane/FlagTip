@@ -50,16 +50,19 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="core\Caret.cs" />
+    <Compile Include="caret\Caret.cs" />
+    <Compile Include="caret\CaretContext.cs" />
+    <Compile Include="caret\CaretRequestQueue.cs" />
     <Compile Include="helpers\GUIThreadHelper.cs" />
     <Compile Include="helpers\MSAAHelper.cs" />
     <Compile Include="helpers\OtherHelper.cs" />
-    <Compile Include="helpers\TestHelper.cs" />
+    <Compile Include="helpers\UIAExplorerHelper.cs" />
     <Compile Include="helpers\bk_UIATextPattern2Helper.cs" />
     <Compile Include="helpers\bk_WebView2Helper.cs" />
     <Compile Include="helpers\MouseHelper.cs" />
     <Compile Include="helpers\UIAHelper.cs" />
     <Compile Include="hooking\MouseHook.cs" />
+    <Compile Include="hooking\TextboxFocusTracker.cs" />
     <Compile Include="models\CaretMethod.cs" />
     <Compile Include="models\Models.cs" />
     <Compile Include="Program.cs" />
@@ -95,8 +98,6 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="caret\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

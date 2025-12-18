@@ -32,11 +32,13 @@ namespace FlagTip
             var caret = new Caret(indicatorForm);
 
             // 폼 핸들 강제 생성 (옵션)
-            var h = indicatorForm.Handle;
+            //var h = indicatorForm.Handle;
 
 
-            //var tracker = new CaretTracker(indicatorForm, caret);
-            //tracker.Start();
+
+
+            var tracker = new CaretTracker(indicatorForm, caret);
+            tracker.Start();
 
 
 

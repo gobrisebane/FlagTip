@@ -55,7 +55,6 @@ namespace FlagTip.Helpers
                              if (CommonUtils.IsRectValid(rectUA))
                              {
                                  rect = rectUA;
-                                 //method = "UIA";
                                  return true;
                              }
                          }

@@ -1,13 +1,19 @@
 ﻿using FlagTip.caret;
+using FlagTip.hooking;
 using FlagTip.models;
 using FlagTip.UI;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Automation;
+using System.Windows.Interop;
+using UIA;
 using static FlagTip.caret.Caret;
 using static FlagTip.Utils.NativeMethods;
 
@@ -17,14 +23,37 @@ namespace FlagTip.Hooking
     internal static class MouseHook
     {
 
-        internal static IntPtr MouseHookCallback(int nCode, IntPtr wParam, IntPtr lParam, IntPtr hookID, Caret caret)
-        {
 
-            if (nCode >= 0 && (MouseMessages)wParam == MouseMessages.WM_LBUTTONDOWN)
+        private static DateTime _mouseDownTime;
+
+
+        internal static IntPtr MouseHookCallback(
+    int nCode, IntPtr wParam, IntPtr lParam, IntPtr hookID, Caret caret)
+        {
+            if (nCode >= 0)
             {
 
-                Console.WriteLine(">> Left mouse button clicked!");
-                //Console.WriteLine("Caret.LastMethod : " + Caret.LastMethod);
+                var msg = (MouseMessages)wParam;
+
+                MSLLHOOKSTRUCT hookStruct = Marshal.PtrToStructure<MSLLHOOKSTRUCT>(lParam);
+
+                if (msg == MouseMessages.WM_LBUTTONDOWN || msg == MouseMessages.WM_RBUTTONDOWN)
+                {
+                    CaretContext.LastClickPoint = new POINT
+                    {
+                        X = hookStruct.pt.X,
+                        Y = hookStruct.pt.Y
+                    };
+
+                    //CaretContext.HasLastClickPoint = true;
+                }
+
+
+                if (msg == MouseMessages.WM_LBUTTONDOWN)
+                {
+                    _mouseDownTime = DateTime.UtcNow;
+                }
+
 
 
 
@@ -32,31 +61,61 @@ namespace FlagTip.Hooking
                 _ = Task.Run(async () =>
                 {
 
-/*
-                    int loopCount =
-                Caret.LastMethod == CaretMethod.MouseClick ? 1 : 3;
 
-                    for (int i = 0; i < loopCount; i++)
+
+
+                    if (msg == MouseMessages.WM_LBUTTONDOWN)
                     {
-                        await caret.show();
-                        await Task.Delay(70); // 30~60ms 권장
+
+
+
+                        if (CaretContext.CaretMouseLock)
+                       //if (CaretContext.LastMethod == CaretMethod.MouseClick)
+                        //if (CaretContext.LastProcessName== "whatsapp" || CaretContext.LastProcessName == "whatsapp.root")
+                        {
+                            await Task.Delay(50);
+                            await caret.show();
+
+                        } else {
+
+
+                            for (int i = 0; i < 2; i++)
+                            {
+                                await Task.Delay(50);
+                                await caret.show();
+                            }
+
+                        }
+
                     }
-*/
-
-
-
-                    await caret.show();
-
-                    int loopCount =
-                Caret.LastMethod == CaretMethod.MouseClick ? 0 : 2;
-
-                    for (int i = 0; i < loopCount; i++)
+                    else if (msg == MouseMessages.WM_LBUTTONUP)
                     {
-                        await Task.Delay(70); // 30~60ms 권장
-                        await caret.show();
-                    }
 
+                        await Task.Delay(50);
+
+                        if (CaretContext.CaretMouseLock)
+                            //if (CaretContext.LastMethod == CaretMethod.MouseClick)
+                            //if (CaretContext.LastProcessName == "whatsapp" || CaretContext.LastProcessName == "whatsapp.root")
+                        {
+                            double elapsedMs =
+                            (DateTime.UtcNow - _mouseDownTime).TotalMilliseconds;
+
+                            if (elapsedMs > 300)
+                            {
+                                await Task.Delay(50);
+                                await caret.show();
+                            }
+
+                        } else {
+                            await caret.show();
+                        }
+
+                    }
                 });
+
+
+
+
 
 
 

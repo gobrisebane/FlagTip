@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using UIA;
 
 namespace FlagTip.Utils
 {
@@ -70,7 +71,7 @@ namespace FlagTip.Utils
         );
 
 
-        internal static string GetProcessNameFromHwnd(IntPtr hwnd)
+        internal static string GetProcessName(IntPtr hwnd)
         {
             try
             {
@@ -170,6 +171,67 @@ namespace FlagTip.Utils
         public static extern IntPtr WindowFromPoint(POINT Point);
 
 
+
+        [DllImport("user32.dll")]
+        static extern IntPtr SendMessage(
+            IntPtr hWnd,
+            int Msg,
+            IntPtr wParam,
+            IntPtr lParam
+        );
+
+        const int WM_NCHITTEST = 0x0084;
+        const int HTCAPTION = 2;
+
+
+        [DllImport("user32.dll")]
+        internal static extern bool GetWindowRect(
+            IntPtr hWnd,
+            out RECT lpRect
+        );
+
+
+
+        // WinEventHook
+
+        internal const uint EVENT_OBJECT_FOCUS = 0x8005;
+        internal const uint EVENT_OBJECT_LOCATIONCHANGE = 0x800B;
+        internal const uint WINEVENT_OUTOFCONTEXT = 0x0000;
+
+        internal delegate void WinEventDelegate(
+            IntPtr hWinEventHook,
+            uint eventType,
+            IntPtr hwnd,
+            int idObject,
+            int idChild,
+            uint dwEventThread,
+            uint dwmsEventTime
+        );
+
+        [DllImport("user32.dll")]
+        internal static extern IntPtr SetWinEventHook(
+        uint eventMin,
+        uint eventMax,
+        IntPtr hmodWinEventProc,
+        WinEventDelegate lpfnWinEventProc,
+        uint idProcess,
+        uint idThread,
+        uint dwFlags
+    );
+
+        [DllImport("user32.dll")]
+        internal static extern bool UnhookWinEvent(IntPtr hWinEventHook);
+
+
+
+        [DllImport("oleacc.dll")]
+        internal static extern int AccessibleObjectFromEvent(
+            IntPtr hwnd,
+            int idObject,
+            int idChild,
+            [Out, MarshalAs(UnmanagedType.Interface)] out IAccessible acc,
+            out object varChild
+        );
 
     }
 }

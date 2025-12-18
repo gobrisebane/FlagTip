@@ -37,6 +37,7 @@ namespace FlagTip.Tracking
                 try
                 {
 
+                    Console.WriteLine("CaretContext.CaretMouseLock : " + CaretContext.CaretMouseLock);
 
                     _caret.show().GetAwaiter().GetResult();
 

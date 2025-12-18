@@ -43,7 +43,8 @@ namespace FlagTip.Helpers
                     };
 
 
-                    if (CommonUtils.IsRectValid(r))
+
+                    if (CommonUtils.IsRectValid(r) & width > 0)
                     {
                         rect = r;
                         return true;

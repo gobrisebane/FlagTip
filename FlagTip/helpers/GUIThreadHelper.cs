@@ -28,6 +28,7 @@ namespace FlagTip.Helpers
             rect = new RECT();
 
 
+            //Console.WriteLine("...........thread works..");
 
 
             try

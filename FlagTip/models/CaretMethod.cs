@@ -10,6 +10,7 @@ namespace FlagTip.models
     {
         None,
         UIA,
+        ExplorerUIA,
         MSAA,
         MouseClick,
         GUIThreadInfo,
