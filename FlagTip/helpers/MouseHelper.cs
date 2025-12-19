@@ -25,16 +25,19 @@ namespace FlagTip.Helpers
 
             try
             {
-                //var pt = Cursor.Position; // System.Drawing.Point (X, Y)
 
-                var pt = CaretContext.LastClickPoint;
 
-                Console.WriteLine(">>>>wahtsapp enter hello");
+                var pt = Cursor.Position; // System.Drawing.Point (X, Y)
+
+                //var pt = CaretContext.LastClickPoint;
+
+                //Console.WriteLine(">>>>wahtsapp enter hello");
 
                 RECT r = new RECT
                 {
                     left = pt.X,
                     top = pt.Y,
+
                     //left = CaretContext.LastClickPoint,
                     //top = CaretContext.LastClickPoint,
                     //right = 100,

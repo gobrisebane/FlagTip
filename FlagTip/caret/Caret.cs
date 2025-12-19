@@ -38,6 +38,7 @@ namespace FlagTip.caret
 
             IntPtr hwnd = GetForegroundWindow();
             string processName = GetProcessName(hwnd);
+
             RECT rect;
             CaretMethod method = CaretContext.LastMethod;
 
@@ -60,7 +61,6 @@ namespace FlagTip.caret
                 {
 
 
-                    Console.WriteLine("get whatsapp");
                     MouseHelper.TryGetCaretFromMouseClick(out rect);
                     method = CaretMethod.MouseClick;
 

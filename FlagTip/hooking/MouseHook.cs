@@ -35,8 +35,8 @@ namespace FlagTip.Hooking
 
                 var msg = (MouseMessages)wParam;
 
-                MSLLHOOKSTRUCT hookStruct = Marshal.PtrToStructure<MSLLHOOKSTRUCT>(lParam);
 
+                MSLLHOOKSTRUCT hookStruct = Marshal.PtrToStructure<MSLLHOOKSTRUCT>(lParam);
                 if (msg == MouseMessages.WM_LBUTTONDOWN || msg == MouseMessages.WM_RBUTTONDOWN)
                 {
                     CaretContext.LastClickPoint = new POINT
@@ -47,73 +47,18 @@ namespace FlagTip.Hooking
 
                 }
 
-
                 if (msg == MouseMessages.WM_LBUTTONDOWN)
                 {
                     _mouseDownTime = DateTime.UtcNow;
                 }
 
 
-
-
-
-                _ = Task.Run(async () =>
+                // 🔴 여기서만 비동기 처리 진입
+                if (msg == MouseMessages.WM_LBUTTONDOWN ||
+                    msg == MouseMessages.WM_LBUTTONUP)
                 {
-
-
-
-
-                    if (msg == MouseMessages.WM_LBUTTONDOWN)
-                    {
-
-
-                        await Task.Delay(50);
-                        await caret.show();
-
-
-                        if (!CaretContext.CaretMouseLock)
-                        {
-
-                            for (int i = 0; i < 2; i++)
-                            {
-
-                                await Task.Delay(50);
-                                await caret.show();
-                            }
-
-                            
-                        } 
-
-                    }
-                    else if (msg == MouseMessages.WM_LBUTTONUP)
-                    {
-
-
-
-                        if (CaretContext.CaretMouseLock)
-                        {
-                            double elapsedMs =
-                            (DateTime.UtcNow - _mouseDownTime).TotalMilliseconds;
-                            // 드래그하는것으로 간주
-                            if (elapsedMs > 300)
-                            {
-                                await Task.Delay(50);
-                                await caret.show();
-                            }
-
-                        } else {
-
-                            await Task.Delay(50);
-                            await caret.show();
-                        }
-
-                    }
-                });
-
-
-
-
-
+                    _ = HandleClickAsync(msg, caret);
+                }
 
 
 
@@ -121,6 +66,76 @@ namespace FlagTip.Hooking
 
             return CallNextHookEx(hookID, nCode, wParam, lParam);
         }
+
+
+        private static async Task HandleClickAsync(
+           MouseMessages msg,
+           Caret caret)
+        {
+
+            await Task.Delay(50);
+
+            IntPtr hwnd = GetForegroundWindow();
+            string processName = GetProcessName(hwnd);
+
+
+            bool isWhatsapp =
+                processName == "whatsapp" ||
+                processName == "whatsapp.root";
+
+
+
+
+
+            if (isWhatsapp)
+            {
+                Console.WriteLine("AAAA1111");
+                if (msg == MouseMessages.WM_LBUTTONDOWN)
+                {
+                    await caret.show();
+                }
+                else if (msg == MouseMessages.WM_LBUTTONUP)
+                {
+                    double elapsedMs =
+                        (DateTime.UtcNow - _mouseDownTime).TotalMilliseconds;
+
+                    if (elapsedMs > 300)
+                    {
+                        await caret.show();
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("AAAA2222");
+                
+                if (msg == MouseMessages.WM_LBUTTONDOWN)
+                {
+                    for (int i = 0; i < 3; i++)
+                    {
+                        await Task.Delay(50);
+                        await caret.show();
+                    }
+                }
+                else if (msg == MouseMessages.WM_LBUTTONUP)
+                {
+                    await caret.show();
+                }
+                
+            }
+
+
+
+
+
+
+
+        }
+
+
+
+
+
 
 
         internal static IntPtr SetMouseHook(LowLevelMouseProc proc)
