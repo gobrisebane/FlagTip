@@ -60,36 +60,24 @@ namespace FlagTip.caret
                 if (processName == "whatsapp" || processName == "whatsapp.root")
                 {
 
-
                     MouseHelper.TryGetCaretFromMouseClick(out rect);
                     method = CaretMethod.MouseClick;
 
-
-
                 }
-                else
+                else if(processName == "winword")
                 {
+                    UIAHelper.TryGetCaretFromUIA(out rect);
+                    method = CaretMethod.UIA;
+                }
+                else if(processName == "explorer")
+                {
+                    UIAExplorerHelper.TryGetCaretFromExplorerUIA(out rect)
+                    method = CaretMethod.ExplorerUIA;
+                }
 
+                else {
 
-
-
-                    if (processName == "winword" &&
-                        UIAHelper.TryGetCaretFromUIA(out rect))
-                    {
-                        method = CaretMethod.UIA;
-                    }
-                    else if (processName == "explorer" &&
-                        UIAExplorerHelper.TryGetCaretFromExplorerUIA(out rect))
-                    {
-                        method = CaretMethod.ExplorerUIA;
-                    }
-                    //else if ( (processName == "whatsapp" || processName == "whatsapp.root") &&
-                    //    MouseHelper.TryGetCaretFromMouseClick(out rect))
-                    //{
-                    //    CaretContext.CaretMouseLock = true;
-                    //    method = CaretMethod.MouseClick;
-                    //}
-                    else if (GUIThreadHelper.TryGetCaretFromGUIThreadInfo(hwnd, out rect))
+                    if (GUIThreadHelper.TryGetCaretFromGUIThreadInfo(hwnd, out rect))
                     {
                         method = CaretMethod.GUIThreadInfo;
                     }
