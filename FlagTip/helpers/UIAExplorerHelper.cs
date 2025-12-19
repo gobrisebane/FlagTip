@@ -27,17 +27,11 @@ namespace FlagTip.Helpers
 
 
 
-
-
-
-
                 if (caretLocation.left == 0 && caretLocation.top == 0)
                 {
 
 
-                    Console.WriteLine("1. explorer mode UIA가 잡는데 실패함");
-
-
+                    //Console.WriteLine("111. explorer mode UIA가 잡는데 실패하여 CUIA로 박스로 잡기");
 
                     CUIAutomation uia = new CUIAutomation();
                     IUIAutomationElement element = uia.GetFocusedElement();
@@ -46,43 +40,51 @@ namespace FlagTip.Helpers
                         Console.WriteLine("focused nothing");
                         return false;
                     }
+
                     int controlType = element.CurrentControlType;
-                    //Console.WriteLine(">>> 222. controlType : " + controlType);
-
                     string className = ExplorerInfo.GetForegroundWindowClassName();
-                    //Console.WriteLine(">>> 111. className : " + className);
+                    var parent = uia.ControlViewWalker.GetParentElement(element);
+                    var boundingRect = element.CurrentBoundingRectangle;
 
 
-                    //if (CaretContext.LastCaretInitator == CaretInitator.Mouse)
-                    //{
-
-
-
-                        if ( controlType == 50004 || controlType == 50030  )
+                    // CABINET의 상단
+                    if(parent.CurrentControlType == 50026)
+                    {
+                        // CABINET 상단의 수정상태
+                        if (controlType == 50004)
                         {
-                            caretLocation.left = CaretContext.LastClickPoint.X;
-                            caretLocation.top = CaretContext.LastClickPoint.Y + 5;
-                            CaretContext.CaretMouseLock = true;
-                    }
-                        else
-                        {
-                            CaretContext.CaretMouseLock = false;
+                            caretLocation.left = boundingRect.left + 11;
+                            caretLocation.top = boundingRect.top + 6;
+                            caretLocation.right = boundingRect.right;
+                            caretLocation.bottom = boundingRect.bottom;
                         }
 
-                    //}
+
+                    // PROGRAM, CABINET의 파일
+                    } else if (parent.CurrentControlType == 50008){
+
+                        // PROGRAM, CABINET의 파일수정상태
+                        if (controlType == 50004 || controlType == 50030)
+                        {
+                            caretLocation.left = boundingRect.left+1;
+                            caretLocation.top = boundingRect.top;
+                            caretLocation.right = boundingRect.right;
+                            caretLocation.bottom = boundingRect.bottom;
+                        }
+
+                    }
 
 
                 }
                 else
                 {
 
-                    Console.WriteLine("2. explorer mode UIA가 잡는데 성공");
+                    //Console.WriteLine("222. explorer mode UIA가 잡는데 성공");
 
                     prevCaretLocation.left = caretLocation.left;
                     prevCaretLocation.top = caretLocation.top;
                     prevCaretLocation.right = caretLocation.right;
                     prevCaretLocation.bottom = caretLocation.bottom;
-                    //CaretContext.CaretMouseLock = false;
                 }
 
 

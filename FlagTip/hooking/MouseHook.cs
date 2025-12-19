@@ -107,7 +107,6 @@ namespace FlagTip.Hooking
             }
             else
             {
-                Console.WriteLine("AAAA2222");
                 
                 if (msg == MouseMessages.WM_LBUTTONDOWN)
                 {

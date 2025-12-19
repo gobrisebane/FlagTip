@@ -55,7 +55,6 @@ namespace FlagTip.caret
             if (contextChanged)
             {
 
-                CaretContext.CaretMouseLock = false;
 
                 if (processName == "whatsapp" || processName == "whatsapp.root")
                 {
@@ -71,7 +70,7 @@ namespace FlagTip.caret
                 }
                 else if(processName == "explorer")
                 {
-                    UIAExplorerHelper.TryGetCaretFromExplorerUIA(out rect)
+                    UIAExplorerHelper.TryGetCaretFromExplorerUIA(out rect);
                     method = CaretMethod.ExplorerUIA;
                 }
 

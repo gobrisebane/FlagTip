@@ -28,16 +28,13 @@ namespace FlagTip.Helpers
 
 
                 var pt = Cursor.Position; // System.Drawing.Point (X, Y)
-
                 //var pt = CaretContext.LastClickPoint;
 
-                //Console.WriteLine(">>>>wahtsapp enter hello");
 
                 RECT r = new RECT
                 {
                     left = pt.X,
                     top = pt.Y,
-
                     //left = CaretContext.LastClickPoint,
                     //top = CaretContext.LastClickPoint,
                     //right = 100,
@@ -46,16 +43,13 @@ namespace FlagTip.Helpers
                 };
 
                 rect = r;
-                CaretContext.CaretMouseLock = true;
                 return true;
 
 
             }
             catch (Exception ex)
             {
-                // 로깅 등 필요 시 추가
                 Console.WriteLine($"TryGetCaretFromMouseClick Error: {ex.Message}");
-                //method = $"Error ({method})";
             }
 
             return false;
