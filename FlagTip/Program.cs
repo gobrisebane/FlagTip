@@ -36,9 +36,8 @@ namespace FlagTip
 
 
 
-
-            var tracker = new CaretTracker(indicatorForm, caret);
-            tracker.Start();
+            //var tracker = new CaretTracker(indicatorForm, caret);
+            //tracker.Start();
 
 
 

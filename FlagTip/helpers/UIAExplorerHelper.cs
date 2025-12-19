@@ -56,15 +56,17 @@ namespace FlagTip.Helpers
                     //if (CaretContext.LastCaretInitator == CaretInitator.Mouse)
                     //{
 
+
+
                         if ( controlType == 50004 || controlType == 50030  )
                         {
                             caretLocation.left = CaretContext.LastClickPoint.X;
                             caretLocation.top = CaretContext.LastClickPoint.Y + 5;
                             CaretContext.CaretMouseLock = true;
-                        }
+                    }
                         else
                         {
-                            //CaretContext.CaretMouseLock = false;
+                            CaretContext.CaretMouseLock = false;
                         }
 
                     //}
@@ -80,7 +82,7 @@ namespace FlagTip.Helpers
                     prevCaretLocation.top = caretLocation.top;
                     prevCaretLocation.right = caretLocation.right;
                     prevCaretLocation.bottom = caretLocation.bottom;
-                    CaretContext.CaretMouseLock = false;
+                    //CaretContext.CaretMouseLock = false;
                 }
 
 

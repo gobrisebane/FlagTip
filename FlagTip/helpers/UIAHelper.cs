@@ -41,10 +41,12 @@ namespace FlagTip.Helpers
                              var r = rects[0];
 
                              //double width = r.Width;
-                             //int width = (int)r.Right - (int)r.Left;
-                             //Console.WriteLine("!!!!!!!!!33333 : " + range);
+                             int width = (int)r.Right - (int)r.Left;
+                            //Console.WriteLine("!!!!!!!!!33333 : " + range);
 
-                             RECT rectUA = new RECT
+                            Console.WriteLine(">>>>>>>>>> width : " + width);
+
+                            RECT rectUA = new RECT
                              {
                                  left = (int)r.Left,
                                  top = (int)r.Top,

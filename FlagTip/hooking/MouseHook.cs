@@ -45,7 +45,6 @@ namespace FlagTip.Hooking
                         Y = hookStruct.pt.Y
                     };
 
-                    //CaretContext.HasLastClickPoint = true;
                 }
 
 
@@ -68,38 +67,34 @@ namespace FlagTip.Hooking
                     {
 
 
+                        await Task.Delay(50);
+                        await caret.show();
 
-                        if (CaretContext.CaretMouseLock)
-                       //if (CaretContext.LastMethod == CaretMethod.MouseClick)
-                        //if (CaretContext.LastProcessName== "whatsapp" || CaretContext.LastProcessName == "whatsapp.root")
+
+                        if (!CaretContext.CaretMouseLock)
                         {
-                            await Task.Delay(50);
-                            await caret.show();
-
-                        } else {
-
 
                             for (int i = 0; i < 2; i++)
                             {
+
                                 await Task.Delay(50);
                                 await caret.show();
                             }
 
-                        }
+                            
+                        } 
 
                     }
                     else if (msg == MouseMessages.WM_LBUTTONUP)
                     {
 
-                        await Task.Delay(50);
+
 
                         if (CaretContext.CaretMouseLock)
-                            //if (CaretContext.LastMethod == CaretMethod.MouseClick)
-                            //if (CaretContext.LastProcessName == "whatsapp" || CaretContext.LastProcessName == "whatsapp.root")
                         {
                             double elapsedMs =
                             (DateTime.UtcNow - _mouseDownTime).TotalMilliseconds;
-
+                            // 드래그하는것으로 간주
                             if (elapsedMs > 300)
                             {
                                 await Task.Delay(50);
@@ -107,6 +102,8 @@ namespace FlagTip.Hooking
                             }
 
                         } else {
+
+                            await Task.Delay(50);
                             await caret.show();
                         }
 

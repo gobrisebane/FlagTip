@@ -47,46 +47,70 @@ namespace FlagTip.caret
 
             bool contextChanged =
             CaretContext.LastProcessName != processName ||
-            CaretContext.LastHwnd != hwnd;
+            CaretContext.LastMethod == CaretMethod.None;
 
 
 
-            //if (contextChanged)
-                if (CaretContext.LastProcessName != processName)
-                {
+            if (contextChanged)
+            {
+
                 CaretContext.CaretMouseLock = false;
 
-                if (processName == "winword" &&
-                    UIAHelper.TryGetCaretFromUIA(out rect))
+                if (processName == "whatsapp" || processName == "whatsapp.root")
                 {
-                    method = CaretMethod.UIA;
-                }
-                else if (processName == "explorer" &&
-                    UIAExplorerHelper.TryGetCaretFromExplorerUIA(out rect))
-                {
-                    method = CaretMethod.ExplorerUIA;
-                }
-                else if ( (processName == "whatsapp" || processName == "whatsapp.root") &&
-                    MouseHelper.TryGetCaretFromMouseClick(out rect))
-                {
+
+
+                    Console.WriteLine("get whatsapp");
+                    MouseHelper.TryGetCaretFromMouseClick(out rect);
                     method = CaretMethod.MouseClick;
-                }
-                else if (GUIThreadHelper.TryGetCaretFromGUIThreadInfo(hwnd, out rect))
-                {
-                    method = CaretMethod.GUIThreadInfo;
-                }
-                else if (MSAAHelper.TryGetCaretFromMSAA(hwnd, out rect))
-                {
-                    method = CaretMethod.MSAA;
-                }
-                else if (UIAHelper.TryGetCaretFromUIA(out rect))
-                {
-                    method = CaretMethod.UIA;
+
+
+
                 }
                 else
                 {
-                    rect = new RECT();
-                    method = CaretMethod.None;
+
+
+
+
+                    if (processName == "winword" &&
+                        UIAHelper.TryGetCaretFromUIA(out rect))
+                    {
+                        method = CaretMethod.UIA;
+                    }
+                    else if (processName == "explorer" &&
+                        UIAExplorerHelper.TryGetCaretFromExplorerUIA(out rect))
+                    {
+                        method = CaretMethod.ExplorerUIA;
+                    }
+                    //else if ( (processName == "whatsapp" || processName == "whatsapp.root") &&
+                    //    MouseHelper.TryGetCaretFromMouseClick(out rect))
+                    //{
+                    //    CaretContext.CaretMouseLock = true;
+                    //    method = CaretMethod.MouseClick;
+                    //}
+                    else if (GUIThreadHelper.TryGetCaretFromGUIThreadInfo(hwnd, out rect))
+                    {
+                        method = CaretMethod.GUIThreadInfo;
+                    }
+                    else if (MSAAHelper.TryGetCaretFromMSAA(hwnd, out rect))
+                    {
+                        method = CaretMethod.MSAA;
+                    }
+                    /*
+                    else if (UIAHelper.TryGetCaretFromUIA(out rect))
+                    {
+                        // 크롬에서 읽는문제때문에 단독 제외
+                        method = CaretMethod.UIA;
+                    }
+                    */
+                    else
+                    {
+                        rect = new RECT();
+                        method = CaretMethod.None;
+                    }
+
+
                 }
             }
 
