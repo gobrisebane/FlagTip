@@ -61,9 +61,8 @@ namespace FlagTip.caret
 
                     MouseHelper.TryGetCaretFromMouseClick(out rect);
                     method = CaretMethod.MouseClick;
-
                 }
-                else if(processName == "winword")
+                else if(processName == "winword" || processName == "devenv")
                 {
                     UIAHelper.TryGetCaretFromUIA(out rect);
                     method = CaretMethod.UIA;
@@ -84,13 +83,13 @@ namespace FlagTip.caret
                     {
                         method = CaretMethod.MSAA;
                     }
-                    /*
                     else if (UIAHelper.TryGetCaretFromUIA(out rect))
                     {
                         // 크롬에서 읽는문제때문에 단독 제외
                         method = CaretMethod.UIA;
                     }
-                    */
+                    
+
                     else
                     {
                         rect = new RECT();

@@ -55,8 +55,13 @@ namespace FlagTip.Hooking
 
                 // 🔴 여기서만 비동기 처리 진입
                 if (msg == MouseMessages.WM_LBUTTONDOWN ||
-                    msg == MouseMessages.WM_LBUTTONUP)
+                    msg == MouseMessages.WM_LBUTTONUP ||
+                    msg == MouseMessages.WM_MOUSEWHEEL ||
+                    msg == MouseMessages.WM_MOUSEHWHEEL
+
+                    )
                 {
+
                     _ = HandleClickAsync(msg, caret);
                 }
 
@@ -83,8 +88,17 @@ namespace FlagTip.Hooking
                 processName == "whatsapp" ||
                 processName == "whatsapp.root";
 
+            //Console.WriteLine($"Mouse msg: 0x{((int)wParam):X}");
+            Console.WriteLine($"Mouse msg: {msg}");
 
+            if (msg == MouseMessages.WM_MOUSEWHEEL ||
+                msg == MouseMessages.WM_MOUSEHWHEEL)
+            {
+                Console.WriteLine("get wheel works testing.");
 
+                await caret.show();
+                return;
+            }
 
 
             if (isWhatsapp)
