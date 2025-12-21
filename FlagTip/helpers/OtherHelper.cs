@@ -116,7 +116,6 @@ namespace FlagTip.Helpers
 
                             Console.WriteLine("left : " + left);
 
-                            //rect.left = (int)left;
                             rect.left = (int)(left + right);
                             rect.top = (int)top;
                             rect.right = (int)right;

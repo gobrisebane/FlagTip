@@ -1,25 +1,37 @@
 ﻿using FlagTip.Helpers;
-using FlagTip.UI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using static FlagTip.Utils.NativeMethods;
-
+using FlagTip.Ime;
 
 //using FlagTip.Models;
 using FlagTip.models;
+using FlagTip.UI;
+using FlagTip.Utils;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using UIA;
+using static FlagTip.Utils.CommonUtils;
+using static FlagTip.Utils.NativeMethods;
 
 
 
 namespace FlagTip.caret
 {
+
+
+  
+
+
+
     internal class Caret
     {
 
         private IndicatorForm _indicatorForm;
+
 
 
 
@@ -32,6 +44,28 @@ namespace FlagTip.caret
 
         public async Task show(int delayMs = 50)
         {
+
+
+           
+
+
+            //bool isKorean = TsfImeState.IsKorean();
+            //Console.WriteLine("isKorean : " + isKorean);
+
+
+            //bool IsKoreanLayout = NativeMethods.IsKorean();
+            //Console.WriteLine("IsKoreanLayout : " + IsKoreanLayout);
+
+
+            //HWND forehwnd = GetForegroundWindow();
+            //HWND ime = ImmGetDefaultIMEWnd(forehwnd);
+            //LRESULT ret = SendMessageA(ime, WM_IME_CONTROL, 0x05, 0);
+            //Console.WriteLine("ret : " + ret);
+            //Console.WriteLine(IsImeOpen() ? "한글" : "영어");
+
+
+
+
 
             await Task.Delay(delayMs);  
 
@@ -126,11 +160,13 @@ namespace FlagTip.caret
             }
 
 
+            if (!CommonUtils.IsCaretInEditableArea(hwnd, rect))
+            {
+                _indicatorForm.HideIndicator();
+                return;
+            }
 
-
-
-
-
+            
 
 
 
@@ -144,9 +180,25 @@ namespace FlagTip.caret
                 _indicatorForm.SetPosition(rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top)
             ));
 
+
+         
+
+
             Console.WriteLine($"[{processName}] ({method}) Caret: L={rect.left}, T={rect.top}, R={rect.right}, B={rect.bottom}");
 
 
         }
+
+
+
+    
+
+
     }
+
+
+
+
+
+
 }

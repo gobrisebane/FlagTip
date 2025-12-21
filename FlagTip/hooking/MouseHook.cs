@@ -9,12 +9,14 @@ using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Interop;
 using UIA;
 using static FlagTip.caret.Caret;
+using static FlagTip.Utils.CommonUtils;
 using static FlagTip.Utils.NativeMethods;
 
 
@@ -23,7 +25,7 @@ namespace FlagTip.Hooking
     internal static class MouseHook
     {
 
-
+        private static DateTime _lastWheelTime;
         private static DateTime _mouseDownTime;
 
 
@@ -55,15 +57,53 @@ namespace FlagTip.Hooking
 
                 // 🔴 여기서만 비동기 처리 진입
                 if (msg == MouseMessages.WM_LBUTTONDOWN ||
-                    msg == MouseMessages.WM_LBUTTONUP ||
-                    msg == MouseMessages.WM_MOUSEWHEEL ||
-                    msg == MouseMessages.WM_MOUSEHWHEEL
+                    msg == MouseMessages.WM_LBUTTONUP 
+                    
+                    
+                    //|| msg == MouseMessages.WM_MOUSEWHEEL 
+                    //|| msg == MouseMessages.WM_MOUSEHWHEEL
 
                     )
                 {
 
                     _ = HandleClickAsync(msg, caret);
                 }
+
+
+                else if (msg == MouseMessages.WM_MOUSEWHEEL ||
+                         msg == MouseMessages.WM_MOUSEHWHEEL)
+                {
+
+
+
+
+                    //_wheelEnterCts?.Cancel();
+                    //_wheelEnterCts = new CancellationTokenSource();
+                    //var token = _wheelEnterCts.Token;
+
+                    //_ = Task.Run(async () =>
+                    //{
+                    //    try
+                    //    {
+                    //        await Task.Delay(150, token); // ← 스크롤 끝날 때까지 대기
+
+                    //        _ = HandleClickAsync(msg, caret); // ← 딱 1번
+
+
+                    //    }
+                    //    catch (TaskCanceledException) { }
+                    //});
+
+                    //Console.WriteLine("hello");
+
+                    _ = HandleClickAsync(msg, caret); // ← 딱 1번
+
+
+                    return CallNextHookEx(hookID, nCode, wParam, lParam);
+
+
+                }
+
 
 
 
@@ -78,32 +118,35 @@ namespace FlagTip.Hooking
            Caret caret)
         {
 
-            await Task.Delay(50);
 
-            IntPtr hwnd = GetForegroundWindow();
-            string processName = GetProcessName(hwnd);
-
-
-            bool isWhatsapp =
-                processName == "whatsapp" ||
-                processName == "whatsapp.root";
-
-            //Console.WriteLine($"Mouse msg: 0x{((int)wParam):X}");
-            Console.WriteLine($"Mouse msg: {msg}");
 
             if (msg == MouseMessages.WM_MOUSEWHEEL ||
                 msg == MouseMessages.WM_MOUSEHWHEEL)
             {
-                Console.WriteLine("get wheel works testing.");
 
-                await caret.show();
+
+                if ((DateTime.UtcNow - _lastWheelTime).TotalMilliseconds > 100)
+                {
+                    _lastWheelTime = DateTime.UtcNow;
+                    await caret.show();
+                }
+
                 return;
             }
 
 
+
+            await Task.Delay(50);
+            IntPtr hwnd = GetForegroundWindow();
+            string processName = GetProcessName(hwnd);
+            
+            bool isWhatsapp =
+                processName == "whatsapp" ||
+                processName == "whatsapp.root";
+
+
             if (isWhatsapp)
             {
-                Console.WriteLine("AAAA1111");
                 if (msg == MouseMessages.WM_LBUTTONDOWN)
                 {
                     await caret.show();
@@ -163,3 +206,4 @@ namespace FlagTip.Hooking
 
     }
 }
+

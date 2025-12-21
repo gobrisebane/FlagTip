@@ -63,6 +63,7 @@
     <Compile Include="helpers\UIAHelper.cs" />
     <Compile Include="hooking\MouseHook.cs" />
     <Compile Include="hooking\TextboxFocusTracker.cs" />
+    <Compile Include="ime\TsfImeState.cs" />
     <Compile Include="models\CaretInitator.cs" />
     <Compile Include="models\CaretMethod.cs" />
     <Compile Include="models\Models.cs" />

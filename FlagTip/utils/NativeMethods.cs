@@ -193,6 +193,111 @@ namespace FlagTip.Utils
 
 
 
+
+
+
+
+        // IME 관련
+
+        internal const int IME_CMODE_NATIVE = 0x0001;
+
+        
+        [DllImport("imm32.dll")]
+        internal static extern IntPtr ImmGetContext(IntPtr hWnd);
+
+        [DllImport("imm32.dll")]
+        internal static extern bool ImmReleaseContext(IntPtr hWnd, IntPtr hIMC);
+
+        [DllImport("imm32.dll")]
+        internal static extern bool ImmGetConversionStatus(
+            IntPtr hIMC,
+            out int lpfdwConversion,
+            out int lpfdwSentence
+        );
+
+
+        // V2
+
+        internal static bool IsKorean()
+        {
+            Console.WriteLine("GetKeyState(VK_HANGUL) : " + GetKeyState(VK_HANGUL));
+            Console.WriteLine("0:ENG / 1:KOREA");
+
+            // 토글 키: 하위 비트(0x1)가 상태
+            return (GetKeyState(VK_HANGUL) & 0x0001) != 0;
+        }
+
+        internal const int VK_HANGUL = 0x15;
+
+        [DllImport("user32.dll")]
+        internal static extern short GetKeyState(int nVirtKey);
+
+
+
+        // V3
+
+        [DllImport("user32.dll")]
+        internal static extern IntPtr GetKeyboardLayout(uint idThread);
+
+        [DllImport("user32.dll")]
+        internal static extern uint GetWindowThreadProcessId(
+            IntPtr hWnd,
+            IntPtr lpdwProcessId);
+
+
+        internal static bool IsKoreanLayout()
+        {
+            IntPtr hwnd = GetForegroundWindow();
+            uint tid = GetWindowThreadProcessId(hwnd, IntPtr.Zero);
+
+            IntPtr hkl = GetKeyboardLayout(tid);
+
+            int langId = hkl.ToInt32() & 0xFFFF;
+            return langId == 0x0412;
+        }
+
+
+
+        //v4
+
+        const int WM_IME_CONTROL = 0x0283;
+        const int IMC_GETOPENSTATUS = 0x0005;
+
+
+        [DllImport("imm32.dll")]
+        internal static extern IntPtr ImmGetDefaultIMEWnd(IntPtr hWnd);
+
+    
+
+        internal static bool IsImeOpen()
+        {
+            IntPtr fore = GetForegroundWindow();
+            IntPtr imeWnd = ImmGetDefaultIMEWnd(fore);
+
+            if (imeWnd == IntPtr.Zero)
+                return false;
+
+            IntPtr ret = SendMessage(
+                imeWnd,
+                WM_IME_CONTROL,
+                (IntPtr)IMC_GETOPENSTATUS,
+                IntPtr.Zero);
+
+            return ret != IntPtr.Zero;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
         // WinEventHook
 
         internal const uint EVENT_OBJECT_FOCUS = 0x8005;

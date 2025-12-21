@@ -54,12 +54,19 @@ namespace FlagTip.UI
                 }
                 else
                 {
-                    Opacity = 0;
-
+                    HideIndicator();
                 }
 
 
             }
+
+        public void HideIndicator()
+        {
+            if (Opacity == 0)
+                return;
+
+            Opacity = 0;
+        }
 
     }
 }
