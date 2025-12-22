@@ -1,4 +1,5 @@
-﻿using FlagTip.Helpers;
+﻿using FlagTip.caret;
+using FlagTip.Helpers;
 using FlagTip.Hooking;
 using FlagTip.Tracking;
 using FlagTip.UI;
@@ -6,10 +7,11 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows.Forms;
-using static FlagTip.Utils.NativeMethods;
 using static FlagTip.Hooking.MouseHook;
+using static FlagTip.Utils.NativeMethods;
+using FlagTip.ime;
 
-using FlagTip.caret;
+
 
 namespace FlagTip
 {
@@ -29,6 +31,7 @@ namespace FlagTip
             indicatorForm = new IndicatorForm();
 
 
+
             var caret = new Caret(indicatorForm);
 
             // 폼 핸들 강제 생성 (옵션)
@@ -41,11 +44,20 @@ namespace FlagTip
 
 
 
+
+
+
+
+
+
             _mouseProc = (nCode, wParam, lParam) =>
                 MouseHookCallback(nCode, wParam, lParam, _hookID, caret);
 
             _hookID = SetMouseHook(_mouseProc);
 
+
+
+          
 
 
             Application.Run(indicatorForm);
@@ -60,6 +72,8 @@ namespace FlagTip
 
     }
 }
+
+
 
 
 

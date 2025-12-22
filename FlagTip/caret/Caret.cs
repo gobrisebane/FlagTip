@@ -1,4 +1,5 @@
 ﻿using FlagTip.Helpers;
+using FlagTip.ime;
 using FlagTip.Ime;
 
 //using FlagTip.Models;
@@ -46,7 +47,7 @@ namespace FlagTip.caret
         {
 
 
-           
+
 
 
             //bool isKorean = TsfImeState.IsKorean();
@@ -62,6 +63,49 @@ namespace FlagTip.caret
             //LRESULT ret = SendMessageA(ime, WM_IME_CONTROL, 0x05, 0);
             //Console.WriteLine("ret : " + ret);
             //Console.WriteLine(IsImeOpen() ? "한글" : "영어");
+
+
+            /*      bool isKorean = ImeStateDetector.IsKorean();
+
+                  if (isKorean)
+                      Console.WriteLine("한글 입력 상태");
+                  else
+                      Console.WriteLine("영문 입력 상태");*/
+
+
+
+            /*
+            Console.WriteLine(TsfImeState.IsKoreanInput_Foreground());
+            
+                        if (TsfImeState.IsKoreanInput())
+                        {
+                            Console.WriteLine("한글");
+                        }
+                        else
+                        {
+                            Console.WriteLine("영어");
+                        }*/
+
+
+            //int isKorean = ImeStateDetector.IsKorean();
+            //Console.WriteLine("isKorean : " + isKorean);
+
+            //if (isKorean)
+            //    Console.WriteLine("한글 입력 상태");
+            //else
+            //    Console.WriteLine("영문 입력 상태");
+
+
+
+            //Console.WriteLine(ime.TsfImeState.IsKoreanInput_Foreground());
+            if (TsfImeState.IsKoreanInput())
+            {
+                Console.WriteLine("한글");
+            }
+            else
+            {
+                Console.WriteLine("영어");
+            }
 
 
 
