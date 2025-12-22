@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FlagTip.models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -86,6 +87,56 @@ namespace FlagTip.Utils
             // IME_CMODE_NATIVE = 한글
             return (conversion & IME_CMODE_NATIVE) != 0;
         }
+
+
+        public static bool IsKorean()
+        {
+            IntPtr hwnd = GetForegroundWindow();
+            if (hwnd == IntPtr.Zero)
+                return false;
+
+            IntPtr imeWnd = ImmGetDefaultIMEWnd(hwnd);
+            if (imeWnd == IntPtr.Zero)
+                return false;
+
+            IntPtr mode = SendMessage(
+                imeWnd,
+                WM_IME_CONTROL,
+                (IntPtr)IMC_GETCONVERSIONMODE,
+                IntPtr.Zero);
+
+            int conversion = mode.ToInt32();
+
+            // IME_CMODE_NATIVE = 0x1
+            return (conversion & 0x1) != 0;
+        }
+
+
+        public static ImeState GetImeState()
+        {
+            IntPtr hwnd = GetForegroundWindow();
+            if (hwnd == IntPtr.Zero)
+                return ImeState.ENG;
+
+            IntPtr imeWnd = ImmGetDefaultIMEWnd(hwnd);
+            if (imeWnd == IntPtr.Zero)
+                return ImeState.ENG;
+
+            IntPtr mode = SendMessage(
+                imeWnd,
+                WM_IME_CONTROL,
+                (IntPtr)IMC_GETCONVERSIONMODE,
+                IntPtr.Zero);
+
+            int conversion = mode.ToInt32();
+
+            // IME_CMODE_NATIVE = 0x1
+            return (conversion & 0x1) != 0
+                ? ImeState.KOR
+                : ImeState.ENG;
+        }
+
+
 
 
     }

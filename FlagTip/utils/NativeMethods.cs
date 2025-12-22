@@ -174,7 +174,7 @@ namespace FlagTip.Utils
 
 
         [DllImport("user32.dll")]
-        static extern IntPtr SendMessage(
+        public static extern IntPtr SendMessage(
             IntPtr hWnd,
             int Msg,
             IntPtr wParam,
@@ -197,7 +197,7 @@ namespace FlagTip.Utils
 
 
 
-        // IME 관련
+        // IME V1
 
         internal const int IME_CMODE_NATIVE = 0x0001;
 
@@ -216,25 +216,12 @@ namespace FlagTip.Utils
         );
 
 
-        // V2
 
-        internal static bool IsKorean()
-        {
-            Console.WriteLine("GetKeyState(VK_HANGUL) : " + GetKeyState(VK_HANGUL));
-            Console.WriteLine("0:ENG / 1:KOREA");
 
-            // 토글 키: 하위 비트(0x1)가 상태
-            return (GetKeyState(VK_HANGUL) & 0x0001) != 0;
-        }
-
-        internal const int VK_HANGUL = 0x15;
+        // IME V2
 
         [DllImport("user32.dll")]
         internal static extern short GetKeyState(int nVirtKey);
-
-
-
-        // V3
 
         [DllImport("user32.dll")]
         internal static extern IntPtr GetKeyboardLayout(uint idThread);
@@ -258,10 +245,9 @@ namespace FlagTip.Utils
 
 
 
-        //v4
-
-        const int WM_IME_CONTROL = 0x0283;
-        const int IMC_GETOPENSTATUS = 0x0005;
+        // IME V3
+        internal const int WM_IME_CONTROL = 0x283;
+        internal const int IMC_GETCONVERSIONMODE = 0x001;
 
 
         [DllImport("imm32.dll")]
@@ -269,23 +255,7 @@ namespace FlagTip.Utils
 
     
 
-        internal static bool IsImeOpen()
-        {
-            IntPtr fore = GetForegroundWindow();
-            IntPtr imeWnd = ImmGetDefaultIMEWnd(fore);
-
-            if (imeWnd == IntPtr.Zero)
-                return false;
-
-            IntPtr ret = SendMessage(
-                imeWnd,
-                WM_IME_CONTROL,
-                (IntPtr)IMC_GETOPENSTATUS,
-                IntPtr.Zero);
-
-            return ret != IntPtr.Zero;
-        }
-
+  
 
 
 
