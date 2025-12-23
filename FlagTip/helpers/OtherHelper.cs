@@ -53,11 +53,16 @@ namespace FlagTip.Helpers
 
                         if (boundingRects.Length > 0)
                         {
+
+
+
                             var r = boundingRects[0];
                             rect.left = (int)r.Left;
                             rect.top = (int)r.Top;
                             rect.right = (int)r.Right;
                             rect.bottom = (int)r.Bottom;
+
+
 
                             Console.WriteLine("rect.left : " + rect.left);
                             method = "UIA_RangeFromPoint";

@@ -1,13 +1,14 @@
-﻿using FlagTip.Helpers;
-using FlagTip.Ime;
-
+﻿using FlagTip.apps;
+using FlagTip.Helpers;
 //using FlagTip.Models;
 using FlagTip.models;
+using FlagTip.ui;
 using FlagTip.UI;
 using FlagTip.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -16,7 +17,7 @@ using System.Windows;
 using UIA;
 using static FlagTip.Utils.CommonUtils;
 using static FlagTip.Utils.NativeMethods;
-
+using static FlagTip.ui.CursorFlagTip;
 
 
 namespace FlagTip.caret
@@ -31,36 +32,34 @@ namespace FlagTip.caret
     {
 
         private IndicatorForm _indicatorForm;
+        private CursorFlagTip _cursorFlagTip;
 
 
 
 
-        public Caret(IndicatorForm indicatorForm)
+        public Caret(IndicatorForm indicatorForm, CursorFlagTip cursorFlagTip)
         {
+         
             _indicatorForm = indicatorForm;
+            _cursorFlagTip = cursorFlagTip;
 
         }
 
+
+   
 
         public async Task show(int delayMs = 50)
         {
 
 
+            await Task.Delay(delayMs);
 
-
-          
-
-
-
-
-
-
-            await Task.Delay(delayMs);  
 
 
             IntPtr hwnd = GetForegroundWindow();
             string processName = GetProcessName(hwnd);
 
+            bool visible = false;
             RECT rect;
             CaretMethod method = CaretContext.LastMethod;
 
@@ -73,95 +72,130 @@ namespace FlagTip.caret
             CaretContext.LastMethod == CaretMethod.None;
 
 
+            bool isWhatsapp =
+            processName == "whatsapp" ||
+            processName == "whatsapp.root";
+
+
 
             if (contextChanged)
             {
+                Console.WriteLine("A1");
 
 
-                if (processName == "whatsapp" || processName == "whatsapp.root")
+                if (isWhatsapp)
                 {
+                    method = CaretMethod.Cursor;
+                    _cursorFlagTip.Start();
 
-                    MouseHelper.TryGetCaretFromMouseClick(out rect);
-                    method = CaretMethod.MouseClick;
-                }
-                else if(processName == "winword" || processName == "devenv")
-                {
-                    UIAHelper.TryGetCaretFromUIA(out rect);
-                    method = CaretMethod.UIA;
-                }
-                else if(processName == "explorer")
-                {
-                    UIAExplorerHelper.TryGetCaretFromExplorerUIA(out rect);
-                    method = CaretMethod.ExplorerUIA;
-                }
+                } else {
+                    _cursorFlagTip.Stop();
 
-                else {
 
-                    if (GUIThreadHelper.TryGetCaretFromGUIThreadInfo(hwnd, out rect))
+
+                    if (processName == "winword" || processName == "devenv")
                     {
-                        method = CaretMethod.GUIThreadInfo;
-                    }
-                    else if (MSAAHelper.TryGetCaretFromMSAA(hwnd, out rect))
-                    {
-                        method = CaretMethod.MSAA;
-                    }
-                    else if (UIAHelper.TryGetCaretFromUIA(out rect))
-                    {
-                        // 크롬에서 읽는문제때문에 단독 제외
+                        UIAHelper.TryGetCaretFromUIA(out rect, out visible);
                         method = CaretMethod.UIA;
                     }
-                    
-
+                    else if (processName == "explorer")
+                    {
+                        UIAExplorerHelper.TryGetCaretFromExplorerUIA(out rect, out visible);
+                        method = CaretMethod.ExplorerUIA;
+                    }
                     else
                     {
-                        rect = new RECT();
-                        method = CaretMethod.None;
+
+                        if (GUIThreadHelper.TryGetCaretFromGUIThreadInfo(hwnd, out rect, out visible))
+                        {
+                            method = CaretMethod.GUIThreadInfo;
+                        }
+                        else if (MSAAHelper.TryGetCaretFromMSAA(hwnd, out rect, out visible))
+                        {
+                            method = CaretMethod.MSAA;
+                        }
+                        else
+                        {
+                            rect = new RECT();
+                            method = CaretMethod.None;
+                        }
                     }
 
 
+                }
+
+                
+
+
+
+            } else {
+
+                Console.WriteLine("A2");
+
+                switch (method)
+                {
+
+                    case CaretMethod.MSAA:
+                        MSAAHelper.TryGetCaretFromMSAA(hwnd, out rect, out visible);
+                        break;
+                    case CaretMethod.GUIThreadInfo:
+                        GUIThreadHelper.TryGetCaretFromGUIThreadInfo(hwnd, out rect, out visible);
+                        break;
+                    case CaretMethod.ExplorerUIA:
+                        UIAExplorerHelper.TryGetCaretFromExplorerUIA(out rect,out visible);
+                        break;
+                    case CaretMethod.UIA:
+                        UIAHelper.TryGetCaretFromUIA(out rect, out visible);
+                        break;
+                    case CaretMethod.MouseClick:
+                        MouseHelper.TryGetCaretFromMouseClick(out rect, out visible);
+                        break;
+                    case CaretMethod.Cursor:
+
+                        Console.WriteLine("hello this is cursor method");
+
+                        if (!isWhatsapp)
+                            _cursorFlagTip.Stop();
+                        break;
+                    case CaretMethod.None:
+                        break;
+                }
+                
+            }
+
+
+
+
+            if (!visible)
+            {
+                if (processName == "notepad" && method == CaretMethod.GUIThreadInfo)
+                {
+                    // NOTEPAD가 못잡을때 
+                    UIAHelper.TryGetCaretFromUIA(out rect, out visible);
                 }
             }
 
 
 
 
-            switch (method)
-            {
-
-                case CaretMethod.MSAA:
-                    MSAAHelper.TryGetCaretFromMSAA(hwnd, out rect);
-                    break;
-                case CaretMethod.GUIThreadInfo:
-                    GUIThreadHelper.TryGetCaretFromGUIThreadInfo(hwnd, out rect);
-                    break;
-                case CaretMethod.ExplorerUIA:
-                    UIAExplorerHelper.TryGetCaretFromExplorerUIA(out rect);
-                    break;
-                case CaretMethod.UIA:
-                    UIAHelper.TryGetCaretFromUIA(out rect);
-                    break;
-                case CaretMethod.MouseClick:
-                    MouseHelper.TryGetCaretFromMouseClick(out rect);
-                    break;
-                case CaretMethod.None:
-                    break;
-            }
 
 
-            if (!CommonUtils.IsCaretInEditableArea(hwnd, rect))
-            {
-                _indicatorForm.HideIndicator();
-                return;
-            }
-
-            
-
-
-
+            CaretContext.Position = rect;
             CaretContext.LastMethod = method;
             CaretContext.LastProcessName = processName;
             CaretContext.LastHwnd = hwnd;
             CaretContext.LastUpdated = DateTime.Now;
+            CaretContext.Visible = visible;
+
+
+
+            /*if (!CommonUtils.IsCaretInEditableArea(hwnd, rect))
+            {
+                _indicatorForm?.BeginInvoke(new Action(() =>
+                    _indicatorForm.HideIndicator()
+                 ));
+                return;
+            }*/
 
 
             _indicatorForm?.BeginInvoke(new Action(() =>
@@ -169,21 +203,18 @@ namespace FlagTip.caret
             ));
 
 
-
-
-            Console.WriteLine(
-                GetImeState()
-            );
-
-
-            Console.WriteLine($"[{processName}] ({method}) Caret: L={rect.left}, T={rect.top}, R={rect.right}, B={rect.bottom}");
+            Console.WriteLine($"[{processName}][{visible}] ({method}) Caret: L={rect.left}, T={rect.top}, R={rect.right}, B={rect.bottom}");
 
 
         }
 
+        public async Task hide(int delayMs = 0)
+        {
+            _indicatorForm.HideIndicator();
+        }
 
 
-    
+
 
 
     }

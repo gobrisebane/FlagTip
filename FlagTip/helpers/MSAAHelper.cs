@@ -21,9 +21,10 @@ namespace FlagTip.Helpers
     internal class MSAAHelper
     {
 
-        internal static bool TryGetCaretFromMSAA(IntPtr hwnd, out RECT rect)
+        internal static bool TryGetCaretFromMSAA(IntPtr hwnd, out RECT rect, out bool visible)
         {
             rect = new RECT();
+            visible = false;
 
             try
             {
@@ -43,10 +44,10 @@ namespace FlagTip.Helpers
                     };
 
 
-
                     if (CommonUtils.IsRectValid(r) & width > 0)
                     {
                         rect = r;
+                        visible = true;
                         return true;
                     }
                 }

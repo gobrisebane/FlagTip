@@ -14,6 +14,7 @@ namespace FlagTip.models
         MSAA,
         MouseClick,
         GUIThreadInfo,
+        Cursor,
         Fallback,
         Error
     }

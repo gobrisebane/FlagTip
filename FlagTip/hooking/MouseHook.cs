@@ -29,6 +29,10 @@ namespace FlagTip.Hooking
         private static DateTime _mouseDownTime;
 
 
+        private static bool _isLeftButtonDown;
+        private static CancellationTokenSource _holdCts;
+
+
         internal static IntPtr MouseHookCallback(
     int nCode, IntPtr wParam, IntPtr lParam, IntPtr hookID, Caret caret)
         {
@@ -38,76 +42,56 @@ namespace FlagTip.Hooking
                 var msg = (MouseMessages)wParam;
 
 
-                MSLLHOOKSTRUCT hookStruct = Marshal.PtrToStructure<MSLLHOOKSTRUCT>(lParam);
-                if (msg == MouseMessages.WM_LBUTTONDOWN || msg == MouseMessages.WM_RBUTTONDOWN)
+
+                /*MSLLHOOKSTRUCT hookStruct = Marshal.PtrToStructure<MSLLHOOKSTRUCT>(lParam);
+                if (msg == MouseMessages.WM_LBUTTONDOWN || 
+                    msg == MouseMessages.WM_RBUTTONDOWN)
                 {
                     CaretContext.LastClickPoint = new POINT
                     {
                         X = hookStruct.pt.X,
                         Y = hookStruct.pt.Y
                     };
+                }*/
 
-                }
 
-                if (msg == MouseMessages.WM_LBUTTONDOWN)
+
+                if (msg == MouseMessages.WM_LBUTTONDOWN || 
+                    msg == MouseMessages.WM_MBUTTONDOWN)
                 {
                     _mouseDownTime = DateTime.UtcNow;
+                    StartHoldLog(caret);
+                }
+                else if (msg == MouseMessages.WM_LBUTTONUP || 
+                    msg == MouseMessages.WM_MBUTTONUP)
+                {
+                    StopHoldLog();
                 }
 
 
-                // 🔴 여기서만 비동기 처리 진입
+
+
                 if (msg == MouseMessages.WM_LBUTTONDOWN ||
-                    msg == MouseMessages.WM_LBUTTONUP 
-                    
-                    
-                    //|| msg == MouseMessages.WM_MOUSEWHEEL 
-                    //|| msg == MouseMessages.WM_MOUSEHWHEEL
+                    msg == MouseMessages.WM_LBUTTONUP ||
+                    msg == MouseMessages.WM_MBUTTONDOWN ||
+                    msg == MouseMessages.WM_MBUTTONUP ||
+                    msg == MouseMessages.WM_MOUSEWHEEL ||
+                    msg == MouseMessages.WM_MOUSEHWHEEL ||
+
+                    msg == MouseMessages.WM_XBUTTONDOWN ||
+                    msg == MouseMessages.WM_XBUTTONUP 
+
 
                     )
                 {
-
                     _ = HandleClickAsync(msg, caret);
                 }
 
 
-                else if (msg == MouseMessages.WM_MOUSEWHEEL ||
-                         msg == MouseMessages.WM_MOUSEHWHEEL)
-                {
-
-
-
-
-                    //_wheelEnterCts?.Cancel();
-                    //_wheelEnterCts = new CancellationTokenSource();
-                    //var token = _wheelEnterCts.Token;
-
-                    //_ = Task.Run(async () =>
-                    //{
-                    //    try
-                    //    {
-                    //        await Task.Delay(150, token); // ← 스크롤 끝날 때까지 대기
-
-                    //        _ = HandleClickAsync(msg, caret); // ← 딱 1번
-
-
-                    //    }
-                    //    catch (TaskCanceledException) { }
-                    //});
-
-                    //Console.WriteLine("hello");
-
-                    _ = HandleClickAsync(msg, caret); // ← 딱 1번
-
-
-                    return CallNextHookEx(hookID, nCode, wParam, lParam);
-
-
-                }
-
-
-
 
             }
+
+
 
             return CallNextHookEx(hookID, nCode, wParam, lParam);
         }
@@ -124,10 +108,11 @@ namespace FlagTip.Hooking
                 msg == MouseMessages.WM_MOUSEHWHEEL)
             {
 
-
                 if ((DateTime.UtcNow - _lastWheelTime).TotalMilliseconds > 100)
                 {
                     _lastWheelTime = DateTime.UtcNow;
+                    await caret.show();
+                    await Task.Delay(200);
                     await caret.show();
                 }
 
@@ -145,13 +130,22 @@ namespace FlagTip.Hooking
                 processName == "whatsapp.root";
 
 
+
+            
+
+
+
             if (isWhatsapp)
             {
-                if (msg == MouseMessages.WM_LBUTTONDOWN)
+                if (msg == MouseMessages.WM_LBUTTONDOWN || 
+                    msg == MouseMessages.WM_MBUTTONDOWN || 
+                    msg == MouseMessages.WM_XBUTTONDOWN)
                 {
                     await caret.show();
                 }
-                else if (msg == MouseMessages.WM_LBUTTONUP)
+                else if (msg == MouseMessages.WM_LBUTTONUP || 
+                         msg == MouseMessages.WM_MBUTTONUP || 
+                         msg == MouseMessages.WM_XBUTTONUP)
                 {
                     double elapsedMs =
                         (DateTime.UtcNow - _mouseDownTime).TotalMilliseconds;
@@ -165,15 +159,45 @@ namespace FlagTip.Hooking
             else
             {
                 
-                if (msg == MouseMessages.WM_LBUTTONDOWN)
+                if (msg == MouseMessages.WM_LBUTTONDOWN || 
+                    msg == MouseMessages.WM_MBUTTONDOWN || 
+                    msg == MouseMessages.WM_XBUTTONDOWN)
                 {
+
+
+                    //Console.WriteLine("   ");
+                    //Console.WriteLine("======CARET START=======");
+                    //Console.WriteLine("   ");
+
+
+
                     for (int i = 0; i < 3; i++)
                     {
                         await Task.Delay(50);
                         await caret.show();
                     }
+
+
+                    if (!CaretContext.Visible)
+                    {
+                        for (int i2 = 0; i2 < 5; i2++)
+                        {
+                            Console.WriteLine("--->START DEEP SEARCH--->");
+                            await Task.Delay(100);
+                            await caret.show();
+
+                            if (CaretContext.Visible)
+                                break;
+                        }
+                    }
+
+
+
+
                 }
-                else if (msg == MouseMessages.WM_LBUTTONUP)
+                else if (msg == MouseMessages.WM_LBUTTONUP || 
+                         msg == MouseMessages.WM_MBUTTONUP ||
+                         msg == MouseMessages.WM_XBUTTONUP)
                 {
                     await caret.show();
                 }
@@ -187,6 +211,43 @@ namespace FlagTip.Hooking
 
 
         }
+
+
+
+        private static void StartHoldLog(Caret caret)
+        {
+            _isLeftButtonDown = true;
+
+            _holdCts?.Cancel();
+            _holdCts = new CancellationTokenSource();
+
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    // 클릭/홀드 구분 딜레이
+                    await Task.Delay(200, _holdCts.Token);
+
+                    while (_isLeftButtonDown &&
+                           !_holdCts.Token.IsCancellationRequested)
+                    {
+
+                        await caret.show();
+                        await Task.Delay(150, _holdCts.Token);
+                    }
+                }
+                catch (TaskCanceledException) { }
+            });
+        }
+
+        private static void StopHoldLog()
+        {
+            _isLeftButtonDown = false;
+            _holdCts?.Cancel();
+        }
+
+
+
 
 
 

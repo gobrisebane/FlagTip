@@ -17,10 +17,12 @@ namespace FlagTip.Helpers
 {
     internal class UIAHelper
     {
-        internal static bool TryGetCaretFromUIA(out RECT rect)
+        internal static bool TryGetCaretFromUIA(out RECT rect, out bool visible)
         {
             // 네이티브 CUIAutomation을 사용하여 관리형 UIA 프록시 문제를 회피합니다.
             rect = new RECT();
+            visible = false;
+
 
             CUIAutomation uia = null;
             IUIAutomationElement element = null;
@@ -126,6 +128,7 @@ namespace FlagTip.Helpers
                 if (CommonUtils.IsRectValid(rectUA))
                 {
                     rect = rectUA;
+                    visible = true;
                     return true;
                 }
 

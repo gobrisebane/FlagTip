@@ -112,6 +112,8 @@ namespace FlagTip.Utils
         }
 
 
+
+
         public static ImeState GetImeState()
         {
             IntPtr hwnd = GetForegroundWindow();

@@ -17,15 +17,14 @@ namespace FlagTip.Helpers
     internal class UIAExplorerHelper
     {
 
-        internal static bool TryGetCaretFromExplorerUIA(out RECT caretLocation)
+        internal static bool TryGetCaretFromExplorerUIA(out RECT caretLocation, out bool visible )
         {
             caretLocation = new RECT();
+            visible = false;
 
             try
             {
-                UIAHelper.TryGetCaretFromUIA(out caretLocation);
-
-
+                UIAHelper.TryGetCaretFromUIA(out caretLocation, out visible);
 
                 if (caretLocation.left == 0 && caretLocation.top == 0)
                 {

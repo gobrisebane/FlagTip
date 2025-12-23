@@ -24,16 +24,9 @@ namespace FlagTip.UI
                 Width = 6;
                 Height = 20;
                 Opacity = 0;
-                //Visible = false; // <- 처음에는 화면에 안 나타나도록 설정
 
-                //this.Paint += (s, e) =>
-                //{
-                //    using (var pen = new Pen(Color.Blue, 2)) // 테두리 색
-                //    {
-                //        e.Graphics.DrawRectangle(pen, 0, 0, this.Width - 1, this.Height - 1);
-                //    }
-                //};
 
+                //Visible = false; 
                 //this.Visible = false;
 
             }

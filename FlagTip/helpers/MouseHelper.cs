@@ -19,9 +19,10 @@ namespace FlagTip.Helpers
     {
 
 
-        internal static bool TryGetCaretFromMouseClick(out RECT rect)
+        internal static bool TryGetCaretFromMouseClick(out RECT rect, out bool visible)
         {
             rect = new RECT();
+            visible = false;
 
             try
             {
@@ -43,6 +44,7 @@ namespace FlagTip.Helpers
                 };
 
                 rect = r;
+                visible = true;
                 return true;
 
 

@@ -13,7 +13,6 @@ namespace FlagTip.caret
     {
         internal static CaretMethod LastMethod { get; set; } = CaretMethod.None;
 
-
         internal static CaretInitator LastCaretInitator { get; set; } = CaretInitator.None;
 
         internal static string LastProcessName { get; set; } = string.Empty;
@@ -28,6 +27,10 @@ namespace FlagTip.caret
 
 
         public static POINT LastClickPoint;
+
+        public static RECT Position { get; set; }
+
+        public static bool Visible { get; set; }
 
 
 

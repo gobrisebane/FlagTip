@@ -1,8 +1,8 @@
 ﻿using FlagTip.caret;
 using FlagTip.Helpers;
 using FlagTip.Hooking;
-using FlagTip.Ime;
 using FlagTip.Tracking;
+using FlagTip.ui;
 using FlagTip.UI;
 using System;
 using System.Diagnostics;
@@ -28,13 +28,19 @@ namespace FlagTip
         static void Main(string[] args)
         {
 
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+
+
+            var cursorFlagTip = new CursorFlagTip();
+
+
+
             indicatorForm = new IndicatorForm();
 
-            var caret = new Caret(indicatorForm);
+            var caret = new Caret(indicatorForm, cursorFlagTip);
 
           
-
-
 
 
             _mouseProc = (nCode, wParam, lParam) =>
@@ -42,7 +48,21 @@ namespace FlagTip
 
             _hookID = SetMouseHook(_mouseProc);
 
+
+
+
+/*            var tracker = new CaretTracker(indicatorForm, caret);
+            tracker.Start();*/
+
+           
+
+
+
             Application.Run(indicatorForm);
+
+
+
+
 
             UnhookWindowsHookEx(_hookID);
 
