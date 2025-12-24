@@ -64,6 +64,7 @@
     <Compile Include="helpers\bk_WebView2Helper.cs" />
     <Compile Include="helpers\MouseHelper.cs" />
     <Compile Include="helpers\UIAHelper.cs" />
+    <Compile Include="hooking\KeyboardHook.cs" />
     <Compile Include="hooking\MouseHook.cs" />
     <Compile Include="hooking\TextboxFocusTracker.cs" />
     <Compile Include="ui\MainForm.cs">

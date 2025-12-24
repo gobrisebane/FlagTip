@@ -32,6 +32,7 @@ namespace FlagTip.Hooking
 
 
         private static bool _isLeftButtonDown;
+
         private static CancellationTokenSource _holdCts;
 
 
@@ -47,6 +48,7 @@ namespace FlagTip.Hooking
                 var msg = (MouseMessages)wParam;
 
 
+                /*
                 if (msg == MouseMessages.WM_LBUTTONDOWN || 
                     msg == MouseMessages.WM_MBUTTONDOWN)
                 {
@@ -58,6 +60,9 @@ namespace FlagTip.Hooking
                 {
                     StopHoldLog();
                 }
+                */
+
+
 
 
                 if (msg == MouseMessages.WM_LBUTTONDOWN ||
@@ -99,89 +104,36 @@ namespace FlagTip.Hooking
                 if ((DateTime.UtcNow - _lastWheelTime).TotalMilliseconds > 100)
                 {
                     _lastWheelTime = DateTime.UtcNow;
-                    await caretController.ShowCaret();
-                    await Task.Delay(200);
-                    await caretController.ShowCaret();
+                    await caretController.SelectModeAfterWheel();
                 }
 
                 return;
             }
 
 
-
-            await Task.Delay(50);
-
-
-            if ( IsProcessCursorApp() )
+            if (msg == MouseMessages.WM_LBUTTONDOWN || 
+                msg == MouseMessages.WM_MBUTTONDOWN || 
+                msg == MouseMessages.WM_XBUTTONDOWN)
             {
 
-                if (msg == MouseMessages.WM_LBUTTONDOWN || 
-                    msg == MouseMessages.WM_MBUTTONDOWN || 
-                    msg == MouseMessages.WM_XBUTTONDOWN)
-                {
-                    await caretController.ShowCaret();
-                }
+                await caretController.SelectModeMultiple();
 
-                /*else if (msg == MouseMessages.WM_LBUTTONUP || 
-                         msg == MouseMessages.WM_MBUTTONUP || 
-                         msg == MouseMessages.WM_XBUTTONUP)
-                {
-                    await caret.show();
-                }*/
-                
+
+
 
             }
-            else
+            else if (msg == MouseMessages.WM_LBUTTONUP || 
+                        msg == MouseMessages.WM_MBUTTONUP ||
+                        msg == MouseMessages.WM_XBUTTONUP)
             {
-                
-                if (msg == MouseMessages.WM_LBUTTONDOWN || 
-                    msg == MouseMessages.WM_MBUTTONDOWN || 
-                    msg == MouseMessages.WM_XBUTTONDOWN)
-                {
-
-                    for (int i = 0; i < 3; i++)
-                    {
-                        await Task.Delay(50);
-                        await caretController.ShowCaret();
-
-                        if (IsProcessCursorApp())
-                        {
-                            break;
-                        }
-
-                    }
-
-
-                    if (!CaretContext.Visible || !IsProcessCursorApp())
-                    {
-                        for (int i2 = 0; i2 < 5; i2++)
-                        {
-
-                            await Task.Delay(100);
-                            await caretController.ShowCaret();
-
-                            if (CaretContext.Visible || IsProcessCursorApp())
-                            {
-                                break;
-                            }
-
-                        }
-                    }
-
-
-                }
-                else if (msg == MouseMessages.WM_LBUTTONUP || 
-                         msg == MouseMessages.WM_MBUTTONUP ||
-                         msg == MouseMessages.WM_XBUTTONUP)
-                {
-                    await caretController.ShowCaret();
-                }
-                
+                await caretController.SelectMode();
             }
+                
 
         }
 
 
+        /*
 
         private static void StartHoldLog(Caret.CaretController caret)
         {
@@ -194,14 +146,13 @@ namespace FlagTip.Hooking
             {
                 try
                 {
-                    // 클릭/홀드 구분 딜레이
                     await Task.Delay(200, _holdCts.Token);
 
                     while (_isLeftButtonDown &&
                            !_holdCts.Token.IsCancellationRequested)
                     {
 
-                        await caret.ShowCaret();
+                        await caret.SelectMode();
                         await Task.Delay(150, _holdCts.Token);
                     }
                 }
@@ -215,7 +166,7 @@ namespace FlagTip.Hooking
             _holdCts?.Cancel();
         }
 
-
+        */
 
 
 
