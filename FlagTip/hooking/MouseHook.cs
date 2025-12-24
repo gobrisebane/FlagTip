@@ -99,9 +99,9 @@ namespace FlagTip.Hooking
                 if ((DateTime.UtcNow - _lastWheelTime).TotalMilliseconds > 100)
                 {
                     _lastWheelTime = DateTime.UtcNow;
-                    await caretController.Show();
+                    await caretController.ShowCaret();
                     await Task.Delay(200);
-                    await caretController.Show();
+                    await caretController.ShowCaret();
                 }
 
                 return;
@@ -119,7 +119,7 @@ namespace FlagTip.Hooking
                     msg == MouseMessages.WM_MBUTTONDOWN || 
                     msg == MouseMessages.WM_XBUTTONDOWN)
                 {
-                    await caretController.Show();
+                    await caretController.ShowCaret();
                 }
 
                 /*else if (msg == MouseMessages.WM_LBUTTONUP || 
@@ -142,7 +142,7 @@ namespace FlagTip.Hooking
                     for (int i = 0; i < 3; i++)
                     {
                         await Task.Delay(50);
-                        await caretController.Show();
+                        await caretController.ShowCaret();
 
                         if (IsProcessCursorApp())
                         {
@@ -158,7 +158,7 @@ namespace FlagTip.Hooking
                         {
 
                             await Task.Delay(100);
-                            await caretController.Show();
+                            await caretController.ShowCaret();
 
                             if (CaretContext.Visible || IsProcessCursorApp())
                             {
@@ -174,7 +174,7 @@ namespace FlagTip.Hooking
                          msg == MouseMessages.WM_MBUTTONUP ||
                          msg == MouseMessages.WM_XBUTTONUP)
                 {
-                    await caretController.Show();
+                    await caretController.ShowCaret();
                 }
                 
             }
@@ -201,7 +201,7 @@ namespace FlagTip.Hooking
                            !_holdCts.Token.IsCancellationRequested)
                     {
 
-                        await caret.Show();
+                        await caret.ShowCaret();
                         await Task.Delay(150, _holdCts.Token);
                     }
                 }

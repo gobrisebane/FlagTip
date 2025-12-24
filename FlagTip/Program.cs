@@ -2,7 +2,6 @@
 using FlagTip.Helpers;
 using FlagTip.Hooking;
 using FlagTip.Tracking;
-using FlagTip.ui;
 using FlagTip.UI;
 using System;
 using System.Diagnostics;

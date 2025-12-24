@@ -1,6 +1,5 @@
 ﻿using FlagTip.Caret;
 using FlagTip.Helpers;
-using FlagTip.ui;
 using FlagTip.UI;
 using System;
 using System.Collections.Generic;
@@ -41,8 +40,14 @@ namespace FlagTip.Tracking
             {
                 try
                 {
-                    await _caretController.Show();   // async 유지
-                    await Task.Delay(2000, token); // ⭐ 핵심
+                    
+                    //await _caretController.Show();   
+                    //await Task.Delay(2000, token);
+
+                    await _caretController.SelectMode();
+                    await Task.Delay(2000, token);
+
+
                 }
                 catch (OperationCanceledException)
                 {
