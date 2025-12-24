@@ -32,11 +32,13 @@ namespace FlagTip
             Application.SetCompatibleTextRenderingDefault(false);
 
 
-            var cursorFlagTip = new CursorFlagTip();
-
-
 
             indicatorForm = new IndicatorForm();
+
+
+
+            //var cursorFlagTip = new CursorFlagTip(indicatorForm);
+
 
             var caret = new Caret(indicatorForm, cursorFlagTip);
 
@@ -51,10 +53,11 @@ namespace FlagTip
 
 
 
-/*            var tracker = new CaretTracker(indicatorForm, caret);
-            tracker.Start();*/
+            var tracker = new CaretTracker(caret);
+            tracker.Start();
 
-           
+
+
 
 
 

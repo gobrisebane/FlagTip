@@ -1,6 +1,5 @@
 ﻿using FlagTip.apps;
 using FlagTip.Helpers;
-//using FlagTip.Models;
 using FlagTip.models;
 using FlagTip.ui;
 using FlagTip.UI;
@@ -19,6 +18,7 @@ using static FlagTip.Utils.CommonUtils;
 using static FlagTip.Utils.NativeMethods;
 using static FlagTip.ui.CursorFlagTip;
 
+using static FlagTip.config.AppList;
 
 namespace FlagTip.caret
 {
@@ -68,27 +68,35 @@ namespace FlagTip.caret
 
 
             bool contextChanged =
-            CaretContext.LastProcessName != processName ||
-            CaretContext.LastMethod == CaretMethod.None;
+                CaretContext.LastProcessName != processName ||
+                CaretContext.LastMethod == CaretMethod.None;
 
 
-            bool isWhatsapp =
-            processName == "whatsapp" ||
-            processName == "whatsapp.root";
+       
 
+            bool isCursorApp = CursorAppList.Contains(processName);
+
+
+            Console.WriteLine("isCursorApp : " + isCursorApp);
 
 
             if (contextChanged)
             {
-                Console.WriteLine("A1");
+
+                Console.WriteLine("A1.CTX CHANGE");
 
 
-                if (isWhatsapp)
+                if (isCursorApp)
                 {
+                    Console.WriteLine("1. cursorapp start");
                     method = CaretMethod.Cursor;
-                    _cursorFlagTip.Start();
+                    //_cursorFlagTip.Start();
+                    Console.WriteLine("1. end?");
 
                 } else {
+
+                    Console.WriteLine("2. cursorapp stop");
+
                     _cursorFlagTip.Stop();
 
 
@@ -126,11 +134,11 @@ namespace FlagTip.caret
 
                 
 
-
-
             } else {
 
-                Console.WriteLine("A2");
+                Console.WriteLine("A2.CTX NOT CHANGE");
+
+
 
                 switch (method)
                 {
@@ -152,10 +160,13 @@ namespace FlagTip.caret
                         break;
                     case CaretMethod.Cursor:
 
-                        Console.WriteLine("hello this is cursor method");
+                        if (!isCursorApp)
+                        {
 
-                        if (!isWhatsapp)
+                            Console.WriteLine("!!! CURSORAPP STOPS..");
                             _cursorFlagTip.Stop();
+                        }
+
                         break;
                     case CaretMethod.None:
                         break;
@@ -174,6 +185,7 @@ namespace FlagTip.caret
                     UIAHelper.TryGetCaretFromUIA(out rect, out visible);
                 }
             }
+
 
 
 

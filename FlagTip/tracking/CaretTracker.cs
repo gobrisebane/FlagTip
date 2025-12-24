@@ -1,4 +1,6 @@
-﻿using FlagTip.Helpers;
+﻿using FlagTip.caret;
+using FlagTip.Helpers;
+using FlagTip.ui;
 using FlagTip.UI;
 using System;
 using System.Collections.Generic;
@@ -7,7 +9,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using static FlagTip.Utils.NativeMethods;
-using FlagTip.caret;
 
 
 namespace FlagTip.Tracking
@@ -16,13 +17,11 @@ namespace FlagTip.Tracking
     {
 
         private Caret _caret;
-        private IndicatorForm _indicatorForm;
         private Thread _thread;
 
-        public CaretTracker(IndicatorForm indicatorForm, Caret caret)
+        public CaretTracker(Caret caret )
         {
             _caret= caret;
-            _indicatorForm = indicatorForm;
             _thread = new Thread(Run) { IsBackground = true };
         }
 
@@ -36,15 +35,11 @@ namespace FlagTip.Tracking
             {
                 try
                 {
-
-
                     _caret.show().GetAwaiter().GetResult();
-
-
 
                 }
                 catch { }
-                Thread.Sleep(1000);
+                Thread.Sleep(800);
             }
         }
 

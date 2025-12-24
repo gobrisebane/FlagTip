@@ -10,7 +10,7 @@ using System.Windows.Forms;
 namespace FlagTip.UI
 {
 
-        internal class IndicatorForm : Form
+        public class IndicatorForm : Form
         {
 
 

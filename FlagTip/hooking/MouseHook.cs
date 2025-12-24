@@ -43,17 +43,6 @@ namespace FlagTip.Hooking
 
 
 
-                /*MSLLHOOKSTRUCT hookStruct = Marshal.PtrToStructure<MSLLHOOKSTRUCT>(lParam);
-                if (msg == MouseMessages.WM_LBUTTONDOWN || 
-                    msg == MouseMessages.WM_RBUTTONDOWN)
-                {
-                    CaretContext.LastClickPoint = new POINT
-                    {
-                        X = hookStruct.pt.X,
-                        Y = hookStruct.pt.Y
-                    };
-                }*/
-
 
 
                 if (msg == MouseMessages.WM_LBUTTONDOWN || 

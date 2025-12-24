@@ -54,6 +54,7 @@
     <Compile Include="caret\Caret.cs" />
     <Compile Include="caret\CaretContext.cs" />
     <Compile Include="caret\CaretRequestQueue.cs" />
+    <Compile Include="config\AppList.cs" />
     <Compile Include="helpers\GUIThreadHelper.cs" />
     <Compile Include="helpers\MSAAHelper.cs" />
     <Compile Include="helpers\OtherHelper.cs" />

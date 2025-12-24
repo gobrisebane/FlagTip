@@ -26,8 +26,6 @@ namespace FlagTip.caret
         public static bool CaretMouseLock { get; set; } = false;
 
 
-        public static POINT LastClickPoint;
-
         public static RECT Position { get; set; }
 
         public static bool Visible { get; set; }

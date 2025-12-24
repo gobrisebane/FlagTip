@@ -14,10 +14,11 @@ namespace FlagTip.ui
 
         public bool IsRunning { get; private set; } = false;
 
-        public CursorFlagTip()
+        public CursorFlagTip(IndicatorForm indicatorForm)
         {
-            _indicatorForm = new IndicatorForm();
-            _indicatorForm.Hide(); // 처음에는 안보이게
+            _indicatorForm = indicatorForm;
+
+            //_indicatorForm.Hide(); // 처음에는 안보이게
 
             _timer = new Timer();
             _timer.Interval = 32; // 약 30fps
@@ -35,24 +36,32 @@ namespace FlagTip.ui
             _indicatorForm.SetPosition(x, y, width, height);
         }
 
-        // 켜기
         public void Start()
         {
+            Console.WriteLine("......IsRunning : " + IsRunning);
             if (!IsRunning)
             {
+                Console.WriteLine("....................show works1");
+
                 _indicatorForm.Show();
+                Console.WriteLine("....................show works2");
+
                 _timer.Start();
+                Console.WriteLine("....................show works3");
+
                 IsRunning = true;
+                Console.WriteLine("....................show works4");
+
+
             }
         }
 
-        // 끄기
         public void Stop()
         {
             if (IsRunning)
             {
                 _timer.Stop();
-                _indicatorForm.Hide();
+                //_indicatorForm.Hide();
                 IsRunning = false;
             }
         }
