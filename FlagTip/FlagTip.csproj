@@ -51,10 +51,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="apps\NotepadHelper.cs" />
-    <Compile Include="caret\Caret.cs" />
+    <Compile Include="caret\CaretController.cs" />
     <Compile Include="caret\CaretContext.cs" />
     <Compile Include="caret\CaretRequestQueue.cs" />
     <Compile Include="config\AppList.cs" />
+    <Compile Include="helpers\CursorHelper.cs" />
     <Compile Include="helpers\GUIThreadHelper.cs" />
     <Compile Include="helpers\MSAAHelper.cs" />
     <Compile Include="helpers\OtherHelper.cs" />
@@ -65,6 +66,12 @@
     <Compile Include="helpers\UIAHelper.cs" />
     <Compile Include="hooking\MouseHook.cs" />
     <Compile Include="hooking\TextboxFocusTracker.cs" />
+    <Compile Include="ui\MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ui\MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="models\CaretInitator.cs" />
     <Compile Include="models\CaretMethod.cs" />
     <Compile Include="models\ImeState.cs" />
@@ -78,6 +85,7 @@
     </Compile>
     <Compile Include="utils\CommonUtils.cs" />
     <Compile Include="utils\NativeMethods.cs" />
+    <Compile Include="watchers\ForegroundWatcher.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

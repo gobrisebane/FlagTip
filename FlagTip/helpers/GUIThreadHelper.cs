@@ -49,7 +49,6 @@ namespace FlagTip.Helpers
                         r.bottom = pt.Y + height;
                     }
 
-                    Console.WriteLine("pt.X : " + pt.X);
 
                     if (CommonUtils.IsRectValid(r))
                     {

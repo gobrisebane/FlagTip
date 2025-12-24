@@ -1,4 +1,4 @@
-﻿using FlagTip.caret;
+﻿using FlagTip.Caret;
 using FlagTip.Helpers;
 using FlagTip.ui;
 using FlagTip.UI;
@@ -13,36 +13,60 @@ using static FlagTip.Utils.NativeMethods;
 
 namespace FlagTip.Tracking
 {
-    internal class CaretTracker
+    internal class CaretTracker : IDisposable
     {
+        private readonly CaretController _caretController;
+        private CancellationTokenSource _cts;
+        private Task _task;
 
-        private Caret _caret;
-        private Thread _thread;
-
-        public CaretTracker(Caret caret )
+        public CaretTracker(CaretController caretController)
         {
-            _caret= caret;
-            _thread = new Thread(Run) { IsBackground = true };
+            _caretController = caretController;
+            _cts = new CancellationTokenSource();
         }
 
-        public void Start() => _thread.Start();
-
-
-        private void Run()
+        public void Start()
         {
+            if (_task != null && !_task.IsCompleted)
+                return;
 
-            while (true)
+            _task = Task.Run(RunAsync);
+        }
+
+        private async Task RunAsync()
+        {
+            var token = _cts.Token;
+
+            while (!token.IsCancellationRequested)
             {
                 try
                 {
-                    _caret.show().GetAwaiter().GetResult();
-
+                    await _caretController.Show();   // async 유지
+                    await Task.Delay(2000, token); // ⭐ 핵심
                 }
-                catch { }
-                Thread.Sleep(800);
+                catch (OperationCanceledException)
+                {
+                    break; // Stop 즉시 반응
+                }
+                catch
+                {
+                    // 필요 시 로그
+                }
             }
         }
 
+        public void Stop()
+        {
+            if (_cts.IsCancellationRequested)
+                return;
 
+            _cts.Cancel();
+        }
+
+        public void Dispose()
+        {
+            Stop();
+            _cts.Dispose();
+        }
     }
 }

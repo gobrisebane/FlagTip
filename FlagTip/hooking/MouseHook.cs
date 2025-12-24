@@ -1,4 +1,4 @@
-﻿using FlagTip.caret;
+﻿using FlagTip.Caret;
 using FlagTip.hooking;
 using FlagTip.models;
 using FlagTip.UI;
@@ -15,7 +15,9 @@ using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Interop;
 using UIA;
-using static FlagTip.caret.Caret;
+using static FlagTip.config.AppList;
+
+using static FlagTip.Caret.CaretController;
 using static FlagTip.Utils.CommonUtils;
 using static FlagTip.Utils.NativeMethods;
 
@@ -34,22 +36,22 @@ namespace FlagTip.Hooking
 
 
         internal static IntPtr MouseHookCallback(
-    int nCode, IntPtr wParam, IntPtr lParam, IntPtr hookID, Caret caret)
+    int nCode, IntPtr wParam, IntPtr lParam, IntPtr hookID, Caret.CaretController caretController)
         {
+
+
+
             if (nCode >= 0)
             {
 
                 var msg = (MouseMessages)wParam;
 
 
-
-
-
                 if (msg == MouseMessages.WM_LBUTTONDOWN || 
                     msg == MouseMessages.WM_MBUTTONDOWN)
                 {
                     _mouseDownTime = DateTime.UtcNow;
-                    StartHoldLog(caret);
+                    StartHoldLog(caretController);
                 }
                 else if (msg == MouseMessages.WM_LBUTTONUP || 
                     msg == MouseMessages.WM_MBUTTONUP)
@@ -58,22 +60,19 @@ namespace FlagTip.Hooking
                 }
 
 
-
-
                 if (msg == MouseMessages.WM_LBUTTONDOWN ||
                     msg == MouseMessages.WM_LBUTTONUP ||
                     msg == MouseMessages.WM_MBUTTONDOWN ||
                     msg == MouseMessages.WM_MBUTTONUP ||
                     msg == MouseMessages.WM_MOUSEWHEEL ||
                     msg == MouseMessages.WM_MOUSEHWHEEL ||
-
                     msg == MouseMessages.WM_XBUTTONDOWN ||
                     msg == MouseMessages.WM_XBUTTONUP 
 
 
                     )
                 {
-                    _ = HandleClickAsync(msg, caret);
+                    _ = HandleClickAsync(msg, caretController);
                 }
 
 
@@ -88,7 +87,7 @@ namespace FlagTip.Hooking
 
         private static async Task HandleClickAsync(
            MouseMessages msg,
-           Caret caret)
+           Caret.CaretController caretController)
         {
 
 
@@ -100,9 +99,9 @@ namespace FlagTip.Hooking
                 if ((DateTime.UtcNow - _lastWheelTime).TotalMilliseconds > 100)
                 {
                     _lastWheelTime = DateTime.UtcNow;
-                    await caret.show();
+                    await caretController.Show();
                     await Task.Delay(200);
-                    await caret.show();
+                    await caretController.Show();
                 }
 
                 return;
@@ -111,39 +110,26 @@ namespace FlagTip.Hooking
 
 
             await Task.Delay(50);
-            IntPtr hwnd = GetForegroundWindow();
-            string processName = GetProcessName(hwnd);
-            
-            bool isWhatsapp =
-                processName == "whatsapp" ||
-                processName == "whatsapp.root";
 
 
-
-            
-
-
-
-            if (isWhatsapp)
+            if ( IsProcessCursorApp() )
             {
+
                 if (msg == MouseMessages.WM_LBUTTONDOWN || 
                     msg == MouseMessages.WM_MBUTTONDOWN || 
                     msg == MouseMessages.WM_XBUTTONDOWN)
                 {
-                    await caret.show();
+                    await caretController.Show();
                 }
-                else if (msg == MouseMessages.WM_LBUTTONUP || 
+
+                /*else if (msg == MouseMessages.WM_LBUTTONUP || 
                          msg == MouseMessages.WM_MBUTTONUP || 
                          msg == MouseMessages.WM_XBUTTONUP)
                 {
-                    double elapsedMs =
-                        (DateTime.UtcNow - _mouseDownTime).TotalMilliseconds;
+                    await caret.show();
+                }*/
+                
 
-                    if (elapsedMs > 300)
-                    {
-                        await caret.show();
-                    }
-                }
             }
             else
             {
@@ -153,34 +139,34 @@ namespace FlagTip.Hooking
                     msg == MouseMessages.WM_XBUTTONDOWN)
                 {
 
-
-                    //Console.WriteLine("   ");
-                    //Console.WriteLine("======CARET START=======");
-                    //Console.WriteLine("   ");
-
-
-
                     for (int i = 0; i < 3; i++)
                     {
                         await Task.Delay(50);
-                        await caret.show();
+                        await caretController.Show();
+
+                        if (IsProcessCursorApp())
+                        {
+                            break;
+                        }
+
                     }
 
 
-                    if (!CaretContext.Visible)
+                    if (!CaretContext.Visible || !IsProcessCursorApp())
                     {
                         for (int i2 = 0; i2 < 5; i2++)
                         {
-                            Console.WriteLine("--->START DEEP SEARCH--->");
-                            await Task.Delay(100);
-                            await caret.show();
 
-                            if (CaretContext.Visible)
+                            await Task.Delay(100);
+                            await caretController.Show();
+
+                            if (CaretContext.Visible || IsProcessCursorApp())
+                            {
                                 break;
+                            }
+
                         }
                     }
-
-
 
 
                 }
@@ -188,22 +174,16 @@ namespace FlagTip.Hooking
                          msg == MouseMessages.WM_MBUTTONUP ||
                          msg == MouseMessages.WM_XBUTTONUP)
                 {
-                    await caret.show();
+                    await caretController.Show();
                 }
                 
             }
-
-
-
-
-
-
 
         }
 
 
 
-        private static void StartHoldLog(Caret caret)
+        private static void StartHoldLog(Caret.CaretController caret)
         {
             _isLeftButtonDown = true;
 
@@ -221,7 +201,7 @@ namespace FlagTip.Hooking
                            !_holdCts.Token.IsCancellationRequested)
                     {
 
-                        await caret.show();
+                        await caret.Show();
                         await Task.Delay(150, _holdCts.Token);
                     }
                 }

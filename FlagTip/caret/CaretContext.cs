@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using static FlagTip.Utils.NativeMethods;
 
 
-namespace FlagTip.caret
+namespace FlagTip.Caret
 {
     internal static class CaretContext
     {

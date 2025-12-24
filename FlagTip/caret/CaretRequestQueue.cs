@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace FlagTip.caret
+namespace FlagTip.Caret
 {
     internal static class CaretRequestQueue
     {

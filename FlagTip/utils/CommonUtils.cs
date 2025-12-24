@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 using static FlagTip.Utils.NativeMethods;
+using static FlagTip.config.AppList;
+
 
 
 namespace FlagTip.Utils
@@ -13,6 +15,18 @@ namespace FlagTip.Utils
     internal static class CommonUtils
     {
         internal static bool IsRectValid(RECT r) => r.left != 0 || r.top != 0 || r.right != 0 || r.bottom != 0;
+
+
+
+        public static bool IsProcessCursorApp()
+        {
+            IntPtr hwnd = GetForegroundWindow();
+            string processName = GetProcessName(hwnd);
+            bool isCursorApp = CursorAppList.Contains(processName);
+            return isCursorApp;
+        }
+
+
 
 
         public static bool IsCaretInEditableArea(

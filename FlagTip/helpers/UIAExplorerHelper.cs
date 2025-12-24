@@ -1,4 +1,4 @@
-﻿using FlagTip.caret;
+﻿using FlagTip.Caret;
 using FlagTip.models;
 using FlagTip.Utils;
 using System;

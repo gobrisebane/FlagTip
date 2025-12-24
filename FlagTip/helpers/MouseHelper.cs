@@ -10,7 +10,7 @@ using System.Windows.Automation;
 using System.Windows.Automation.Text; // TextPattern 사용을 위해 필요
 using System.Windows.Forms; // Cursor.Position 사용
 using static FlagTip.Utils.NativeMethods; // GetForegroundProcessId, RECT 정의 등이 있다고 가정
-using FlagTip.caret;
+using FlagTip.Caret;
 
 
 namespace FlagTip.Helpers
