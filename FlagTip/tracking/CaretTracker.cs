@@ -45,7 +45,7 @@ namespace FlagTip.Tracking
                     //await Task.Delay(2000, token);
 
                     await _caretController.SelectMode();
-                    await Task.Delay(2000, token);
+                    await Task.Delay(3000, token);
 
 
                 }

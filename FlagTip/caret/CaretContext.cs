@@ -21,6 +21,9 @@ namespace FlagTip.Caret
 
         internal static IntPtr LastHwnd { get; set; } = IntPtr.Zero;
 
+
+        
+
         internal static DateTime LastUpdated { get; set; } = DateTime.MinValue;
 
         public static bool IsWebView2 { get; private set; }
@@ -28,7 +31,7 @@ namespace FlagTip.Caret
         public static bool CaretMouseLock { get; set; } = false;
 
 
-        public static RECT Position { get; set; }
+        internal static RECT LastRect { get; set; }
 
 
 

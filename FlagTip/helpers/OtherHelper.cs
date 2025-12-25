@@ -78,11 +78,11 @@ namespace FlagTip.Helpers
 
         }
 
-        internal static bool TryGetCaretFromSelectionUIA(out RECT rect, out string method)
+        internal static bool TryGetCaretFromSelectionUIA(out RECT rect)
         {
 
             rect = new RECT();
-            method = "Explorer";
+            //method = "Explorer";
 
             try
             {
@@ -119,7 +119,6 @@ namespace FlagTip.Helpers
                             double right = Convert.ToDouble(arr.GetValue(2));
                             double bottom = Convert.ToDouble(arr.GetValue(3));
 
-                            Console.WriteLine("left : " + left);
 
                             rect.left = (int)(left + right);
                             rect.top = (int)top;
