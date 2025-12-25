@@ -32,6 +32,9 @@ namespace FlagTip.Hooking
         private static bool _isLeftButtonDown;
         private static CancellationTokenSource _holdCts;
 
+        private static DateTime _lastClickTime = DateTime.MinValue;
+        private static POINT _lastClickPos;
+
 
         internal static IntPtr MouseHookCallback(
     int nCode, IntPtr wParam, IntPtr lParam, IntPtr hookID, Caret.CaretController caretController)
@@ -51,12 +54,30 @@ namespace FlagTip.Hooking
                     msg == MouseMessages.WM_MOUSEHWHEEL ||
                     msg == MouseMessages.WM_XBUTTONDOWN ||
                     msg == MouseMessages.WM_XBUTTONUP 
-
-
                     )
                 {
                     _ = HandleClickAsync(msg, caretController);
+
+
+
                 }
+
+
+
+                if (msg == MouseMessages.WM_LBUTTONDOWN)
+                {
+                    MSLLHOOKSTRUCT hookStruct =
+                        Marshal.PtrToStructure<MSLLHOOKSTRUCT>(lParam);
+
+                    if (IsDoubleClick(hookStruct.pt))
+                    {
+                        _ = HandleDoubleClickAsync(caretController);
+                    }
+                    
+                }
+
+
+
 
 
 
@@ -65,6 +86,16 @@ namespace FlagTip.Hooking
 
 
             return CallNextHookEx(hookID, nCode, wParam, lParam);
+        }
+
+
+        private static async Task HandleDoubleClickAsync(
+    Caret.CaretController caretController)
+        {
+
+            await Task.Delay(1000);
+            await caretController.SelectDoubleClick();
+
         }
 
 
@@ -99,25 +130,49 @@ namespace FlagTip.Hooking
 
 
 
-            }
-            else if (msg == MouseMessages.WM_LBUTTONUP || 
+            } else if (msg == MouseMessages.WM_LBUTTONUP || 
                         msg == MouseMessages.WM_MBUTTONUP ||
                         msg == MouseMessages.WM_XBUTTONUP)
             {
                 await caretController.SelectMode();
             }
-                
+
+
+
+            
+
+
 
         }
 
 
-     
+ 
 
 
+        private static bool IsDoubleClick(POINT currentPos)
+        {
+            var now = DateTime.UtcNow;
+
+            int maxTime = (int)GetDoubleClickTime();
+            int maxDx = System.Windows.Forms.SystemInformation.DoubleClickSize.Width;
+            int maxDy = System.Windows.Forms.SystemInformation.DoubleClickSize.Height;
+
+            bool timeOk =
+                (now - _lastClickTime).TotalMilliseconds <= maxTime;
+
+            bool posOk =
+                Math.Abs(currentPos.X - _lastClickPos.X) <= maxDx &&
+                Math.Abs(currentPos.Y - _lastClickPos.Y) <= maxDy;
+
+            _lastClickTime = now;
+            _lastClickPos = currentPos;
+
+            return timeOk && posOk;
+        }
 
 
-
-
+        [DllImport("user32.dll")]
+        static extern uint GetDoubleClickTime();
 
         internal static IntPtr SetMouseHook(LowLevelMouseProc proc)
         {

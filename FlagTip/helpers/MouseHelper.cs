@@ -28,7 +28,6 @@ namespace FlagTip.Helpers
 
 
                 var pt = Cursor.Position; // System.Drawing.Point (X, Y)
-                //var pt = CaretContext.LastClickPoint;
 
 
                 RECT r = new RECT

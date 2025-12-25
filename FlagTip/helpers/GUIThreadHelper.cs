@@ -1,15 +1,12 @@
-﻿using FlagTip.Utils;
-
-
+﻿using FlagTip.Caret;
+using FlagTip.models;
+using FlagTip.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-
-
-
 using static FlagTip.Utils.NativeMethods;
 
 
@@ -52,7 +49,9 @@ namespace FlagTip.Helpers
                     if (CommonUtils.IsRectValid(r))
                     {
                         rect = r;
+
                         return true;
+
                     }
                 }
             }

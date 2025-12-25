@@ -66,6 +66,8 @@ namespace FlagTip.UI
         public void HideIndicator()
         {
 
+            Console.WriteLine("hide indicator works..");
+
             if (Opacity == 0)
                 return;
 

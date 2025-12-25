@@ -1,16 +1,16 @@
-﻿using System;
+﻿using FlagTip.Caret;
+using FlagTip.models;
+using FlagTip.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Automation;
 using System.Windows.Automation.Text;
-
-using FlagTip.Utils;
-using static FlagTip.Utils.NativeMethods;
-
 using UIAutomationClient;
-using System.Runtime.InteropServices;
+using static FlagTip.Utils.NativeMethods;
 
 
 namespace FlagTip.Helpers
