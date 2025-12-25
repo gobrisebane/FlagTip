@@ -17,38 +17,37 @@ namespace FlagTip.Helpers
     internal class UIAExplorerHelper
     {
 
-        internal static bool TryGetCaretFromExplorerUIA(out RECT caretLocation, out bool visible )
+        internal static bool TryGetCaretFromExplorerUIA(out RECT caretLocation)
         {
             caretLocation = new RECT();
-            visible = false;
 
             try
             {
-                UIAHelper.TryGetCaretFromUIA(out caretLocation, out visible);
+                UIAHelper.TryGetCaretFromUIA(out caretLocation);
 
                 if (caretLocation.left == 0 && caretLocation.top == 0)
                 {
+                    var uia = new CUIAutomation();
+                    var element = uia.GetFocusedElement();
+                    if (element == null) return false;
 
+                    int controlType = element.CurrentControlType;
+                    string className = ExplorerInfo.GetForegroundWindowClassName();
 
-                    //Console.WriteLine("111. explorer mode UIA가 잡는데 실패하여 CUIA로 박스로 잡기");
-
-                    CUIAutomation uia = new CUIAutomation();
-                    IUIAutomationElement element = uia.GetFocusedElement();
-                    if (element == null)
+                    // Explorer가 아닐 경우 조기 종료
+                    if (!string.Equals(className, "CabinetWClass", StringComparison.OrdinalIgnoreCase) &&
+                        !string.Equals(className, "Progman", StringComparison.OrdinalIgnoreCase))
                     {
                         return false;
                     }
 
-                    int controlType = element.CurrentControlType;
-                    string className = ExplorerInfo.GetForegroundWindowClassName();
                     var parent = uia.ControlViewWalker.GetParentElement(element);
+                    if (parent == null) return false;
+
                     var boundingRect = element.CurrentBoundingRectangle;
 
-
-                    // CABINET의 상단
-                    if(parent.CurrentControlType == 50026)
+                    if (parent.CurrentControlType == 50026)
                     {
-                        // CABINET 상단의 수정상태
                         if (controlType == 50004)
                         {
                             caretLocation.left = boundingRect.left + 11;
@@ -56,37 +55,20 @@ namespace FlagTip.Helpers
                             caretLocation.right = boundingRect.right;
                             caretLocation.bottom = boundingRect.bottom;
                         }
-
-
-                    // PROGRAM, CABINET의 파일
-                    } else if (parent.CurrentControlType == 50008){
-
-                        // PROGRAM, CABINET의 파일수정상태
+                    }
+                    else if (parent.CurrentControlType == 50008)
+                    {
                         if (controlType == 50004 || controlType == 50030)
                         {
-                            caretLocation.left = boundingRect.left+1;
+                            caretLocation.left = boundingRect.left + 1;
                             caretLocation.top = boundingRect.top;
                             caretLocation.right = boundingRect.right;
                             caretLocation.bottom = boundingRect.bottom;
                         }
-
                     }
                 }
-                else
-                {
-
-                    //Console.WriteLine("222. explorer mode UIA가 잡는데 성공");
-                    //prevCaretLocation.left = caretLocation.left;
-                    //prevCaretLocation.top = caretLocation.top;
-                    //prevCaretLocation.right = caretLocation.right;
-                    //prevCaretLocation.bottom = caretLocation.bottom;
-
-                }
-
-
 
                 return true;
-
             }
             catch (Exception ex)
             {

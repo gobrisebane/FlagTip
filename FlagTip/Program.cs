@@ -5,6 +5,7 @@ using FlagTip.Tracking;
 using FlagTip.UI;
 using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 using static FlagTip.Hooking.MouseHook;
@@ -28,11 +29,21 @@ namespace FlagTip
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
+
+         
+
             Application.Run(new MainForm());
 
+
+
             
+
+
         }
 
+
+       
 
 
 

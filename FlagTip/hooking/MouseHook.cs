@@ -29,10 +29,7 @@ namespace FlagTip.Hooking
 
         private static DateTime _lastWheelTime;
         private static DateTime _mouseDownTime;
-
-
         private static bool _isLeftButtonDown;
-
         private static CancellationTokenSource _holdCts;
 
 
@@ -40,29 +37,10 @@ namespace FlagTip.Hooking
     int nCode, IntPtr wParam, IntPtr lParam, IntPtr hookID, Caret.CaretController caretController)
         {
 
-
-
             if (nCode >= 0)
             {
 
                 var msg = (MouseMessages)wParam;
-
-
-                /*
-                if (msg == MouseMessages.WM_LBUTTONDOWN || 
-                    msg == MouseMessages.WM_MBUTTONDOWN)
-                {
-                    _mouseDownTime = DateTime.UtcNow;
-                    StartHoldLog(caretController);
-                }
-                else if (msg == MouseMessages.WM_LBUTTONUP || 
-                    msg == MouseMessages.WM_MBUTTONUP)
-                {
-                    StopHoldLog();
-                }
-                */
-
-
 
 
                 if (msg == MouseMessages.WM_LBUTTONDOWN ||
@@ -133,41 +111,7 @@ namespace FlagTip.Hooking
         }
 
 
-        /*
-
-        private static void StartHoldLog(Caret.CaretController caret)
-        {
-            _isLeftButtonDown = true;
-
-            _holdCts?.Cancel();
-            _holdCts = new CancellationTokenSource();
-
-            _ = Task.Run(async () =>
-            {
-                try
-                {
-                    await Task.Delay(200, _holdCts.Token);
-
-                    while (_isLeftButtonDown &&
-                           !_holdCts.Token.IsCancellationRequested)
-                    {
-
-                        await caret.SelectMode();
-                        await Task.Delay(150, _holdCts.Token);
-                    }
-                }
-                catch (TaskCanceledException) { }
-            });
-        }
-
-        private static void StopHoldLog()
-        {
-            _isLeftButtonDown = false;
-            _holdCts?.Cancel();
-        }
-
-        */
-
+     
 
 
 

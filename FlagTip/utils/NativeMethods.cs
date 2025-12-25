@@ -70,6 +70,9 @@ namespace FlagTip.Utils
             [MarshalAs(UnmanagedType.Interface)] out object ppvObject
         );
 
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        internal static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
+
 
         internal static string GetProcessName(IntPtr hwnd)
         {

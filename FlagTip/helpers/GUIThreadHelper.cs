@@ -23,10 +23,9 @@ namespace FlagTip.Helpers
 
 
 
-        internal static bool TryGetCaretFromGUIThreadInfo(IntPtr hwnd, out RECT rect, out bool visible)
+        internal static bool TryGetCaretFromGUIThreadInfo(IntPtr hwnd, out RECT rect)
         {
             rect = new RECT();
-            visible = false;
 
             try
             {
@@ -52,7 +51,6 @@ namespace FlagTip.Helpers
 
                     if (CommonUtils.IsRectValid(r))
                     {
-                        visible = true;
                         rect = r;
                         return true;
                     }

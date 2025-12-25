@@ -53,7 +53,6 @@
     <Compile Include="apps\NotepadHelper.cs" />
     <Compile Include="caret\CaretController.cs" />
     <Compile Include="caret\CaretContext.cs" />
-    <Compile Include="caret\CaretRequestQueue.cs" />
     <Compile Include="config\AppList.cs" />
     <Compile Include="helpers\CursorHelper.cs" />
     <Compile Include="helpers\GUIThreadHelper.cs" />

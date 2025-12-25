@@ -17,6 +17,8 @@ namespace FlagTip.Caret
 
         internal static string LastProcessName { get; set; } = string.Empty;
 
+        internal static string LastClassName { get; set; } = string.Empty;
+
         internal static IntPtr LastHwnd { get; set; } = IntPtr.Zero;
 
         internal static DateTime LastUpdated { get; set; } = DateTime.MinValue;
@@ -28,43 +30,17 @@ namespace FlagTip.Caret
 
         public static RECT Position { get; set; }
 
-        public static bool Visible { get; set; }
 
 
 
-        /// <summary>상태 초기화</summary>
         internal static void Reset()
         {
             LastMethod = CaretMethod.None;
             LastProcessName = string.Empty;
+            LastClassName = string.Empty;
             LastHwnd = IntPtr.Zero;
             LastUpdated = DateTime.MinValue;
         }
-
-
-
-        static readonly HashSet<string> WebView2ProcessNames =
-       new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-       {
-            "whatsapp.exe",
-            "whatsapp",
-            "whatsapp.root"
-       };
-
-        public static void Update()
-        {
-            IntPtr hwnd = GetForegroundWindow();
-            if (hwnd == IntPtr.Zero)
-            {
-                IsWebView2 = false;
-                return;
-            }
-
-            LastProcessName = GetProcessName(hwnd);
-
-            IsWebView2 = WebView2ProcessNames.Contains(LastProcessName);
-        }
-
 
 
 
