@@ -15,7 +15,9 @@ namespace FlagTip.Hooking
         private const int WH_KEYBOARD_LL = 13;
         private const int WM_KEYDOWN = 0x0100;
         private const int WM_SYSKEYDOWN = 0x0104;
-        private const int VK_CONTROL = 0x11; 
+        private const int VK_CONTROL = 0x11;
+        private const int VK_LWIN = 0x5B;
+        private const int VK_RWIN = 0x5C;
 
         internal static IntPtr KeyboardHookCallback(
             int nCode,
@@ -41,26 +43,13 @@ namespace FlagTip.Hooking
                 bool isCtrlDown =
             (GetAsyncKeyState(VK_CONTROL) & 0x8000) != 0;
 
+                bool isWinDown =
+            (GetAsyncKeyState(VK_LWIN) & 0x8000) != 0 ||
+            (GetAsyncKeyState(VK_RWIN) & 0x8000) != 0;
 
 
 
-                /*if (key == Keys.H && isCtrlDown)
-                {
-                    _ = caretController.OnKeyChangedAsync();
-                    return CallNextHookEx(hookID, nCode, wParam, lParam);
-                }
 
-                if (key == Keys.F && isCtrlDown)
-                {
-                    _ = caretController.OnKeyChangedAsync();
-                    return CallNextHookEx(hookID, nCode, wParam, lParam);
-                }
-
-                if (key == Keys.F && isCtrlDown && isShiftDown)
-                {
-                    _ = caretController.OnKeyChangedAsync();
-                    return CallNextHookEx(hookID, nCode, wParam, lParam);
-                }*/
 
                 if (key == Keys.R && isCtrlDown)
                 {
@@ -82,6 +71,12 @@ namespace FlagTip.Hooking
                 }
 
                 if (isAltDown)
+                {
+                    _ = caretController.OnKeyChangedAsync();
+                    return CallNextHookEx(hookID, nCode, wParam, lParam);
+                }
+
+                if (isWinDown)
                 {
                     _ = caretController.OnKeyChangedAsync();
                     return CallNextHookEx(hookID, nCode, wParam, lParam);

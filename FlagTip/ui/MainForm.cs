@@ -26,7 +26,10 @@ namespace FlagTip
     {
 
         private IndicatorForm _indicatorForm;
+
         private CaretController _caretController;
+
+
         private CaretTracker _tracker;
         private ForegroundWatcher _foregroundWatcher;
 
@@ -54,8 +57,10 @@ namespace FlagTip
 
         private void Init()
         {
-            _indicatorForm = new IndicatorForm();
+            _indicatorForm = new IndicatorForm(Color.Red);
             _indicatorForm.Show();
+
+
 
             _caretController = new CaretController(_indicatorForm);
 
@@ -80,14 +85,14 @@ namespace FlagTip
 
 
 
-            _tracker = new CaretTracker(_caretController);
-            _tracker.Start();
+            //_tracker = new CaretTracker(_caretController);
+            //_tracker.Start();
 
 
 
-            _foregroundWatcher = new ForegroundWatcher();
-            _foregroundWatcher.ForegroundChanged += OnForegroundChanged;
-            _foregroundWatcher.Start();
+            //_foregroundWatcher = new ForegroundWatcher();
+            //_foregroundWatcher.ForegroundChanged += OnForegroundChanged;
+            //_foregroundWatcher.Start();
 
 
 

@@ -31,8 +31,11 @@ namespace FlagTip.Utils
 
         public static bool IsCaretInEditableArea(
     IntPtr hwnd,
-    RECT caretRect)
+    RECT caretRect,
+    CaretMethod caretMethod)
         {
+
+
 
 
             if (hwnd == IntPtr.Zero)

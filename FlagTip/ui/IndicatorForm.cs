@@ -23,10 +23,10 @@ namespace FlagTip.UI
         private const int WS_EX_TRANSPARENT = 0x20;
         private const int WS_EX_LAYERED = 0x80000;
 
-        public IndicatorForm()
+        public IndicatorForm(Color color)
         {
             FormBorderStyle = FormBorderStyle.None;
-            BackColor = Color.Red;
+            BackColor = color;
             TopMost = true;
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.Manual;

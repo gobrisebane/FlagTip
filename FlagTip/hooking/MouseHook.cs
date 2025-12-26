@@ -71,7 +71,7 @@ namespace FlagTip.Hooking
 
                     if (IsDoubleClick(hookStruct.pt))
                     {
-                        _ = HandleDoubleClickAsync(caretController);
+                        _ = HandleDoubleClickAsync(msg,caretController);
                     }
                     
                 }
@@ -90,11 +90,14 @@ namespace FlagTip.Hooking
 
 
         private static async Task HandleDoubleClickAsync(
-    Caret.CaretController caretController)
+           MouseMessages msg,
+            Caret.CaretController caretController)
         {
 
-            await Task.Delay(1000);
-            await caretController.SelectDoubleClick();
+            if (msg == MouseMessages.WM_LBUTTONDOWN)
+            {
+                await caretController.SelectDoubleClick();
+            }
 
         }
 

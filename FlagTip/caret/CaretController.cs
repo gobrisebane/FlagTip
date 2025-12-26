@@ -41,6 +41,7 @@ namespace FlagTip.Caret
 
 
         private IndicatorForm _indicatorForm;
+
         private CursorHelper _cursorHelper;
         private CaretMethod _method;
         private IntPtr _hwnd;
@@ -48,7 +49,6 @@ namespace FlagTip.Caret
         private string _className;
         private RECT _rect;
 
-        private bool _isDoubleClickMode;
 
 
 
@@ -64,7 +64,7 @@ namespace FlagTip.Caret
         
         public async Task OnKeyChangedAsync()
         {
-            //Console.WriteLine("KEYBOARD TYPING");
+            Console.WriteLine("winkey");
             await SelectMode();
         }
 
@@ -72,51 +72,21 @@ namespace FlagTip.Caret
         public async Task OnKeyTest()
         {
 
-            //GUIThreadHelper.TryGetCaretFromGUIThreadInfo(_hwnd, out _rect);
-            //_method = CaretMethod.GUIThreadInfo;
-
-            //UIAHelper.TryGetCaretFromUIA(out _rect);
-            //_method = CaretMethod.UIA;
-
-            //_indicatorForm?.BeginInvoke(new Action(() =>
-            //    _indicatorForm.SetPosition(_rect.left, _rect.top, _rect.right - _rect.left, _rect.bottom - _rect.top)
-            //));
+        
 
         }
-
-
-
-
-
-
-
 
         public async Task SelectDoubleClick()
         {
-
-
-               /* if (_processName == "notepad" && _method == CaretMethod.GUIThreadInfo)
-                {
-
-                    Console.WriteLine("===");
-                    Console.WriteLine("---------------------------doubleclick");
-
-
-                    //UIAHelper.TryGetCaretFromUIA(out _rect);
-                    //_method = CaretMethod.UIA;
-
-                    //_indicatorForm?.BeginInvoke(new Action(() =>
-                    //    _indicatorForm.SetPosition(_rect.left, _rect.top, _rect.right - _rect.left, _rect.bottom - _rect.top)
-                    //));
-
-                    _isDoubleClickMode = true;
-                    CaretContext.LastMethod = CaretMethod.UIA;
-                    _method = CaretMethod.UIA;
-                    await SelectMode();
-
-                }*/     
-                
+            await SelectMode(10);
         }
+
+
+
+
+
+
+
 
 
 
@@ -130,7 +100,7 @@ namespace FlagTip.Caret
             await Task.Delay(50);
             await SelectMode();
 
-            for (int i = 0; i < 2; i++)
+           for (int i = 0; i < 2; i++)
             {
                 if (IsProcessCursorApp())
                     break;
@@ -138,6 +108,7 @@ namespace FlagTip.Caret
                 await Task.Delay(80);
                 await SelectMode();
             }
+
 
         }
 
@@ -149,9 +120,9 @@ namespace FlagTip.Caret
             await SelectMode();
         }
 
+   
 
-
-        public async Task SelectMode()
+        public async Task SelectMode(int delayMs = 50)
         {
 
             if (!await _selectLock.WaitAsync(0))
@@ -161,7 +132,6 @@ namespace FlagTip.Caret
             {
                 _hwnd = GetForegroundWindow();
                 _processName = GetProcessName(_hwnd);
-                
                 _method = CaretContext.LastMethod;
                 _rect = CaretContext.LastRect;
 
@@ -172,20 +142,7 @@ namespace FlagTip.Caret
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+              
 
                 bool isCursorApp = CursorAppList.Contains(_processName);
 
@@ -195,7 +152,7 @@ namespace FlagTip.Caret
                 }
                 else
                 {
-                    await ShowCaret();
+                    await ShowCaret(delayMs);
                 }
 
 
@@ -211,12 +168,16 @@ namespace FlagTip.Caret
                 _selectLock.Release();
             }
 
-
-
-
-            
-
         }
+
+
+
+
+
+
+
+
+
 
         public void ShowCursor()
         {
@@ -230,10 +191,9 @@ namespace FlagTip.Caret
 
 
 
-        public async Task ShowCaret(int delayMs = 50)
+        public async Task ShowCaret(int delayMs)
         {
             _cursorHelper.Stop();
-
             await Task.Delay(delayMs);
 
 
@@ -243,71 +203,27 @@ namespace FlagTip.Caret
                 CaretContext.LastMethod == CaretMethod.None;
 
 
+
             if (contextChanged)
             {
-                Console.WriteLine("A1.CTX CHANGE");
+                //Console.WriteLine("A1.CTX CHANGE");
                 selectCaretMethod();
             }
             else
             {
-                Console.WriteLine("A2.CTX NOT CHANGE");
+                //Console.WriteLine("A2.CTX NOT CHANGE");
                 useCaretMethod();
             }
 
 
+
+
             if (_processName == "notepad" && _method == CaretMethod.GUIThreadInfo)
             {
-                if (_rect.left == 0 && _rect.top == 0) { 
+                if (_rect.left == 0 && _rect.top == 0) {
                     UIAHelper.TryGetCaretFromUIA(out _rect);
                 }
-
             }
-
-
-
-
-            /*
-
-            if ( (_rect.left != CaretContext.LastRect.left || _rect.top != CaretContext.LastRect.top) && 
-                  _method == CaretMethod.UIA)
-            {
-
-                Console.WriteLine("1. RECT가 달라졌습니다. 업데이트합니다.");
-                if (_isDoubleClickMode)
-                {
-
-
-                    _method = CaretMethod.GUIThreadInfo;
-                    CaretContext.LastMethod = CaretMethod.GUIThreadInfo;
-                     _isDoubleClickMode = false;
-
-                    //_method = CaretMethod.GUIThreadInfo;
-
-
-                     //Console.WriteLine("1. RECT CHANGED.. so note notepad lock is off");
-                     //_isDoubleClickMode = false;
-
-                     //CaretContext.LastMethod = CaretMethod.GUIThreadInfo;
-                     //_method = CaretMethod.GUIThreadInfo;
-     
-
-                    //GUIThreadHelper.TryGetCaretFromGUIThreadInfo(_hwnd, out _rect);
-                    //_indicatorForm?.BeginInvoke(new Action(() =>
-                    //    _indicatorForm.SetPosition(_rect.left, _rect.top, _rect.right - _rect.left, _rect.bottom - _rect.top)
-                    //));
-
-                    //await SelectMode();
-
-                    return;
-                }
-
-            }
-            else
-            {
-                Console.WriteLine("2. RECT가 그대로입니다. 그대로 둡니다.");
-            }
-
-*/
 
 
 
@@ -317,9 +233,9 @@ namespace FlagTip.Caret
             ));
 
 
-            /*if (_rect.left != 0 && _rect.top != 0)
+            if (_rect.left != 0 && _rect.top != 0)
             {
-                if (!CommonUtils.IsCaretInEditableArea(_hwnd, _rect))
+                if (!CommonUtils.IsCaretInEditableArea(_hwnd, _rect, _method))
                 {
                     Console.WriteLine("----------!!! CARET HAS POS but NOT VISIBLE");
                     _indicatorForm?.BeginInvoke(new Action(() =>
@@ -327,10 +243,10 @@ namespace FlagTip.Caret
                      ));
                 }
             }
-*/
 
 
-            Console.WriteLine($"{DateTime.Now:HH:mm:ss} Ed:[{CommonUtils.IsCaretInEditableArea(_hwnd, _rect)}][{_processName}] ({_method}) Caret: L={_rect.left}, T={_rect.top}, R={_rect.right}, B={_rect.bottom}");
+
+            Console.WriteLine($"{DateTime.Now:HH:mm:ss} [{CommonUtils.IsCaretInEditableArea(_hwnd, _rect, _method)}][{_processName}] ({_method}) Caret: L={_rect.left}, T={_rect.top}, R={_rect.right}, B={_rect.bottom}");
 
             
 
@@ -356,8 +272,7 @@ namespace FlagTip.Caret
         {
 
 
-
-
+        
 
             if (_processName == "winword" || _processName == "applicationframehost")
              {
@@ -368,21 +283,8 @@ namespace FlagTip.Caret
              {
 
 
-                //GUIThreadHelper.TryGetCaretFromGUIThreadInfo(_hwnd, out _rect);
-                //_method = CaretMethod.GUIThreadInfo;
-
-                OtherHelper.TryGetCaretFromSelectionUIA(out _rect);
-                _method = CaretMethod.Selection;
-
-                /*
-                                if (_isDoubleClickMode)
-                                {
-                                    UIAHelper.TryGetCaretFromUIA(out _rect);
-                                    _method = CaretMethod.UIA;
-                                } else {
-                                    GUIThreadHelper.TryGetCaretFromGUIThreadInfo(_hwnd, out _rect);
-                                    _method = CaretMethod.GUIThreadInfo;
-                                }*/
+                GUIThreadHelper.TryGetCaretFromGUIThreadInfo(_hwnd, out _rect);
+                _method = CaretMethod.GUIThreadInfo;
 
             }
              else if (_processName == "explorer")
@@ -412,11 +314,15 @@ namespace FlagTip.Caret
 
 
 
+            //GUIThreadHelper.TryGetCaretFromGUIThreadInfo(_hwnd, out _rect);
+            //_method = CaretMethod.GUIThreadInfo;
+
+            //UIAExplorerHelper.TryGetCaretFromExplorerUIA(out _rect);
+            //_method = CaretMethod.ExplorerUIA;
 
 
-
-
-
+            //UIAHelper.TryGetCaretFromUIA(out _rect);
+            //_method = CaretMethod.UIA;
 
 
         }
@@ -455,19 +361,7 @@ namespace FlagTip.Caret
             }
 
 
-            /*if (_processName == "notepad")
-            {
-                if (_isDoubleClickMode)
-                {
-                    UIAHelper.TryGetCaretFromUIA(out _rect);
-                    _method = CaretMethod.UIA;
-                }
-                else
-                {
-                    GUIThreadHelper.TryGetCaretFromGUIThreadInfo(_hwnd, out _rect);
-                    _method = CaretMethod.GUIThreadInfo;
-                }
-            }*/
+       
 
         }
 

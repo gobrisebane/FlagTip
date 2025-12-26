@@ -13,6 +13,7 @@ using UIAutomationClient;
 using static FlagTip.Utils.NativeMethods;
 
 
+
 namespace FlagTip.Helpers
 {
     internal class UIAHelper
@@ -149,3 +150,75 @@ namespace FlagTip.Helpers
 
     }
 }
+
+/*
+
+namespace FlagTip.Helpers
+{
+    internal class UIAHelper
+    {
+        internal static bool TryGetCaretFromUIA(out RECT rect)
+        {
+            rect = default;
+
+            CUIAutomation uia = null;
+            IUIAutomationElement element = null;
+            IUIAutomationTextPattern textPattern = null;
+            IUIAutomationTextRangeArray ranges = null;
+            IUIAutomationTextRange range = null;
+
+            try
+            {
+                uia = new CUIAutomation();
+                element = uia.GetFocusedElement();
+                if (element == null)
+                    return false;
+
+                textPattern = element.GetCurrentPattern(10014) as IUIAutomationTextPattern; // UIA_TextPatternId
+                if (textPattern == null)
+                    return false;
+
+                ranges = textPattern.GetSelection();
+                if (ranges == null || ranges.Length == 0)
+                    return false;
+
+                range = ranges.GetElement(0);
+                if (range == null)
+                    return false;
+
+                var arr = range.GetBoundingRectangles();
+                if (arr == null || arr.Length < 4)
+                    return false;
+
+                double left = (double)arr.GetValue(0);
+                double top = (double)arr.GetValue(1);
+                double width = (double)arr.GetValue(2);
+                double height = (double)arr.GetValue(3);
+
+                rect = new RECT
+                {
+                    left = (int)left,
+                    top = (int)top,
+                    right = (int)(left + width),
+                    bottom = (int)(top + height)
+                };
+
+                return CommonUtils.IsRectValid(rect);
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                if (range != null) Marshal.ReleaseComObject(range);
+                if (ranges != null) Marshal.ReleaseComObject(ranges);
+                if (textPattern != null) Marshal.ReleaseComObject(textPattern);
+                if (element != null) Marshal.ReleaseComObject(element);
+                if (uia != null) Marshal.ReleaseComObject(uia);
+            }
+        }
+
+    }
+}*/
+

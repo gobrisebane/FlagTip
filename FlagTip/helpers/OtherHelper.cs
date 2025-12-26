@@ -16,11 +16,10 @@ namespace FlagTip.Helpers
     internal class OtherHelper
     {
 
-        internal static bool TryGetRangeFromPoint(out RECT rect, out string method)
+        internal static bool TryGetRangeFromPoint(out RECT rect)
         {
 
             rect = new RECT();
-            method = "None";
 
 
             try
@@ -64,8 +63,6 @@ namespace FlagTip.Helpers
 
 
 
-                            Console.WriteLine("rect.left : " + rect.left);
-                            method = "UIA_RangeFromPoint";
 
                             return true;
                         }
