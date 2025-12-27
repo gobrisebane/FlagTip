@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Forms; // Cursor.Position 사용
 using UIAutomationClient;
@@ -17,16 +18,21 @@ namespace FlagTip.Helpers
     internal class UIAExplorerHelper
     {
 
-        internal static bool TryGetCaretFromExplorerUIA(out RECT caretLocation)
+
+        internal static bool TryGetCaretFromUIAExplorer(IntPtr hwnd,out RECT caretLocation)
         {
             caretLocation = new RECT();
 
             try
             {
-                UIAHelper.TryGetCaretFromUIA(out caretLocation);
 
-                if (caretLocation.left == 0 && caretLocation.top == 0)
+                if (UIAorGUIHelper.TryGetCaretFromUIAorGUI(hwnd, out caretLocation)
+                    && CommonUtils.IsRectValid(caretLocation))
                 {
+                    return true;
+
+                } else {
+
                     var uia = new CUIAutomation();
                     var element = uia.GetFocusedElement();
                     if (element == null) return false;

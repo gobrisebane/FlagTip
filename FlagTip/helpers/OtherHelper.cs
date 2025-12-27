@@ -140,7 +140,7 @@ namespace FlagTip.Helpers
         }
 
 
-        internal static bool TryGetCaretFromExplorerUIABk(out RECT rect, out string method)
+        internal static bool TryGetCaretFromUIAExplorerBk(out RECT rect, out string method)
         {
             rect = new RECT();
             method = "Explorer";

@@ -35,7 +35,8 @@ namespace FlagTip.Utils
     CaretMethod caretMethod)
         {
 
-
+            if (caretMethod == CaretMethod.UIA || caretMethod == CaretMethod.UIAExplorer)
+                return true;
 
 
             if (hwnd == IntPtr.Zero)

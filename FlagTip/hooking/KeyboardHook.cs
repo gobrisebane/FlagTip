@@ -2,9 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -13,11 +11,21 @@ namespace FlagTip.Hooking
     internal static class KeyboardHook
     {
         private const int WH_KEYBOARD_LL = 13;
+
         private const int WM_KEYDOWN = 0x0100;
+        private const int WM_KEYUP = 0x0101;
         private const int WM_SYSKEYDOWN = 0x0104;
-        private const int VK_CONTROL = 0x11;
-        private const int VK_LWIN = 0x5B;
-        private const int VK_RWIN = 0x5C;
+        private const int WM_SYSKEYUP = 0x0105;
+
+        private const uint LLKHF_REPEAT = 0x40000000;
+
+        private static bool _ctrlDown;
+        private static bool _shiftDown;
+        private static bool _altDown;
+        private static bool _winDown;
+
+        private static long _lastTriggerTick;
+        private const int TRIGGER_INTERVAL_MS = 40;
 
         internal static IntPtr KeyboardHookCallback(
             int nCode,
@@ -26,110 +34,227 @@ namespace FlagTip.Hooking
             IntPtr hookID,
             CaretController caretController)
         {
-            if (nCode >= 0 &&
-                (wParam == (IntPtr)WM_KEYDOWN ||
-                 wParam == (IntPtr)WM_SYSKEYDOWN))
+            if (nCode < 0)
+                return CallNextHookEx(hookID, nCode, wParam, lParam);
+
+            var info = Marshal.PtrToStructure<KBDLLHOOKSTRUCT>(lParam);
+            var key = (Keys)info.vkCode;
+
+            bool isKeyDown =
+                wParam == (IntPtr)WM_KEYDOWN ||
+                wParam == (IntPtr)WM_SYSKEYDOWN;
+
+            bool isKeyUp =
+                wParam == (IntPtr)WM_KEYUP ||
+                wParam == (IntPtr)WM_SYSKEYUP;
+
+            // ---- modifier 상태 추적 (L/R 포함) ----
+            if (isKeyDown || isKeyUp)
             {
-                var info = Marshal.PtrToStructure<KBDLLHOOKSTRUCT>(lParam);
-                var key = (Keys)info.vkCode;
-
-
-                bool isShiftDown =
-            (GetAsyncKeyState(VK_SHIFT) & 0x8000) != 0;
-
-                bool isAltDown =
-           (GetAsyncKeyState(VK_MENU) & 0x8000) != 0;
-
-                bool isCtrlDown =
-            (GetAsyncKeyState(VK_CONTROL) & 0x8000) != 0;
-
-                bool isWinDown =
-            (GetAsyncKeyState(VK_LWIN) & 0x8000) != 0 ||
-            (GetAsyncKeyState(VK_RWIN) & 0x8000) != 0;
-
-
-
-
-
-                if (key == Keys.R && isCtrlDown)
-                {
-                    _ = caretController.OnKeyTest();
-                    return CallNextHookEx(hookID, nCode, wParam, lParam);
-                }
-
-
-                if (isCtrlDown)
-                {
-                    _ = caretController.OnKeyChangedAsync();
-                    return CallNextHookEx(hookID, nCode, wParam, lParam);
-                }
-
-                if (isShiftDown)
-                {
-                    _ = caretController.OnKeyChangedAsync();
-                    return CallNextHookEx(hookID, nCode, wParam, lParam);
-                }
-
-                if (isAltDown)
-                {
-                    _ = caretController.OnKeyChangedAsync();
-                    return CallNextHookEx(hookID, nCode, wParam, lParam);
-                }
-
-                if (isWinDown)
-                {
-                    _ = caretController.OnKeyChangedAsync();
-                    return CallNextHookEx(hookID, nCode, wParam, lParam);
-                }
-
-
-                /*
-                                if (isCtrlDown && isShiftDown)
-                                {
-                                    _ = caretController.OnKeyChangedAsync(); 
-                                    return CallNextHookEx(hookID, nCode, wParam, lParam);
-                                }*/
-
+                bool down = isKeyDown;
 
                 switch (key)
                 {
-                    case Keys.Enter:
-                    case Keys.Back:
-                    case Keys.Delete:
-                    case Keys.Home:   
-                    case Keys.End:    
-                    case Keys.F2:
-                    case Keys.PageUp: 
-                    case Keys.PageDown:
-                        _ = caretController.OnKeyChangedAsync();
+                    case Keys.ControlKey:
+                    case Keys.LControlKey:
+                    case Keys.RControlKey:
+                        _ctrlDown = down;
                         break;
 
-                    case Keys.Tab:
-                        if (isShiftDown)
-                        {
-                            _ = caretController.OnKeyChangedAsync();
-                        }
-                        else
-                        {
-                            _ = caretController.OnKeyChangedAsync();
-                        }
+                    case Keys.ShiftKey:
+                    case Keys.LShiftKey:
+                    case Keys.RShiftKey:
+                        _shiftDown = down;
+                        break;
+
+                    case Keys.Menu:
+                    case Keys.LMenu:
+                    case Keys.RMenu:
+                        _altDown = down;
+                        break;
+
+                    case Keys.LWin:
+                    case Keys.RWin:
+                        _winDown = down;
                         break;
                 }
             }
 
+            // KeyUp 은 여기서 종료
+            if (!isKeyDown)
+                return CallNextHookEx(hookID, nCode, wParam, lParam);
+
+            // ---- auto-repeat 차단 (꾹 누르기 방지) ----
+            //if ((info.flags & LLKHF_REPEAT) != 0)
+            //    return CallNextHookEx(hookID, nCode, wParam, lParam);
+
+            // ---- debounce ----
+            long now = Environment.TickCount;
+            if (now - _lastTriggerTick < TRIGGER_INTERVAL_MS)
+                return CallNextHookEx(hookID, nCode, wParam, lParam);
+
+            _lastTriggerTick = now;
+
+            // ---- 단축키 ----
+            if (_ctrlDown && key == Keys.R)
+            {
+                TriggerSafe(caretController.OnKeyTest);
+                return CallNextHookEx(hookID, nCode, wParam, lParam);
+            }
+
+            if (_winDown)
+            {
+                TriggerSafe(() => caretController.MultiSelectMode());
+                return CallNextHookEx(hookID, nCode, wParam, lParam);
+            }
+
+            // ---- 편집 / 이동 키 ----
+            /*switch (key)
+            {
+                case Keys.Enter:
+                case Keys.Back:
+                case Keys.Delete:
+                case Keys.Home:
+                case Keys.End:
+                case Keys.F2:
+                case Keys.PageUp:
+                case Keys.PageDown:
+                case Keys.Tab:
+                case Keys.Insert:
+                case Keys.Escape:
+                    TriggerSafe(() => caretController.OnKeyChangedAsync());
+                    break;
+                case Keys.Left:
+                case Keys.Right:
+                case Keys.Up:
+                case Keys.Down:
+                    if (!_altDown)
+                        TriggerSafe(() => caretController.OnKeyChangedAsync());
+                    break;
+            }*/
+
+            if (CaretKeys.Contains(key))
+            {
+                caretController.NotifyCaretMovedByUser();
+                TriggerSafe(() => caretController.OnKeyChangedAsync());
+            }
+
+            // modifier 조합
+            if (_ctrlDown || _shiftDown || _altDown)
+            {
+                TriggerSafe(() => caretController.OnKeyChangedAsync());
+            }
+
+
+            if (isKeyDown && IsTypingKey(key))
+            {
+                caretController.NotifyTyping();
+            }
+
+
+
+            /*if (IsCaretMoveKey(key))
+            {
+                Console.WriteLine("CARET MOVE BY USER!");
+                caretController.NotifyCaretMovedByUser();
+                TriggerSafe(() => caretController.OnKeyChangedAsync());
+                return CallNextHookEx(hookID, nCode, wParam, lParam);
+            }*/
+
+
+
             return CallNextHookEx(hookID, nCode, wParam, lParam);
+        }
+
+
+        private static readonly HashSet<Keys> CaretKeys = new HashSet<Keys>
+        {
+            Keys.Enter,
+            Keys.Back,
+            Keys.Delete,
+            Keys.Home,
+            Keys.End,
+            Keys.F2,
+            Keys.PageUp,
+            Keys.PageDown,
+            Keys.Tab,
+            Keys.Insert,
+            Keys.Escape,
+            Keys.Left,
+            Keys.Right,
+            Keys.Up,
+            Keys.Down
+        };
+
+
+
+        /*private static bool IsCaretMoveKey(Keys key)
+        {
+            return key == Keys.Left ||
+                   key == Keys.Right ||
+                   key == Keys.Up ||
+                   key == Keys.Down ||
+                   key == Keys.Home ||
+                   key == Keys.End ||
+                   key == Keys.PageUp ||
+                   key == Keys.PageDown;
+        }*/
+
+
+        // 타이핑키 
+        private static bool IsTypingKey(Keys key)
+        {
+            // 문자
+            if (key >= Keys.A && key <= Keys.Z)
+                return true;
+
+            if (key >= Keys.D0 && key <= Keys.D9)
+                return true;
+
+            if (key >= Keys.NumPad0 && key <= Keys.NumPad9)
+                return true;
+
+            // 공백/편집
+            switch (key)
+            {
+                case Keys.Space:
+                    return true;
+            }
+
+            // OEM 키들
+            if ((int)key >= (int)Keys.Oem1 && (int)key <= (int)Keys.OemBackslash)
+                return true;
+
+            return false;
+        }
+
+        private static void TriggerSafe(Func<Task> action)
+        {
+            _ = Task.Run(action);
         }
 
         internal static IntPtr SetKeyboardHook(LowLevelKeyboardProc proc)
         {
-            using (Process curProcess = Process.GetCurrentProcess())
-            using (ProcessModule curModule = curProcess.MainModule)
+            Process curProcess = Process.GetCurrentProcess();
+            try
             {
-                return SetWindowsHookEx(
-                    WH_KEYBOARD_LL,
-                    proc,
-                    GetModuleHandle(curModule.ModuleName),
-                    0);
+                ProcessModule curModule = curProcess.MainModule;
+                try
+                {
+                    return SetWindowsHookEx(
+                        WH_KEYBOARD_LL,
+                        proc,
+                        GetModuleHandle(curModule.ModuleName),
+                        0);
+                }
+                finally
+                {
+                    curModule?.Dispose();
+                }
+            }
+            finally
+            {
+                curProcess?.Dispose();
             }
         }
 
@@ -162,11 +287,5 @@ namespace FlagTip.Hooking
 
         [DllImport("kernel32.dll")]
         private static extern IntPtr GetModuleHandle(string lpModuleName);
-
-        private const int VK_SHIFT = 0x10;
-        private const int VK_MENU = 0x12; 
-
-        [DllImport("user32.dll")]
-        static extern short GetAsyncKeyState(int vKey);
     }
 }

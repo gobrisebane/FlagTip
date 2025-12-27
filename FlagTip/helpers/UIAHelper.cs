@@ -7,13 +7,14 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Automation.Text;
 using UIAutomationClient;
 using static FlagTip.Utils.NativeMethods;
 
 
-
+/*
 namespace FlagTip.Helpers
 {
     internal class UIAHelper
@@ -150,7 +151,159 @@ namespace FlagTip.Helpers
 
     }
 }
+*/
 
+
+
+
+
+
+
+// 새로운 버전 시험중 v2
+
+
+namespace FlagTip.Helpers
+{
+    internal class UIAHelper
+    {
+        private static CUIAutomation _uia = new CUIAutomation();
+
+        internal static bool TryGetCaretFromUIA(out RECT rect)
+        {
+            rect = new RECT();
+
+            CUIAutomation uia = _uia;
+            if (uia == null)
+                return false;
+
+            IUIAutomationElement focused = null;
+            IUIAutomationTextPattern textPattern = null;
+            IUIAutomationValuePattern valuePattern = null;
+            IUIAutomationTextRangeArray ranges = null;
+            IUIAutomationTextRange range = null;
+
+            try
+            {
+                // 1️⃣ Focused element
+                focused = uia.GetFocusedElement();
+                if (focused == null)
+                    return false;
+
+                // 2️⃣ ControlType 필터 (Qt 코드와 동일)
+                int controlType = focused.CurrentControlType;
+                if (controlType != 50004 && // UIA_EditControlTypeId
+                    controlType != 50020 && // UIA_TextControlTypeId
+                    controlType != 50030)
+                {
+                    // ❗ Explorer 주소창은 상위 Pane일 수 있으므로
+                    // 여기서 return false 하지 말고 계속 시도하는 것도 가능
+                    return false;
+                }
+
+                // 3️.ReadOnly 체크 (ValuePattern)
+                object vpObj = focused.GetCurrentPattern(10002); // UIA_ValuePatternId
+                valuePattern = vpObj as IUIAutomationValuePattern;
+                if (valuePattern != null && valuePattern.CurrentIsReadOnly != 0)
+                    return false;
+
+                // 4️.TextPattern (Native 방식)
+                object tpObj = focused.GetCurrentPattern(10014); // UIA_TextPatternId
+                textPattern = tpObj as IUIAutomationTextPattern;
+                if (textPattern == null)
+                    return false;
+
+                // 5️.Selection (Caret)
+                ranges = textPattern.GetSelection();
+                if (ranges == null || ranges.Length == 0)
+                    return false;
+
+                range = ranges.GetElement(0);
+                if (range == null)
+                    return false;
+
+                // 6️⃣ Bounding Rectangles
+                double[] rects = GetBoundingRects(range);
+                if (rects == null || rects.Length < 4)
+                {
+                    // Qt 코드와 동일한 fallback
+                    range.ExpandToEnclosingUnit(UIAutomationClient.TextUnit.TextUnit_Character); // 명확한 네임스페이스 지정
+                    rects = GetBoundingRects(range);
+                }
+
+                if (rects == null || rects.Length < 4)
+                    return false;
+
+                double left = rects[0];
+                double top = rects[1];
+                double width = rects[2];
+                double height = rects[3];
+
+                // width/height == 0 처리
+                if (width == 0 && height == 0)
+                {
+                    range.ExpandToEnclosingUnit(UIAutomationClient.TextUnit.TextUnit_Character); // 명확한 네임스페이스 지정
+                    rects = GetBoundingRects(range);
+                    if (rects == null || rects.Length < 4)
+                        return false;
+
+                    width = rects[2];
+                    height = rects[3];
+                }
+
+                if (width >= 0 && height >= 0)
+                {
+                    rect.left = (int)left;
+                    rect.top = (int)top;
+                    rect.right = (int)(left + width);
+                    rect.bottom = (int)(top + height);
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                // COM 해제 (중요)
+                Release(range);
+                Release(ranges);
+                Release(textPattern);
+                Release(valuePattern);
+                Release(focused);
+            }
+
+            return false;
+        }
+
+        private static double[] GetBoundingRects(IUIAutomationTextRange range)
+        {
+            Array arr = range.GetBoundingRectangles();
+            if (arr == null || arr.Length < 4)
+                return null;
+
+            double[] rects = new double[arr.Length];
+            for (int i = 0; i < arr.Length; i++)
+                rects[i] = (double)arr.GetValue(i);
+
+            return rects;
+        }
+
+        private static void Release(object obj)
+        {
+            if (obj != null && Marshal.IsComObject(obj))
+                Marshal.ReleaseComObject(obj);
+        }
+    }
+}
+
+
+
+
+
+
+
+// 가장 처음 버전
 /*
 
 namespace FlagTip.Helpers

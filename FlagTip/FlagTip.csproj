@@ -58,6 +58,7 @@
     <Compile Include="helpers\GUIThreadHelper.cs" />
     <Compile Include="helpers\MSAAHelper.cs" />
     <Compile Include="helpers\OtherHelper.cs" />
+    <Compile Include="helpers\UIAorGUIHelper.cs" />
     <Compile Include="helpers\UIAExplorerHelper.cs" />
     <Compile Include="helpers\bk_UIATextPattern2Helper.cs" />
     <Compile Include="helpers\bk_WebView2Helper.cs" />

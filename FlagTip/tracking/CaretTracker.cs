@@ -17,6 +17,7 @@ namespace FlagTip.Tracking
         private readonly CaretController _caretController;
         private CancellationTokenSource _cts;
         private Task _task;
+        private volatile bool _paused;
 
         public CaretTracker(CaretController caretController)
         {
@@ -32,6 +33,17 @@ namespace FlagTip.Tracking
             _task = Task.Run(RunAsync);
         }
 
+
+        public void Pause()
+        {
+            _paused = true;
+        }
+
+        public void Resume()
+        {
+            _paused = false;
+        }
+
         private async Task RunAsync()
         {
             var token = _cts.Token;
@@ -40,25 +52,29 @@ namespace FlagTip.Tracking
             {
                 try
                 {
-                    
-                    //await _caretController.Show();   
-                    //await Task.Delay(1000, token);
+                    if (_paused)
+                    {
+                        Console.WriteLine("!!!!PAUSE...");
+                        await Task.Delay(100, token); // 가볍게 쉼
+                        continue;
+                    }
 
                     await _caretController.SelectMode();
+                    //await Task.Delay(500, token);
                     await Task.Delay(3000, token);
-
 
                 }
                 catch (OperationCanceledException)
                 {
-                    break; // Stop 즉시 반응
+                    break;
                 }
                 catch
                 {
-                    // 필요 시 로그
+                    // log optional
                 }
             }
         }
+
 
         public void Stop()
         {

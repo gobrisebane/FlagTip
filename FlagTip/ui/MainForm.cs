@@ -84,58 +84,29 @@ namespace FlagTip
             _keyboardHook = KeyboardHook.SetKeyboardHook(_keyboardProc);
 
 
-
-            //_tracker = new CaretTracker(_caretController);
-            //_tracker.Start();
-
-
-
-            //_foregroundWatcher = new ForegroundWatcher();
-            //_foregroundWatcher.ForegroundChanged += OnForegroundChanged;
-            //_foregroundWatcher.Start();
+            _tracker = new CaretTracker(_caretController);
+            _caretController.AttachTracker(_tracker);
+            _tracker.Start();
 
 
 
+
+            _foregroundWatcher = new ForegroundWatcher();
+            _foregroundWatcher.ForegroundChanged += OnForegroundChanged;
+            _foregroundWatcher.Start();
 
 
 
 
 
 
-            /*Task.Run(() =>
-            {
-                string[] apps = { "EXCEL", "devenv", "notepad", "explorer", "WhatsApp.Root" };
-                while (true)
-                {
-                    foreach (var app in apps)
-                    {
-                        var proc = GetProcessByName(app);
-                        if (proc != null)
-                        {
-                            Console.WriteLine($"Activating {app}");
-                            SetForegroundWindow(proc.MainWindowHandle);
-                        }
-                        else
-                        {
-                            Console.WriteLine($"Process {app} not found");
-                        }
 
-                        Thread.Sleep(1000); // 2초 대기
-                    }
-                }
-            });*/
+
+
+           
 
 
         }
-
-        static Process GetProcessByName(string name)
-        {
-            var procs = Process.GetProcessesByName(name);
-            return procs.Length > 0 ? procs[0] : null;
-        }
-
-        [DllImport("user32.dll")]
-        static extern bool SetForegroundWindow(IntPtr hWnd);
 
 
 

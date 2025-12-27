@@ -3,6 +3,7 @@ using FlagTip.apps;
 using FlagTip.helpers;
 using FlagTip.Helpers;
 using FlagTip.models;
+using FlagTip.Tracking;
 using FlagTip.UI;
 using FlagTip.Utils;
 using System;
@@ -23,7 +24,6 @@ using static FlagTip.Helpers.MSAAHelper;
 using static FlagTip.Utils.CommonUtils;
 using static FlagTip.Utils.NativeMethods;
 using static System.Collections.Specialized.BitVector32;
-using UIAutomationClient;
 
 namespace FlagTip.Caret
 {
@@ -52,6 +52,7 @@ namespace FlagTip.Caret
 
 
 
+
         public CaretController(IndicatorForm indicatorForm)
         {
             _indicatorForm = indicatorForm;
@@ -59,13 +60,73 @@ namespace FlagTip.Caret
         }
 
 
+        private CaretTracker _tracker;
 
 
-        
-        public async Task OnKeyChangedAsync()
+
+        public void AttachTracker(CaretTracker tracker)
         {
-            Console.WriteLine("winkey");
-            await SelectMode();
+            _tracker = tracker;
+        }
+
+
+
+        private CancellationTokenSource _typingCts;
+        private readonly TimeSpan TypingResumeDelay = TimeSpan.FromSeconds(5);
+
+
+        public void NotifyTyping()
+        {
+            Console.WriteLine("typing detected");
+
+            // 즉시 일시정지
+            _tracker?.Pause();
+
+            // 기존 타이머 취소
+            _typingCts?.Cancel();
+            _typingCts?.Dispose();
+
+            _typingCts = new CancellationTokenSource();
+            var token = _typingCts.Token;
+
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    await Task.Delay(TypingResumeDelay, token);
+
+                    if (!token.IsCancellationRequested)
+                    {
+                        _tracker?.Resume();
+                    }
+                }
+                catch (OperationCanceledException) { }
+            });
+        }
+
+
+        public void NotifyCaretMovedByUser()
+        {
+            _tracker?.Resume();
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        public async Task OnKeyChangedAsync(int delayMs = 50)
+        {
+            await SelectMode(delayMs);
         }
 
 
@@ -73,7 +134,6 @@ namespace FlagTip.Caret
         {
 
         
-
         }
 
         public async Task SelectDoubleClick()
@@ -82,31 +142,28 @@ namespace FlagTip.Caret
         }
 
 
+   
 
 
 
 
 
 
-
-
-
-
-
-
-
-        public async Task SelectModeMultiple()
+        public async Task MultiSelectMode(int count = 3)
         {
+
             await Task.Delay(50);
             await SelectMode();
 
-           for (int i = 0; i < 2; i++)
+            for (int i = 0; i < count; i++)
             {
                 if (IsProcessCursorApp())
                     break;
 
                 await Task.Delay(80);
                 await SelectMode();
+
+
             }
 
 
@@ -274,7 +331,9 @@ namespace FlagTip.Caret
 
         
 
-            if (_processName == "winword" || _processName == "applicationframehost")
+            if (_processName == "winword" || 
+                _processName == "applicationframehost" ||
+                _processName == "devenv")
              {
                  UIAHelper.TryGetCaretFromUIA(out _rect);
                  _method = CaretMethod.UIA;
@@ -282,17 +341,19 @@ namespace FlagTip.Caret
              else if (_processName == "notepad")
              {
 
-
                 GUIThreadHelper.TryGetCaretFromGUIThreadInfo(_hwnd, out _rect);
                 _method = CaretMethod.GUIThreadInfo;
 
             }
              else if (_processName == "explorer")
              {
-                 UIAExplorerHelper.TryGetCaretFromExplorerUIA(out _rect);
-                 _method = CaretMethod.ExplorerUIA;
-             }
-             else
+                UIAExplorerHelper.TryGetCaretFromUIAExplorer(_hwnd, out _rect);
+                _method = CaretMethod.UIAExplorer;
+
+                //UIAorGUIHelper.TryGetCaretFromUIAorGUI(_hwnd, out _rect);
+                //_method = CaretMethod.UIAorGUI;
+            }
+            else
              {
 
                  if (GUIThreadHelper.TryGetCaretFromGUIThreadInfo(_hwnd, out _rect))
@@ -317,13 +378,20 @@ namespace FlagTip.Caret
             //GUIThreadHelper.TryGetCaretFromGUIThreadInfo(_hwnd, out _rect);
             //_method = CaretMethod.GUIThreadInfo;
 
-            //UIAExplorerHelper.TryGetCaretFromExplorerUIA(out _rect);
-            //_method = CaretMethod.ExplorerUIA;
+
+            //UIAExplorerHelper.TryGetCaretFromUIAExplorer(out _rect);
+            //_method = CaretMethod.UIAExplorer;
+
+            //MSAAHelper.TryGetCaretFromMSAA(_hwnd, out _rect);
+            // _method = CaretMethod.MSAA;
+
+
+            //UIAExplorerHelper.TryGetCaretFromUIAExplorer(out _rect);
+            //_method = CaretMethod.UIAExplorer;
 
 
             //UIAHelper.TryGetCaretFromUIA(out _rect);
             //_method = CaretMethod.UIA;
-
 
         }
 
@@ -339,14 +407,17 @@ namespace FlagTip.Caret
                 case CaretMethod.Selection:
                     OtherHelper.TryGetCaretFromSelectionUIA(out _rect);
                     break;
+                case CaretMethod.UIAorGUI:
+                    UIAorGUIHelper.TryGetCaretFromUIAorGUI(_hwnd, out _rect);
+                    break;
                 case CaretMethod.MSAA:
                     MSAAHelper.TryGetCaretFromMSAA(_hwnd, out _rect);
                     break;
                 case CaretMethod.GUIThreadInfo:
                     GUIThreadHelper.TryGetCaretFromGUIThreadInfo(_hwnd, out _rect);
                     break;
-                case CaretMethod.ExplorerUIA:
-                    UIAExplorerHelper.TryGetCaretFromExplorerUIA(out _rect);
+                case CaretMethod.UIAExplorer:
+                    UIAExplorerHelper.TryGetCaretFromUIAExplorer(_hwnd, out _rect);
                     break;
                 case CaretMethod.UIA:
                     UIAHelper.TryGetCaretFromUIA(out _rect);
