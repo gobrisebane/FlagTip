@@ -14,7 +14,13 @@ namespace FlagTip.Utils
         [StructLayout(LayoutKind.Sequential)]
         internal struct RECT
         {
-            public int left, top, right, bottom;
+            public int left;
+            public int top;
+            public int right;
+            public int bottom;
+
+            public int width => right - left;
+            public int height => bottom - top;
         }
 
 
@@ -208,7 +214,9 @@ namespace FlagTip.Utils
 
         internal const int IME_CMODE_NATIVE = 0x0001;
 
-        
+        [DllImport("imm32.dll")]
+        internal static extern bool ImmGetOpenStatus(IntPtr hIMC);
+
         [DllImport("imm32.dll")]
         internal static extern IntPtr ImmGetContext(IntPtr hWnd);
 
@@ -221,6 +229,14 @@ namespace FlagTip.Utils
             out int lpfdwConversion,
             out int lpfdwSentence
         );
+
+        //internal static class User32
+        //{
+        //    [DllImport("user32.dll")]
+        //    internal static extern bool GetGUIThreadInfo(
+        //        int idThread,
+        //        ref GUITHREADINFO lpgui);
+        //}
 
 
 
@@ -253,16 +269,13 @@ namespace FlagTip.Utils
 
 
         // IME V3
-        internal const int WM_IME_CONTROL = 0x283;
+        //internal const int WM_IME_CONTROL = 0x283;
         internal const int IMC_GETCONVERSIONMODE = 0x001;
 
 
         [DllImport("imm32.dll")]
         internal static extern IntPtr ImmGetDefaultIMEWnd(IntPtr hWnd);
 
-    
-
-  
 
 
 
@@ -271,6 +284,12 @@ namespace FlagTip.Utils
 
 
 
+        [DllImport("user32.dll", SetLastError = true)]
+        internal static extern IntPtr FindWindow(
+            string lpClassName,
+            string lpWindowName);
+
+   
 
 
 

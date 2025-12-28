@@ -19,13 +19,21 @@ namespace FlagTip.Hooking
 
         private const uint LLKHF_REPEAT = 0x40000000;
 
+
+
+        private static bool _ctrlUp;
         private static bool _ctrlDown;
         private static bool _shiftDown;
         private static bool _altDown;
         private static bool _winDown;
 
+
+
+
         private static long _lastTriggerTick;
         private const int TRIGGER_INTERVAL_MS = 40;
+
+
 
         internal static IntPtr KeyboardHookCallback(
             int nCode,
@@ -51,6 +59,7 @@ namespace FlagTip.Hooking
             // ---- modifier 상태 추적 (L/R 포함) ----
             if (isKeyDown || isKeyUp)
             {
+                bool up = isKeyUp;
                 bool down = isKeyDown;
 
                 switch (key)
@@ -58,6 +67,7 @@ namespace FlagTip.Hooking
                     case Keys.ControlKey:
                     case Keys.LControlKey:
                     case Keys.RControlKey:
+                        _ctrlUp= up;
                         _ctrlDown = down;
                         break;
 
@@ -80,13 +90,25 @@ namespace FlagTip.Hooking
                 }
             }
 
+
+
+
+            if (isKeyDown && key == Keys.HangulMode)
+            {
+                caretController.NotifyImeToggle();
+                return CallNextHookEx(hookID, nCode, wParam, lParam);
+            }
+
+
+
+
             // KeyUp 은 여기서 종료
             if (!isKeyDown)
                 return CallNextHookEx(hookID, nCode, wParam, lParam);
 
-            // ---- auto-repeat 차단 (꾹 누르기 방지) ----
-            //if ((info.flags & LLKHF_REPEAT) != 0)
-            //    return CallNextHookEx(hookID, nCode, wParam, lParam);
+            //---- auto-repeat 차단 (꾹 누르기 방지)----
+            if ((info.flags & LLKHF_REPEAT) != 0)
+                return CallNextHookEx(hookID, nCode, wParam, lParam);
 
             // ---- debounce ----
             long now = Environment.TickCount;
@@ -95,12 +117,24 @@ namespace FlagTip.Hooking
 
             _lastTriggerTick = now;
 
+
+
+
             // ---- 단축키 ----
-            if (_ctrlDown && key == Keys.R)
+            if (_ctrlDown && key == Keys.Y)
             {
                 TriggerSafe(caretController.OnKeyTest);
                 return CallNextHookEx(hookID, nCode, wParam, lParam);
             }
+
+            if (_ctrlDown && key == Keys.A)
+            {
+                caretController.NotifySelectAll();
+                return CallNextHookEx(hookID, nCode, wParam, lParam);
+            }
+
+           
+
 
             if (_winDown)
             {
@@ -108,63 +142,46 @@ namespace FlagTip.Hooking
                 return CallNextHookEx(hookID, nCode, wParam, lParam);
             }
 
-            // ---- 편집 / 이동 키 ----
-            /*switch (key)
-            {
-                case Keys.Enter:
-                case Keys.Back:
-                case Keys.Delete:
-                case Keys.Home:
-                case Keys.End:
-                case Keys.F2:
-                case Keys.PageUp:
-                case Keys.PageDown:
-                case Keys.Tab:
-                case Keys.Insert:
-                case Keys.Escape:
-                    TriggerSafe(() => caretController.OnKeyChangedAsync());
-                    break;
-                case Keys.Left:
-                case Keys.Right:
-                case Keys.Up:
-                case Keys.Down:
-                    if (!_altDown)
-                        TriggerSafe(() => caretController.OnKeyChangedAsync());
-                    break;
-            }*/
 
             if (CaretKeys.Contains(key))
             {
-                caretController.NotifyCaretMovedByUser();
+                //return
+                caretController.NotifyCaretMove();
                 TriggerSafe(() => caretController.OnKeyChangedAsync());
+
+                if (key == Keys.Enter)
+                {
+                    TriggerSafe(() => caretController.MultiSelectModeBrowser(5));
+                }
+
+                return CallNextHookEx(hookID, nCode, wParam, lParam);
             }
 
-            // modifier 조합
-            if (_ctrlDown || _shiftDown || _altDown)
+
+            // modifier 조합 (_shiftDown 은 타이핑때문에 제외)
+            if (_ctrlDown || _altDown)
             {
+                //return
                 TriggerSafe(() => caretController.OnKeyChangedAsync());
+                return CallNextHookEx(hookID, nCode, wParam, lParam);
             }
+
+
 
 
             if (isKeyDown && IsTypingKey(key))
             {
+                // return
                 caretController.NotifyTyping();
-            }
-
-
-
-            /*if (IsCaretMoveKey(key))
-            {
-                Console.WriteLine("CARET MOVE BY USER!");
-                caretController.NotifyCaretMovedByUser();
-                TriggerSafe(() => caretController.OnKeyChangedAsync());
                 return CallNextHookEx(hookID, nCode, wParam, lParam);
-            }*/
+            }
 
 
 
             return CallNextHookEx(hookID, nCode, wParam, lParam);
         }
+
+
 
 
         private static readonly HashSet<Keys> CaretKeys = new HashSet<Keys>
@@ -188,17 +205,6 @@ namespace FlagTip.Hooking
 
 
 
-        /*private static bool IsCaretMoveKey(Keys key)
-        {
-            return key == Keys.Left ||
-                   key == Keys.Right ||
-                   key == Keys.Up ||
-                   key == Keys.Down ||
-                   key == Keys.Home ||
-                   key == Keys.End ||
-                   key == Keys.PageUp ||
-                   key == Keys.PageDown;
-        }*/
 
 
         // 타이핑키 

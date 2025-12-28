@@ -22,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -67,6 +68,13 @@
     <Compile Include="hooking\KeyboardHook.cs" />
     <Compile Include="hooking\MouseHook.cs" />
     <Compile Include="hooking\TextboxFocusTracker.cs" />
+    <Compile Include="Ime\ImeTracker.cs" />
+    <Compile Include="Input\Native\Imm32.cs" />
+    <Compile Include="Input\Native\User32.cs" />
+    <Compile Include="Input\Tsf\TsfGuids.cs" />
+    <Compile Include="Input\Tsf\TsfImeStateReader.cs" />
+    <Compile Include="Input\Tsf\TsfInterfaces.cs" />
+    <Compile Include="native\User32.cs" />
     <Compile Include="ui\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -112,6 +120,20 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="_bk\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="resources\ime\eng_dark.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ime\eng_light.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ime\kor_dark.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ime\kor_light.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

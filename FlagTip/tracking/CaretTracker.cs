@@ -19,6 +19,7 @@ namespace FlagTip.Tracking
         private Task _task;
         private volatile bool _paused;
 
+
         public CaretTracker(CaretController caretController)
         {
             _caretController = caretController;
@@ -54,14 +55,13 @@ namespace FlagTip.Tracking
                 {
                     if (_paused)
                     {
-                        Console.WriteLine("!!!!PAUSE...");
                         await Task.Delay(100, token); // 가볍게 쉼
                         continue;
                     }
 
                     await _caretController.SelectMode();
-                    //await Task.Delay(500, token);
-                    await Task.Delay(3000, token);
+                    await Task.Delay(500, token);
+                    //await Task.Delay(3000, token);
 
                 }
                 catch (OperationCanceledException)

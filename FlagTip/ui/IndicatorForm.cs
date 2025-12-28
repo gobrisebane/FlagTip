@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FlagTip.models;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO.Ports;
@@ -7,6 +8,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static FlagTip.Utils.CommonUtils;
+
 
 namespace FlagTip.UI
 {
@@ -23,10 +26,10 @@ namespace FlagTip.UI
         private const int WS_EX_TRANSPARENT = 0x20;
         private const int WS_EX_LAYERED = 0x80000;
 
-        public IndicatorForm(Color color)
+        public IndicatorForm()
         {
             FormBorderStyle = FormBorderStyle.None;
-            BackColor = color;
+            //BackColor = color;
             TopMost = true;
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.Manual;
@@ -39,6 +42,7 @@ namespace FlagTip.UI
 
             // 폼 생성 직후 마우스 클릭 투과
             MakeClickThrough();
+            SetFlag();
         }
 
         private void MakeClickThrough()
@@ -55,13 +59,28 @@ namespace FlagTip.UI
                 Size = new Size(Math.Max(10, 6), Math.Max(6, 18));
                 Opacity = 0.7;
             }
-
             else
             {
                 HideIndicator();
             }
-
         }
+
+        public void SetFlag()
+        {
+
+            var imeState = GetImeState();
+
+            if (imeState == ImeState.KOR)
+            {
+                BackColor = Color.Blue;
+            }
+            else if(imeState == ImeState.ENG)
+            {
+                BackColor = Color.Red;
+            }
+        }
+
+
 
         public void HideIndicator()
         {

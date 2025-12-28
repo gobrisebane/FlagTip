@@ -2,15 +2,19 @@
 using FlagTip.apps;
 using FlagTip.helpers;
 using FlagTip.Helpers;
+using FlagTip.Ime;
 using FlagTip.models;
 using FlagTip.Tracking;
 using FlagTip.UI;
 using FlagTip.Utils;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,9 +25,12 @@ using UIA;
 using UIAutomationClient;
 using static FlagTip.config.AppList;
 using static FlagTip.Helpers.MSAAHelper;
+using static FlagTip.Input.Tsf.TsfImeStateReader;
 using static FlagTip.Utils.CommonUtils;
 using static FlagTip.Utils.NativeMethods;
+
 using static System.Collections.Specialized.BitVector32;
+
 
 namespace FlagTip.Caret
 {
@@ -41,6 +48,8 @@ namespace FlagTip.Caret
 
 
         private IndicatorForm _indicatorForm;
+        private ImeTracker _imeTracker;
+
 
         private CursorHelper _cursorHelper;
         private CaretMethod _method;
@@ -53,9 +62,10 @@ namespace FlagTip.Caret
 
 
 
-        public CaretController(IndicatorForm indicatorForm)
+        public CaretController(IndicatorForm indicatorForm, ImeTracker imeTracker)
         {
             _indicatorForm = indicatorForm;
+            _imeTracker =  imeTracker;
             _cursorHelper = new CursorHelper(_indicatorForm);
         }
 
@@ -75,11 +85,9 @@ namespace FlagTip.Caret
         private readonly TimeSpan TypingResumeDelay = TimeSpan.FromSeconds(5);
 
 
-        public void NotifyTyping()
+        public async void NotifyTyping()
         {
-            Console.WriteLine("typing detected");
 
-            // 즉시 일시정지
             _tracker?.Pause();
 
             // 기존 타이머 취소
@@ -88,6 +96,14 @@ namespace FlagTip.Caret
 
             _typingCts = new CancellationTokenSource();
             var token = _typingCts.Token;
+
+
+            if (!_selectAllLocked)
+            {
+                _selectAllLocked = true;
+                await SelectMode();
+            }
+
 
             _ = Task.Run(async () =>
             {
@@ -99,23 +115,46 @@ namespace FlagTip.Caret
                     {
                         _tracker?.Resume();
                     }
+
+                    
+
                 }
                 catch (OperationCanceledException) { }
             });
         }
 
 
-        public void NotifyCaretMovedByUser()
+        public void NotifyCaretMove()
         {
             _tracker?.Resume();
         }
 
 
+        private bool _selectAllLocked = true;
+
+        public void NotifySelectAll()
+        {
+            _selectAllLocked = false;
+        }
 
 
 
 
+        public async Task NotifyImeToggle()
+        {
 
+
+            //var imeState1 = GetImeState();
+
+            _imeTracker.DetectIme();
+
+
+            await Task.Delay(50);
+            await SelectMode();
+
+
+
+        }
 
 
 
@@ -130,21 +169,13 @@ namespace FlagTip.Caret
         }
 
 
-        public async Task OnKeyTest()
-        {
 
-        
-        }
 
         public async Task SelectDoubleClick()
         {
             await SelectMode(10);
+
         }
-
-
-   
-
-
 
 
 
@@ -165,7 +196,24 @@ namespace FlagTip.Caret
 
 
             }
+        }
 
+        public async Task MultiSelectModeBrowser(int count = 3)
+        {
+
+            if(_processName == "chrome" || _processName == "edge")
+            {
+                await SelectMode();
+
+                for (int i = 0; i < count; i++)
+                {
+                    if (IsProcessCursorApp())
+                        break;
+
+                    await Task.Delay(100);
+                    await SelectMode();
+                }
+            }
 
         }
 
@@ -192,7 +240,6 @@ namespace FlagTip.Caret
                 _method = CaretContext.LastMethod;
                 _rect = CaretContext.LastRect;
 
-                //_rect = new RECT();
                 StringBuilder classNameBuilder = new StringBuilder(256);
                 GetClassName(_hwnd, classNameBuilder, classNameBuilder.Capacity);
                 _className = classNameBuilder.ToString();
@@ -284,17 +331,23 @@ namespace FlagTip.Caret
 
 
 
+            SetFlagAndPosition();
 
-            _indicatorForm?.BeginInvoke(new Action(() =>
-                _indicatorForm.SetPosition(_rect.left, _rect.top, _rect.right - _rect.left, _rect.bottom - _rect.top)
-            ));
+
+
+
+            //_imeTracker.DetectIme();
+            //_imeTracker.DebugCaptureGrayIme();
+            //_imeTracker.ReadImeTrayIcon();
+
+
 
 
             if (_rect.left != 0 && _rect.top != 0)
             {
                 if (!CommonUtils.IsCaretInEditableArea(_hwnd, _rect, _method))
                 {
-                    Console.WriteLine("----------!!! CARET HAS POS but NOT VISIBLE");
+                    //Console.WriteLine("----------!!! CARET HAS POS but NOT VISIBLE");
                     _indicatorForm?.BeginInvoke(new Action(() =>
                         _indicatorForm.HideIndicator()
                      ));
@@ -302,28 +355,56 @@ namespace FlagTip.Caret
             }
 
 
-
             Console.WriteLine($"{DateTime.Now:HH:mm:ss} [{CommonUtils.IsCaretInEditableArea(_hwnd, _rect, _method)}][{_processName}] ({_method}) Caret: L={_rect.left}, T={_rect.top}, R={_rect.right}, B={_rect.bottom}");
 
-            
 
         }
 
 
-        public void test()
+
+        public async Task OnKeyTest()
         {
-            Accessibility.IAccessible acc = MSAAHelper.GetAccessibleFromWindow(_hwnd);
-            if (acc == null)
-                return;
+            Console.WriteLine("TESTING.");
+            _imeTracker.DetectIme();
+        }
 
-            var text = acc as IAccessibleText;
-            if (text == null)
-                return;
 
-            text.get_caretOffset(out int caretOffset);
-            Console.WriteLine("caretOffset : " + caretOffset);
+
+
+
+
+
+
+
+        public void SetFlagAndPosition()
+        {
+
+            _indicatorForm?.BeginInvoke(new Action(() =>
+            {
+                _indicatorForm.SetFlag();
+                _indicatorForm.SetPosition(_rect.left, _rect.top, _rect.right - _rect.left, _rect.bottom - _rect.top);
+            }
+           ));
+        }
+
+
+
+        public void SetFlag()
+        {
+
+            _indicatorForm?.BeginInvoke(new Action(() =>
+            {
+                _indicatorForm.SetFlag();
+            }
+            ));
 
         }
+
+
+
+
+
+
 
         public void selectCaretMethod()
         {
@@ -331,27 +412,23 @@ namespace FlagTip.Caret
 
         
 
-            if (_processName == "winword" || 
-                _processName == "applicationframehost" ||
-                _processName == "devenv")
+            if (_processName == "winword"
+                ||  _processName == "applicationframehost" 
+                || _processName == "devenv"
+                )
              {
                  UIAHelper.TryGetCaretFromUIA(out _rect);
                  _method = CaretMethod.UIA;
              }
              else if (_processName == "notepad")
              {
-
                 GUIThreadHelper.TryGetCaretFromGUIThreadInfo(_hwnd, out _rect);
                 _method = CaretMethod.GUIThreadInfo;
-
             }
              else if (_processName == "explorer")
              {
                 UIAExplorerHelper.TryGetCaretFromUIAExplorer(_hwnd, out _rect);
                 _method = CaretMethod.UIAExplorer;
-
-                //UIAorGUIHelper.TryGetCaretFromUIAorGUI(_hwnd, out _rect);
-                //_method = CaretMethod.UIAorGUI;
             }
             else
              {
@@ -364,15 +441,19 @@ namespace FlagTip.Caret
                  {
                      _method = CaretMethod.MSAA;
                  }
-                 else
-                 {
-                     _rect = new RECT();
-                     _method = CaretMethod.None;
+                else if (UIAHelper.TryGetCaretFromUIA(out _rect))
+                {
+                    _method = CaretMethod.UIA;
+                }
+                else
+                {
+                    _rect = new RECT();
+                    _method = CaretMethod.None;
 
-                 }
+                }
              }
 
-
+            
 
 
             //GUIThreadHelper.TryGetCaretFromGUIThreadInfo(_hwnd, out _rect);
@@ -382,8 +463,9 @@ namespace FlagTip.Caret
             //UIAExplorerHelper.TryGetCaretFromUIAExplorer(out _rect);
             //_method = CaretMethod.UIAExplorer;
 
+
             //MSAAHelper.TryGetCaretFromMSAA(_hwnd, out _rect);
-            // _method = CaretMethod.MSAA;
+            //_method = CaretMethod.MSAA;
 
 
             //UIAExplorerHelper.TryGetCaretFromUIAExplorer(out _rect);

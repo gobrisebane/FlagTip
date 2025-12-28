@@ -1,5 +1,6 @@
 ﻿using FlagTip.Caret;
 using FlagTip.Hooking;
+using FlagTip.Ime;
 using FlagTip.Tracking;
 using FlagTip.UI;
 using FlagTip.watchers;
@@ -26,10 +27,7 @@ namespace FlagTip
     {
 
         private IndicatorForm _indicatorForm;
-
         private CaretController _caretController;
-
-
         private CaretTracker _tracker;
         private ForegroundWatcher _foregroundWatcher;
 
@@ -39,6 +37,7 @@ namespace FlagTip
         private IntPtr _keyboardHook;
         private LowLevelKeyboardProc _keyboardProc;
 
+        private ImeTracker _imeTracker;
 
 
 
@@ -49,6 +48,8 @@ namespace FlagTip
             
             ShowInTaskbar = false;
             WindowState = FormWindowState.Minimized;
+
+
             Opacity = 0;
 
             Init();
@@ -57,12 +58,14 @@ namespace FlagTip
 
         private void Init()
         {
-            _indicatorForm = new IndicatorForm(Color.Red);
+
+            _imeTracker = new ImeTracker();
+            _imeTracker.DetectIme();
+
+            _indicatorForm = new IndicatorForm();
             _indicatorForm.Show();
 
-
-
-            _caretController = new CaretController(_indicatorForm);
+            _caretController = new CaretController(_indicatorForm, _imeTracker);
 
 
 
@@ -84,9 +87,10 @@ namespace FlagTip
             _keyboardHook = KeyboardHook.SetKeyboardHook(_keyboardProc);
 
 
-            _tracker = new CaretTracker(_caretController);
-            _caretController.AttachTracker(_tracker);
-            _tracker.Start();
+
+            //_tracker = new CaretTracker(_caretController);
+            //_caretController.AttachTracker(_tracker);
+            //_tracker.Start();
 
 
 
@@ -115,8 +119,10 @@ namespace FlagTip
             await Task.Delay(50); 
             BeginInvoke(new Action(() =>
             {
-                Console.WriteLine($"--------------Foreground: {processName}");
+                //Console.WriteLine($"--------------Foreground: {processName}");
+                _imeTracker.DetectIme();
                 _caretController.SelectMode();
+
             }));
         }
 

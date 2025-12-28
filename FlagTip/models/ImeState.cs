@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 
 namespace FlagTip.models
 {
-    internal enum ImeState
+    public enum ImeState
     {
-        KOR,
-        ENG
+        KOR = 0,
+        ENG = 1,
+        UNKNOWN = 2
+
     }
 }

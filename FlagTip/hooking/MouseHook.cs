@@ -128,6 +128,7 @@ namespace FlagTip.Hooking
                 msg == MouseMessages.WM_XBUTTONDOWN)
             {
 
+                caretController.NotifyCaretMove();
                 await caretController.MultiSelectMode();
 
 

@@ -1,5 +1,6 @@
 ﻿using Accessibility;
 using FlagTip.Caret;
+using FlagTip.Input.Native;
 using FlagTip.models;
 using FlagTip.Utils;
 using System;
@@ -19,43 +20,108 @@ namespace FlagTip.Helpers
     internal class MSAAHelper
     {
 
-        
         internal static bool TryGetCaretFromMSAA(IntPtr hwnd, out RECT rect)
         {
             rect = new RECT();
 
+            GUITHREADINFO guiInfo = new GUITHREADINFO();
+            guiInfo.cbSize = Marshal.SizeOf<GUITHREADINFO>();
+
             try
             {
-                Guid guid = new Guid("618736E0-3C3D-11CF-810C-00AA00389B71");
-                int result = NativeMethods.AccessibleObjectFromWindow(hwnd, NativeMethods.OBJID_CARET, ref guid, out object accessibleObject);
+                if (!User32.GetGUIThreadInfo(0, ref guiInfo))
+                    return false;
 
-                if (result == 0 && accessibleObject is Accessibility.IAccessible accessible)
-                {
-                    accessible.accLocation(out int left, out int top, out int width, out int height, 0);
-                    RECT r = new RECT
-                    {
-                            left = left,
-                            top = top,
-                            right = left + width,
-                            bottom = top + height
+                Guid iidIAccessible = new Guid("618736E0-3C3D-11CF-810C-00AA00389B71");
 
-                    };
+                int hr = NativeMethods.AccessibleObjectFromWindow(
+                    guiInfo.hwndFocus,
+                    NativeMethods.OBJID_CARET,
+                    ref iidIAccessible,
+                    out object accObj
+                );
+
+                if (hr != 0)
+                    return false;
+
+                var acc = accObj as Accessibility.IAccessible;
+                if (acc == null)
+                    return false;
+
+                acc.accLocation(
+                    out int x,
+                    out int y,
+                    out int w,
+                    out int h,
+                    0   // CHILDID_SELF
+                );
+
+                if (x == 0 && y == 0)
+                    return false;
+
+                rect.left = x;
+                rect.top = y;
+                rect.right = x + w;
+                rect.bottom = y + h;
 
 
-                    if (CommonUtils.IsRectValid(r) & width > 0)
-                    {
-                        rect = r;
-                        return true;
-                    }
-                }
+                return true;
             }
             catch
             {
-                // 예외 무시
+                return false;
             }
-
-            return false;
         }
+
+
+
+        /* internal static bool TryGetCaretFromMSAA(IntPtr hwnd, out RECT rect)
+         {
+             rect = new RECT();
+
+             try
+             {
+                 Guid guid = new Guid("618736E0-3C3D-11CF-810C-00AA00389B71");
+                 int result = NativeMethods.AccessibleObjectFromWindow(hwnd, NativeMethods.OBJID_CARET, ref guid, out object accessibleObject);
+
+                 if (result == 0 && accessibleObject is Accessibility.IAccessible accessible)
+                 {
+                     accessible.accLocation(out int left, out int top, out int width, out int height, 0);
+                     RECT r = new RECT
+                     {
+                             left = left,
+                             top = top,
+                             right = left + width,
+                             bottom = top + height
+
+                     };
+
+
+                     // 시작
+                     // caret rect 기준 보정
+                     if (r.left != 0 && r.top != 0)
+                     {
+                         int caretX = r.left + 8;              // 약간 오른쪽
+                         int caretY = r.bottom;                // caret 아래
+                     }
+                     // 끝
+
+
+                     if (CommonUtils.IsRectValid(r) & width > 0)
+                     {
+                         rect = r;
+                         return true;
+                     }
+
+                 }
+             }
+             catch
+             {
+                 // 예외 무시
+             }
+
+             return false;
+         }*/
 
 
 
