@@ -60,9 +60,8 @@ namespace FlagTip
         {
 
             _imeTracker = new ImeTracker();
-            _imeTracker.DetectIme();
 
-            _indicatorForm = new IndicatorForm();
+            _indicatorForm = new IndicatorForm(_imeTracker);
             _indicatorForm.Show();
 
             _caretController = new CaretController(_indicatorForm, _imeTracker);

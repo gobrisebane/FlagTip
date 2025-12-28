@@ -1,4 +1,5 @@
-﻿using FlagTip.models;
+﻿using FlagTip.Ime;
+using FlagTip.models;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -25,9 +26,12 @@ namespace FlagTip.UI
         private const int GWL_EXSTYLE = -20;
         private const int WS_EX_TRANSPARENT = 0x20;
         private const int WS_EX_LAYERED = 0x80000;
+        private ImeTracker _imeTracker;
 
-        public IndicatorForm()
+
+        public IndicatorForm(ImeTracker imeTracker)
         {
+
             FormBorderStyle = FormBorderStyle.None;
             //BackColor = color;
             TopMost = true;
@@ -39,6 +43,7 @@ namespace FlagTip.UI
 
             //Opacity = 0.7;
 
+            _imeTracker = imeTracker;
 
             // 폼 생성 직후 마우스 클릭 투과
             MakeClickThrough();
@@ -65,10 +70,15 @@ namespace FlagTip.UI
             }
         }
 
-        public void SetFlag()
+        public async Task SetFlag()
         {
 
-            var imeState = GetImeState();
+
+            await Task.Delay(10); // ⏱ UI 멈추지 않는 10ms 딜레이
+
+            var imeState = _imeTracker.DetectIme();
+
+
 
             if (imeState == ImeState.KOR)
             {
@@ -77,6 +87,9 @@ namespace FlagTip.UI
             else if(imeState == ImeState.ENG)
             {
                 BackColor = Color.Red;
+            } else
+            {
+                BackColor = Color.Yellow;
             }
         }
 

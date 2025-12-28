@@ -9,6 +9,7 @@ using FlagTip.UI;
 using FlagTip.Utils;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
@@ -143,16 +144,22 @@ namespace FlagTip.Caret
         public async Task NotifyImeToggle()
         {
 
+            var sw = Stopwatch.StartNew();   // ⏱ 시작
+            Console.WriteLine("notify!");
+           
+            
+            //await Task.Delay(5);
+            //_imeTracker.DetectIme();
 
-            //var imeState1 = GetImeState();
 
-            _imeTracker.DetectIme();
+            //await Task.Delay(50);
 
-
-            await Task.Delay(50);
+            SetFlag();
             await SelectMode();
 
 
+            sw.Stop();
+            Console.WriteLine($"FindTemplate time: {sw.ElapsedMilliseconds} ms");
 
         }
 
@@ -331,7 +338,7 @@ namespace FlagTip.Caret
 
 
 
-            SetFlagAndPosition();
+            SetFlagPosition();
 
 
 
@@ -376,12 +383,12 @@ namespace FlagTip.Caret
 
 
 
-        public void SetFlagAndPosition()
+        public void SetFlagPosition()
         {
 
             _indicatorForm?.BeginInvoke(new Action(() =>
             {
-                _indicatorForm.SetFlag();
+                //_indicatorForm.SetFlag();
                 _indicatorForm.SetPosition(_rect.left, _rect.top, _rect.right - _rect.left, _rect.bottom - _rect.top);
             }
            ));

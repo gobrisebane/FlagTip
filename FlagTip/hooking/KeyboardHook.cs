@@ -93,9 +93,34 @@ namespace FlagTip.Hooking
 
 
 
-            if (isKeyDown && key == Keys.HangulMode)
+            //if (isKeyDown && key == Keys.HangulMode)
+            //{
+            //    caretController.NotifyImeToggle();
+            //    return CallNextHookEx(hookID, nCode, wParam, lParam);
+            //}
+
+            if (key == Keys.HangulMode)
             {
-                caretController.NotifyImeToggle();
+                if (isKeyDown)
+                {
+                    if (_hangulKeyPressed)
+                    {
+                        // 🔁 홀드 반복 → 무시
+                        return CallNextHookEx(hookID, nCode, wParam, lParam);
+                    }
+
+                    _hangulKeyPressed = true;
+
+                    // ✅ 첫 눌림만 처리
+                    caretController.NotifyImeToggle();
+                }
+                else
+                {
+                    // KeyUp → 상태 해제
+                    _hangulKeyPressed = false;
+                    caretController.NotifyImeToggle();
+                }
+
                 return CallNextHookEx(hookID, nCode, wParam, lParam);
             }
 
@@ -169,7 +194,7 @@ namespace FlagTip.Hooking
 
 
 
-            if (isKeyDown && IsTypingKey(key))
+            if (isKeyUp&& IsTypingKey(key))
             {
                 // return
                 caretController.NotifyTyping();
@@ -204,6 +229,29 @@ namespace FlagTip.Hooking
         };
 
 
+        private static bool _hangulKeyPressed = false;
+        
+
+    /*    private static HashSet<Keys> _pressedKeys = new();
+
+        private static bool IsKeyHold(Keys key, bool isKeyDown)
+        {
+            if (isKeyDown)
+            {
+                if (_pressedKeys.Contains(key))
+                    return true;   // 🔁 홀드 반복
+
+                _pressedKeys.Add(key);
+                return false;      // ✅ 첫 눌림
+            }
+            else
+            {
+                _pressedKeys.Remove(key);
+                return false;
+            }
+        }
+
+*/
 
 
 
