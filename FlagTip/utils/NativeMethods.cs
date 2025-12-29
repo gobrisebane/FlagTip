@@ -48,10 +48,10 @@ namespace FlagTip.Utils
 
 
         internal const int OBJID_CARET = -8;
-		internal static RECT prevCaretLocation;
+        internal static RECT prevCaretLocation;
 
 
-		[DllImport("user32.dll")]
+        [DllImport("user32.dll")]
         internal static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
 
         [DllImport("user32.dll")]
@@ -103,71 +103,71 @@ namespace FlagTip.Utils
 
 
         internal static class ExplorerInfo
-		{
-			[DllImport("user32.dll")]
-			static extern IntPtr GetForegroundWindow();
+        {
+            [DllImport("user32.dll")]
+            static extern IntPtr GetForegroundWindow();
 
-			[DllImport("user32.dll", CharSet = CharSet.Auto)]
-			static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
+            [DllImport("user32.dll", CharSet = CharSet.Auto)]
+            static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
 
-			public static string GetForegroundWindowClassName()
-			{
-				IntPtr hwnd = GetForegroundWindow();
-				StringBuilder className = new StringBuilder(256);
-				GetClassName(hwnd, className, className.Capacity);
-				return className.ToString();
-			}
-		}
-
-
-
-		// GetClientRect -> 클라이언트 좌표계 반환 (0,0 ~ width,height)
-		[DllImport("user32.dll", SetLastError = true)]
-		internal static extern bool GetClientRect(IntPtr hWnd, out RECT lpRect);
+            public static string GetForegroundWindowClassName()
+            {
+                IntPtr hwnd = GetForegroundWindow();
+                StringBuilder className = new StringBuilder(256);
+                GetClassName(hwnd, className, className.Capacity);
+                return className.ToString();
+            }
+        }
 
 
+
+        // GetClientRect -> 클라이언트 좌표계 반환 (0,0 ~ width,height)
+        [DllImport("user32.dll", SetLastError = true)]
+        internal static extern bool GetClientRect(IntPtr hWnd, out RECT lpRect);
 
 
 
 
 
 
-		// MOUSE HOOK 관련
 
-		internal const int WH_MOUSE_LL = 14;
 
-		internal enum MouseMessages
-		{
-			WM_LBUTTONDOWN = 0x0201,
-			WM_LBUTTONUP = 0x0202,
-			WM_MOUSEMOVE = 0x0200,
+        // MOUSE HOOK 관련
+
+        internal const int WH_MOUSE_LL = 14;
+
+        internal enum MouseMessages
+        {
+            WM_LBUTTONDOWN = 0x0201,
+            WM_LBUTTONUP = 0x0202,
+            WM_MOUSEMOVE = 0x0200,
             WM_MOUSEWHEEL = 0x020A,
             WM_MOUSEHWHEEL = 0x020E,
             WM_RBUTTONDOWN = 0x0204,
-			WM_RBUTTONUP = 0x0205,
+            WM_RBUTTONUP = 0x0205,
             WM_MBUTTONDOWN = 0x0207,
-            WM_MBUTTONUP = 0x0208, 
+            WM_MBUTTONUP = 0x0208,
             WM_XBUTTONDOWN = 0x020B,
             WM_XBUTTONUP = 0x020C
         }
 
-		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-		internal static extern IntPtr SetWindowsHookEx(int idHook,
-			LowLevelMouseProc lpfn, IntPtr hMod, uint dwThreadId);
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        internal static extern IntPtr SetWindowsHookEx(int idHook,
+            LowLevelMouseProc lpfn, IntPtr hMod, uint dwThreadId);
 
-		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-		[return: MarshalAs(UnmanagedType.Bool)]
-		internal static extern bool UnhookWindowsHookEx(IntPtr hhk);
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool UnhookWindowsHookEx(IntPtr hhk);
 
-		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-		internal static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode,
-			IntPtr wParam, IntPtr lParam);
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        internal static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode,
+            IntPtr wParam, IntPtr lParam);
 
-		[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-		internal static extern IntPtr GetModuleHandle(string lpModuleName);
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        internal static extern IntPtr GetModuleHandle(string lpModuleName);
 
 
-		internal delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
+        internal delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
 
 
         [StructLayout(LayoutKind.Sequential)]
@@ -337,5 +337,32 @@ namespace FlagTip.Utils
             out object varChild
         );
 
+
+
+
+        // SET WINDOW TOP-MOST
+
+        internal static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
+
+        internal const uint SWP_NOSIZE = 0x0001;
+        internal const uint SWP_NOMOVE = 0x0002;
+        internal const uint SWP_NOACTIVATE = 0x0010;
+        internal const uint SWP_SHOWWINDOW = 0x0040;
+
+        [DllImport("user32.dll", SetLastError = true)]
+        internal static extern bool SetWindowPos(
+            IntPtr hWnd,
+            IntPtr hWndInsertAfter,
+            int X,
+            int Y,
+            int cx,
+            int cy,
+            uint uFlags);
+
+
+
+        }
     }
-}
+
+
+

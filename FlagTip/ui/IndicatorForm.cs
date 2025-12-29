@@ -1,20 +1,14 @@
 ﻿using FlagTip.Ime;
 using FlagTip.models;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.IO.Ports;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static FlagTip.Utils.CommonUtils;
-
+using static FlagTip.Utils.NativeMethods;
 
 namespace FlagTip.UI
 {
-
     public class IndicatorForm : Form
     {
         [DllImport("user32.dll")]
@@ -26,14 +20,29 @@ namespace FlagTip.UI
         private const int GWL_EXSTYLE = -20;
         private const int WS_EX_TRANSPARENT = 0x20;
         private const int WS_EX_LAYERED = 0x80000;
-        private ImeTracker _imeTracker;
 
+        private const int WS_EX_TOOLWINDOW = 0x00000080;
+        private const int WS_EX_NOACTIVATE = 0x08000000;
+
+        private readonly ImeTracker _imeTracker;
+
+        protected override bool ShowWithoutActivation => true;
+
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams cp = base.CreateParams;
+                cp.ExStyle |= WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE;
+                return cp;
+            }
+        }
 
         public IndicatorForm(ImeTracker imeTracker)
         {
+            _imeTracker = imeTracker;
 
             FormBorderStyle = FormBorderStyle.None;
-            //BackColor = color;
             TopMost = true;
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.Manual;
@@ -41,19 +50,35 @@ namespace FlagTip.UI
             Height = 20;
             Opacity = 0;
 
-            //Opacity = 0.7;
-
-            _imeTracker = imeTracker;
-
-            // 폼 생성 직후 마우스 클릭 투과
             MakeClickThrough();
-            SetFlag();
+            _ = SetFlag();
+        }
+
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+            EnsureTopMost();
+        }
+
+        private void EnsureTopMost()
+        {
+            if (!IsHandleCreated)
+                return;
+
+            SetWindowPos(
+                Handle,
+                HWND_TOPMOST,
+                0,
+                0,
+                0,
+                0,
+                SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
         }
 
         private void MakeClickThrough()
         {
-            int exStyle = GetWindowLong(this.Handle, GWL_EXSTYLE);
-            SetWindowLong(this.Handle, GWL_EXSTYLE, exStyle | WS_EX_TRANSPARENT | WS_EX_LAYERED);
+            int exStyle = GetWindowLong(Handle, GWL_EXSTYLE);
+            SetWindowLong(Handle, GWL_EXSTYLE, exStyle | WS_EX_TRANSPARENT | WS_EX_LAYERED);
         }
 
         public void SetPosition(int x, int y, int width, int height)
@@ -63,6 +88,8 @@ namespace FlagTip.UI
                 Location = new Point(x, y);
                 Size = new Size(Math.Max(10, 6), Math.Max(6, 18));
                 Opacity = 0.7;
+
+                EnsureTopMost();
             }
             else
             {
@@ -72,40 +99,24 @@ namespace FlagTip.UI
 
         public async Task SetFlag()
         {
-
-
             await Task.Delay(10);
 
-            //var imeState = _imeTracker.DetectIme();
-            var imeState = _imeTracker.DetectIme();
-
-
+            ImeState imeState = _imeTracker.DetectIme();
 
             if (imeState == ImeState.KOR)
-            {
                 BackColor = Color.Blue;
-            }
-            else if(imeState == ImeState.ENG)
-            {
+            else if (imeState == ImeState.ENG)
                 BackColor = Color.Red;
-            } else
-            {
+            else
                 BackColor = Color.Yellow;
-            }
         }
-
-
 
         public void HideIndicator()
         {
-
-
             if (Opacity == 0)
                 return;
 
             Opacity = 0;
-
-
         }
     }
 }

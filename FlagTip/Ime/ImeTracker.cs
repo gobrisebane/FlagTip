@@ -114,7 +114,6 @@ namespace FlagTip.Ime
             IntPtr hTaskbar = FindWindow("Shell_TrayWnd", null);
             if (hTaskbar == IntPtr.Zero) return null;
 
-            // 트레이 윈도우를 우선 사용(없으면 taskbar rect 사용)
             IntPtr hTray = FindWindowEx(hTaskbar, IntPtr.Zero, "TrayNotifyWnd", null);
 
             RECT r;
@@ -127,13 +126,11 @@ namespace FlagTip.Ime
                 if (!GetWindowRect(hTaskbar, out r)) return null;
             }
 
-            // 기존처럼 “오른쪽 끝 일부”만 보겠다 -> rect 기반으로 계산
             int width = 250;
             int height = Math.Max(1, r.height - 8);
             int x = r.right - 280;
             int y = r.top + 4;
 
-            // 가상 화면 범위로 클램프
             Rectangle virtualScreen = SystemInformation.VirtualScreen;
             Rectangle wanted = new Rectangle(x, y, width, height);
             Rectangle clipped = Rectangle.Intersect(wanted, virtualScreen);
@@ -146,14 +143,46 @@ namespace FlagTip.Ime
                 Bitmap bmp = new Bitmap(clipped.Width, clipped.Height, PixelFormat.Format24bppRgb);
                 using (Graphics g = Graphics.FromImage(bmp))
                 {
-                    g.CopyFromScreen(clipped.Left, clipped.Top, 0, 0, bmp.Size, CopyPixelOperation.SourceCopy);
+                    g.CopyFromScreen(
+                        clipped.Left,
+                        clipped.Top,
+                        0,
+                        0,
+                        bmp.Size,
+                        CopyPixelOperation.SourceCopy);
                 }
+
+                // 🔽 🔽 🔽 캡처 이미지 저장 🔽 🔽 🔽
+                SaveDebugCapture(bmp);
+
                 return bmp;
             }
             catch (Win32Exception)
             {
-                // 잠금화면/보안데스크톱/상태 변화 등 일시적 실패 가능
                 return null;
+            }
+        }
+
+        private void SaveDebugCapture(Bitmap bmp)
+        {
+            try
+            {
+                string dir = Path.Combine(
+                    AppDomain.CurrentDomain.BaseDirectory,
+                    "debug_captures");
+
+                Directory.CreateDirectory(dir);
+
+                string file = Path.Combine(
+                    dir,
+                    $"ime_capture.png");
+
+                bmp.Save(file, ImageFormat.Png);
+                Console.WriteLine("[IME] capture saved: " + file);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("[IME] capture save failed: " + ex.Message);
             }
         }
 
