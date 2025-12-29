@@ -4,8 +4,8 @@ using OpenCvSharp.Extensions;
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
+using System.IO;
+using static FlagTip.Utils.NativeMethods;
 
 namespace FlagTip.Ime
 {
@@ -105,69 +105,27 @@ namespace FlagTip.Ime
             return false;
         }
 
-        private Bitmap? CaptureImeIcon()
+        private Bitmap CaptureImeIcon()
         {
             IntPtr hTaskbar = FindWindow("Shell_TrayWnd", null);
-            if (hTaskbar == IntPtr.Zero) return null;
+            if (hTaskbar == IntPtr.Zero)
+                return null;
 
-            // 트레이 윈도우를 우선 사용(없으면 taskbar rect 사용)
-            IntPtr hTray = FindWindowEx(hTaskbar, IntPtr.Zero, "TrayNotifyWnd", null);
+            if (!GetWindowRect(hTaskbar, out RECT taskbar))
+                return null;
 
-            RECT r;
-            if (hTray != IntPtr.Zero)
-            {
-                if (!GetWindowRect(hTray, out r)) return null;
-            }
-            else
-            {
-                if (!GetWindowRect(hTaskbar, out r)) return null;
-            }
-
-            // 기존처럼 “오른쪽 끝 일부”만 보겠다 -> rect 기반으로 계산
             int width = 250;
-            int height = Math.Max(1, r.height - 8);
-            int x = r.right - 280;
-            int y = r.top + 4;
+            int height = taskbar.height - 8;
+            int x = taskbar.right - 280;
+            int y = taskbar.top + 4;
 
-            // 가상 화면 범위로 클램프
-            Rectangle virtualScreen = SystemInformation.VirtualScreen;
-            Rectangle wanted = new Rectangle(x, y, width, height);
-            Rectangle clipped = Rectangle.Intersect(wanted, virtualScreen);
-
-            if (clipped.Width <= 0 || clipped.Height <= 0)
-                return null;
-
-            try
+            Bitmap bmp = new Bitmap(width, height, PixelFormat.Format24bppRgb);
+            using (Graphics g = Graphics.FromImage(bmp))
             {
-                Bitmap bmp = new Bitmap(clipped.Width, clipped.Height, PixelFormat.Format24bppRgb);
-                using (Graphics g = Graphics.FromImage(bmp))
-                {
-                    g.CopyFromScreen(clipped.Left, clipped.Top, 0, 0, bmp.Size, CopyPixelOperation.SourceCopy);
-                }
-                return bmp;
+                g.CopyFromScreen(x, y, 0, 0, bmp.Size);
             }
-            catch (Win32Exception)
-            {
-                // 잠금화면/보안데스크톱/상태 변화 등 일시적 실패 가능
-                return null;
-            }
-        }
 
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern IntPtr FindWindow(string lpClassName, string? lpWindowName);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter, string className, string? windowTitle);
-
-        [DllImport("user32.dll")]
-        private static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct RECT
-        {
-            public int left, top, right, bottom;
-            public int width => right - left;
-            public int height => bottom - top;
+            return bmp;
         }
     }
 }
