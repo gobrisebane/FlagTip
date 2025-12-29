@@ -1,249 +1,173 @@
 ﻿using FlagTip.models;
-using Microsoft.Win32;
+using OpenCvSharp;
+using OpenCvSharp.Extensions;
 using System;
-using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
-using System.IO;
 using System.Runtime.InteropServices;
-using static FlagTip.Utils.NativeMethods;
+using System.Windows.Forms;
 
 namespace FlagTip.Ime
 {
     public class ImeTracker
     {
-        private Bitmap _bmpKor;
-        private Bitmap _bmpEng;
-        private Bitmap _bmpKorDark;
-        private Bitmap _bmpEngDark;
-        private Bitmap _bmpKorLight;
-        private Bitmap _bmpEngLight;
+        private Mat _korDark;
+        private Mat _engDark;
 
-        [DllImport("user32.dll")]
-        static extern uint GetDpiForWindow(IntPtr hwnd);
 
         public ImeTracker()
         {
-            // 절대 경로 기준으로 이미지 로드
             string basePath = AppDomain.CurrentDomain.BaseDirectory;
 
-            string korDarkPath = Path.Combine(basePath, "resources/ime/kor_dark.png");
-            string engDarkPath = Path.Combine(basePath, "resources/ime/eng_dark.png");
-            string korLightPath = Path.Combine(basePath, "resources/ime/kor_dark.png");
-            string engLightPath = Path.Combine(basePath, "resources/ime/eng_dark.png");
+            _korDark = Cv2.ImRead(
+                Path.Combine(basePath, "resources/ime/kor_dark.png"),
+                ImreadModes.Grayscale);
 
-            _bmpKorDark = new Bitmap(korDarkPath);
-            _bmpEngDark = new Bitmap(engDarkPath);
-            _bmpKorLight = new Bitmap(korLightPath);
-            _bmpEngLight = new Bitmap(engLightPath);
+            _engDark = Cv2.ImRead(
+                Path.Combine(basePath, "resources/ime/eng_dark.png"),
+                ImreadModes.Grayscale);
         }
 
-        // 1️⃣ 캡쳐 + 2️⃣ 슬라이딩 비교 → 3️⃣ IME 상태 반환
         public ImeState DetectIme()
         {
-            Console.WriteLine("------------ DETECT IME CALL");
-
-            // 작업표시줄 핸들을 DPI 기준으로 사용 (캡쳐 대상과 동일)
-            IntPtr hTaskbar = FindWindow("Shell_TrayWnd", null);
-            if (hTaskbar == IntPtr.Zero)
-            {
-                Console.WriteLine("Taskbar not found");
-                return ImeState.UNKNOWN;
-            }
-
             Bitmap captured = CaptureImeIcon();
             if (captured == null)
                 return ImeState.UNKNOWN;
 
-            Point? korPos = FindTemplate(captured, _bmpKorDark, hTaskbar);
-            Point? engPos = FindTemplate(captured, _bmpEngDark, hTaskbar);
-
-            if (korPos.HasValue)
+            using (Mat src = BitmapConverter.ToMat(captured))
+            using (Mat gray = new Mat())
             {
-                Console.WriteLine("--- KOR");
-                return ImeState.KOR;
+                // 1️⃣ 그레이스케일
+                Cv2.CvtColor(src, gray, ColorConversionCodes.BGR2GRAY);
+
+                // 2️⃣ 살짝 블러
+                Cv2.GaussianBlur(gray, gray, new OpenCvSharp.Size(3, 3), 0);
+
+                if (Match(gray, _korDark))
+                {
+                    Console.WriteLine("KOR MATCH----");
+                    return ImeState.KOR;
+                }
+
+                if (Match(gray, _engDark))
+                {
+                    Console.WriteLine("ENG MATCH----");
+                    return ImeState.ENG;
+
+                }
             }
 
-            if (engPos.HasValue)
-            {
-                Console.WriteLine("--- ENG");
-                return ImeState.ENG;
-            }
-
-            Console.WriteLine("--- NONE");
             return ImeState.UNKNOWN;
         }
 
-        private bool IsTaskbarLightTheme()
+        private bool Match(Mat source, Mat template)
         {
-            const string keyPath =
-        @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
+            double[] scales = { 1.0, 1.25, 1.5 };
 
-            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(keyPath))
+            foreach (double scale in scales)
             {
-                if (key == null)
-                    return true; // 기본값은 Light
+                using (Mat resized = template.Resize(
+                    new OpenCvSharp.Size(
+                        (int)(template.Width * scale),
+                        (int)(template.Height * scale))))
+                {
+                    if (resized.Width >= source.Width ||
+                        resized.Height >= source.Height)
+                        continue;
 
-                object value = key.GetValue("SystemUsesLightTheme");
-                if (value == null)
-                    return true;
+                    using (Mat result = new Mat())
+                    {
+                        Cv2.MatchTemplate(
+                            source,
+                            resized,
+                            result,
+                            TemplateMatchModes.CCoeffNormed);
 
-                return (int)value == 1;
+                        double minVal, maxVal;
+                        OpenCvSharp.Point minLoc, maxLoc;
+
+                        Cv2.MinMaxLoc(
+                            result,
+                            out minVal,
+                            out maxVal,
+                            out minLoc,
+                            out maxLoc);
+
+                        Console.WriteLine(
+                            $"[IME] scale={scale:F2}, score={maxVal:F3}");
+
+                        if (maxVal >= 0.7)
+                            return true;
+                    }
+                }
             }
+
+            return false;
         }
 
-        // 캡쳐만 수행
-        private Bitmap CaptureImeIcon()
+        private Bitmap? CaptureImeIcon()
         {
-            // 작업표시줄 찾기
             IntPtr hTaskbar = FindWindow("Shell_TrayWnd", null);
-            if (hTaskbar == IntPtr.Zero)
+            if (hTaskbar == IntPtr.Zero) return null;
+
+            // 트레이 윈도우를 우선 사용(없으면 taskbar rect 사용)
+            IntPtr hTray = FindWindowEx(hTaskbar, IntPtr.Zero, "TrayNotifyWnd", null);
+
+            RECT r;
+            if (hTray != IntPtr.Zero)
             {
-                Console.WriteLine("Taskbar not found");
-                return null;
+                if (!GetWindowRect(hTray, out r)) return null;
+            }
+            else
+            {
+                if (!GetWindowRect(hTaskbar, out r)) return null;
             }
 
-            if (!GetWindowRect(hTaskbar, out RECT taskbar))
-            {
-                Console.WriteLine("Failed to get taskbar rect");
-                return null;
-            }
-
+            // 기존처럼 “오른쪽 끝 일부”만 보겠다 -> rect 기반으로 계산
             int width = 250;
-            int height = taskbar.height - 8;
-            int x = taskbar.right - 280;
-            int y = taskbar.top + 4;
+            int height = Math.Max(1, r.height - 8);
+            int x = r.right - 280;
+            int y = r.top + 4;
 
-            Bitmap bmp = new Bitmap(width, height);
-            using (Graphics g = Graphics.FromImage(bmp))
-            {
-                g.CopyFromScreen(x, y, 0, 0, bmp.Size);
-            }
+            // 가상 화면 범위로 클램프
+            Rectangle virtualScreen = SystemInformation.VirtualScreen;
+            Rectangle wanted = new Rectangle(x, y, width, height);
+            Rectangle clipped = Rectangle.Intersect(wanted, virtualScreen);
 
-            // 선택 사항: 캡쳐 파일 저장
-            bmp.Save("ime_capture.png", ImageFormat.Png);
-            Console.WriteLine("IME icon captured: ime_capture.png");
-
-            return bmp;
-        }
-
-        private Point? FindTemplate(Bitmap bigBmp, Bitmap smallBmp, IntPtr hwndForDpi)
-        {
-            // 1️⃣ DPI scale 계산 (딱 한 번)
-            float scale = GetDpiForWindow(hwndForDpi) / 96f;
-            Console.WriteLine("CURRENT scale : " + scale);
-
-            Bitmap template = smallBmp;
-            bool shouldDisposeTemplate = false;
+            if (clipped.Width <= 0 || clipped.Height <= 0)
+                return null;
 
             try
             {
-                // 2️⃣ template DPI 리사이즈 (딱 한 번)
-                if (Math.Abs(scale - 1.0f) > 0.01f)
+                Bitmap bmp = new Bitmap(clipped.Width, clipped.Height, PixelFormat.Format24bppRgb);
+                using (Graphics g = Graphics.FromImage(bmp))
                 {
-                    template = new Bitmap(
-                        (int)(smallBmp.Width * scale),
-                        (int)(smallBmp.Height * scale));
-
-                    shouldDisposeTemplate = true;
-
-                    using (Graphics g = Graphics.FromImage(template))
-                    {
-                        g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                        g.DrawImage(
-                            smallBmp,
-                            0, 0,
-                            template.Width,
-                            template.Height);
-                    }
+                    g.CopyFromScreen(clipped.Left, clipped.Top, 0, 0, bmp.Size, CopyPixelOperation.SourceCopy);
                 }
-
-                // 3️⃣ 기존 로직 그대로 (template만 교체)
-                int w = bigBmp.Width - template.Width;
-                int h = bigBmp.Height - template.Height;
-
-                for (int y = 0; y <= h; y++)
-                {
-                    for (int x = 0; x <= w; x++)
-                    {
-                        if (IsMatch(bigBmp, template, x, y))
-                            return new Point(x, y);
-                    }
-                }
-
+                return bmp;
+            }
+            catch (Win32Exception)
+            {
+                // 잠금화면/보안데스크톱/상태 변화 등 일시적 실패 가능
                 return null;
             }
-            finally
-            {
-                if (shouldDisposeTemplate && template != null)
-                    template.Dispose();
-            }
         }
 
-        private unsafe bool IsMatch(
-    Bitmap big,
-    Bitmap small,
-    int offsetX,
-    int offsetY,
-    int tolerance = 130)
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern IntPtr FindWindow(string lpClassName, string? lpWindowName);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter, string className, string? windowTitle);
+
+        [DllImport("user32.dll")]
+        private static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct RECT
         {
-            Rectangle rectBig = new Rectangle(0, 0, big.Width, big.Height);
-            Rectangle rectSmall = new Rectangle(0, 0, small.Width, small.Height);
-
-            BitmapData bdBig = big.LockBits(rectBig, ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-            BitmapData bdSmall = small.LockBits(rectSmall, ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-
-            try
-            {
-                byte* ptrBig = (byte*)bdBig.Scan0;
-                byte* ptrSmall = (byte*)bdSmall.Scan0;
-
-                int strideBig = bdBig.Stride;
-                int strideSmall = bdSmall.Stride;
-
-                for (int y = 0; y < small.Height; y++)
-                {
-                    byte* rowBig = ptrBig + (y + offsetY) * strideBig + offsetX * 4;
-                    byte* rowSmall = ptrSmall + y * strideSmall;
-
-                    for (int x = 0; x < small.Width; x++)
-                    {
-                        // small (template)
-                        byte b2 = rowSmall[0];
-                        byte g2 = rowSmall[1];
-                        byte r2 = rowSmall[2];
-
-                        // ✅ 핵심 추가: 템플릿의 흰 배경은 무시
-                        if (r2 > 240 && g2 > 240 && b2 > 240)
-                        {
-                            rowBig += 4;
-                            rowSmall += 4;
-                            continue;
-                        }
-
-                        // big (captured)
-                        byte b1 = rowBig[0];
-                        byte g1 = rowBig[1];
-                        byte r1 = rowBig[2];
-
-                        if (Math.Abs(r1 - r2) > tolerance ||
-                            Math.Abs(g1 - g2) > tolerance ||
-                            Math.Abs(b1 - b2) > tolerance)
-                            return false;
-
-                        rowBig += 4;
-                        rowSmall += 4;
-                    }
-                }
-
-                return true;
-            }
-            finally
-            {
-                big.UnlockBits(bdBig);
-                small.UnlockBits(bdSmall);
-            }
+            public int left, top, right, bottom;
+            public int width => right - left;
+            public int height => bottom - top;
         }
     }
 }

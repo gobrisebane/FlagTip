@@ -74,8 +74,9 @@ namespace FlagTip.UI
         {
 
 
-            await Task.Delay(10); // ⏱ UI 멈추지 않는 10ms 딜레이
+            await Task.Delay(10);
 
+            //var imeState = _imeTracker.DetectIme();
             var imeState = _imeTracker.DetectIme();
 
 

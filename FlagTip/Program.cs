@@ -18,14 +18,19 @@ namespace FlagTip
     internal class Program
     {
 
+        [DllImport("user32.dll")]
+        static extern bool SetProcessDpiAwarenessContext(IntPtr value);
 
+        static readonly IntPtr DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2
+            = new IntPtr(-4);
 
         // -------------------- Main --------------------
         [STAThread]
         static void Main(string[] args)
         {
 
-
+            SetProcessDpiAwarenessContext(
+        DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
