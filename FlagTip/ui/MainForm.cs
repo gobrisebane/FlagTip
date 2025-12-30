@@ -114,14 +114,30 @@ namespace FlagTip
         private async void OnForegroundChanged(IntPtr hwnd, string processName)
         {
 
+            //await Task.Delay(50);
+            //await Task.Delay(100);
+             //_indicatorForm.HideIndicator();
+
             BeginInvoke(new Action(async () =>
             {
                 Console.WriteLine($"--------------Foreground: {processName}");
 
-                await Task.Delay(50);
+                //await Task.Delay(50);
+                //await Task.Delay(100);
+                //_indicatorForm.HideIndicator();
+                //await Task.Delay(1000);
 
                 await _indicatorForm.SetFlag();
                 await _caretController.SelectMode();
+
+
+                for (int i = 0; i < 3; i++)
+                {
+                    await _indicatorForm.SetFlag();
+                    await Task.Delay(50);
+                }
+
+
             }));
         }
 

@@ -139,7 +139,7 @@ namespace FlagTip.UI
 
         public async Task SetFlag()
         {
-            await Task.Delay(10);
+            await Task.Delay(50);
 
             ImeState imeState = _imeTracker.DetectIme();
 
