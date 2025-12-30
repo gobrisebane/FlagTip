@@ -2,71 +2,135 @@
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
 using System;
+using System.ComponentModel; // 추가
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using static FlagTip.Utils.NativeMethods;
-using System.ComponentModel; // 추가
+using System.Diagnostics;
 
 
 namespace FlagTip.Ime
 {
     public class ImeTracker
     {
-        private Mat _korDark;
-        private Mat _engDark;
+        private Mat _korEdge;
+        private Mat _engEdge;
 
 
         public ImeTracker()
         {
             string basePath = AppDomain.CurrentDomain.BaseDirectory;
 
-            _korDark = Cv2.ImRead(
+            // 🔑 입력과 동일한 커널
+            Mat kernel = Cv2.GetStructuringElement(
+                MorphShapes.Rect,
+                new OpenCvSharp.Size(2, 2));
+
+            // --- KOR 템플릿 ---
+            _korEdge = Cv2.ImRead(
                 Path.Combine(basePath, "resources/ime/kor_dark.png"),
                 ImreadModes.Grayscale);
 
-            _engDark = Cv2.ImRead(
+            Cv2.Canny(_korEdge, _korEdge, 20, 80);
+            Cv2.Dilate(_korEdge, _korEdge, kernel);   // ⭐ 핵심
+
+            // --- ENG 템플릿 ---
+            _engEdge = Cv2.ImRead(
                 Path.Combine(basePath, "resources/ime/eng_dark.png"),
                 ImreadModes.Grayscale);
+
+            Cv2.Canny(_engEdge, _engEdge, 20, 80);
+            Cv2.Dilate(_engEdge, _engEdge, kernel);   // ⭐ 핵심
+
         }
 
         public ImeState DetectIme()
         {
+
+            SaveTemplateEdge(_korEdge, "kor_edge.png");
+            SaveTemplateEdge(_engEdge, "eng_edge.png");
+
+
             Bitmap captured = CaptureImeIcon();
             if (captured == null)
                 return ImeState.UNKNOWN;
 
             using (Mat src = BitmapConverter.ToMat(captured))
             using (Mat gray = new Mat())
+            using (Mat edges = new Mat())
             {
-                // 1️⃣ 그레이스케일
                 Cv2.CvtColor(src, gray, ColorConversionCodes.BGR2GRAY);
+                //Cv2.Canny(gray, edges, 40, 120);
+                Cv2.Canny(gray, edges, 20, 80);
+                //Cv2.Canny(gray, edges, 10, 50);
 
-                // 2️⃣ 살짝 블러
-                Cv2.GaussianBlur(gray, gray, new OpenCvSharp.Size(3, 3), 0);
 
-                if (Match(gray, _korDark))
+                var kernel = Cv2.GetStructuringElement(
+                MorphShapes.Rect,
+                new OpenCvSharp.Size(2, 2));
+
+                Cv2.Dilate(edges, edges, kernel);
+
+
+
+                // 🔍 디버그용 저장 (여기!)
+                SaveDebugCapture(src);
+                SaveDebugEdge(edges);
+
+                if (Match(edges, _korEdge,"kor"))
                 {
-                    Console.WriteLine("KOR MATCH----");
                     return ImeState.KOR;
                 }
 
-                if (Match(gray, _engDark))
+                if (Match(edges, _engEdge,"eng"))
                 {
-                    Console.WriteLine("ENG MATCH----");
                     return ImeState.ENG;
-
                 }
             }
+
+
+
+
+
+
+
 
             return ImeState.UNKNOWN;
         }
 
-        private bool Match(Mat source, Mat template)
+
+        private void SaveTemplateEdge(Mat edge, string fileName)
         {
-            double[] scales = { 1.0, 1.25, 1.5 };
+            try
+            {
+                string dir = Path.Combine(
+                    AppDomain.CurrentDomain.BaseDirectory,
+                    "debug_captures");
+
+                Directory.CreateDirectory(dir);
+
+                Cv2.ImWrite(Path.Combine(dir, fileName), edge);
+            }
+            catch { }
+        }
+
+
+
+
+
+
+
+
+
+
+        private bool Match(Mat source, Mat template, String name)
+        {
+
+
+            double[] scales = { 1.0, 1.35};
 
             foreach (double scale in scales)
             {
@@ -87,24 +151,26 @@ namespace FlagTip.Ime
                             result,
                             TemplateMatchModes.CCoeffNormed);
 
-                        double minVal, maxVal;
-                        OpenCvSharp.Point minLoc, maxLoc;
-
                         Cv2.MinMaxLoc(
                             result,
-                            out minVal,
-                            out maxVal,
-                            out minLoc,
-                            out maxLoc);
+                            out double minVal,
+                            out double maxVal,
+                            out _,
+                            out _);
 
+                        Console.WriteLine("source : " + name);
                         Console.WriteLine(
-                            $"[IME] scale={scale:F2}, score={maxVal:F3}");
+                            $"[IME-EDGE] scale={scale:F2}, score={maxVal:F3}");
 
-                        if (maxVal >= 0.7)
-                            return true;
+                        // ⭐ Edge는 점수가 낮다
+                        if (maxVal >= 0.45)
+
+                        
+                        return true;
                     }
                 }
             }
+
 
             return false;
         }
@@ -140,7 +206,11 @@ namespace FlagTip.Ime
 
             try
             {
-                Bitmap bmp = new Bitmap(clipped.Width, clipped.Height, PixelFormat.Format24bppRgb);
+                Bitmap bmp = new Bitmap(
+                    clipped.Width,
+                    clipped.Height,
+                    PixelFormat.Format24bppRgb);
+
                 using (Graphics g = Graphics.FromImage(bmp))
                 {
                     g.CopyFromScreen(
@@ -152,10 +222,7 @@ namespace FlagTip.Ime
                         CopyPixelOperation.SourceCopy);
                 }
 
-                // 🔽 🔽 🔽 캡처 이미지 저장 🔽 🔽 🔽
-                SaveDebugCapture(bmp);
-
-                return bmp;
+                return bmp; // 🔴 저장/가공 ❌
             }
             catch (Win32Exception)
             {
@@ -163,7 +230,7 @@ namespace FlagTip.Ime
             }
         }
 
-        private void SaveDebugCapture(Bitmap bmp)
+        private void SaveDebugCapture(Mat src)
         {
             try
             {
@@ -172,18 +239,23 @@ namespace FlagTip.Ime
                     "debug_captures");
 
                 Directory.CreateDirectory(dir);
-
-                string file = Path.Combine(
-                    dir,
-                    $"ime_capture.png");
-
-                bmp.Save(file, ImageFormat.Png);
-                Console.WriteLine("[IME] capture saved: " + file);
+                Cv2.ImWrite(Path.Combine(dir, "ime_capture.png"), src);
             }
-            catch (Exception ex)
+            catch { }
+        }
+
+        private void SaveDebugEdge(Mat edge)
+        {
+            try
             {
-                Console.WriteLine("[IME] capture save failed: " + ex.Message);
+                string dir = Path.Combine(
+                    AppDomain.CurrentDomain.BaseDirectory,
+                    "debug_captures");
+
+                Directory.CreateDirectory(dir);
+                Cv2.ImWrite(Path.Combine(dir, "ime_edge.png"), edge);
             }
+            catch { }
         }
 
 

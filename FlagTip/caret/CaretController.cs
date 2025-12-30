@@ -145,13 +145,9 @@ namespace FlagTip.Caret
         {
 
             var sw = Stopwatch.StartNew();   // ⏱ 시작
-            Console.WriteLine("notify!");
+            //Console.WriteLine("notify!");
            
             
-            //await Task.Delay(5);
-            //_imeTracker.DetectIme();
-
-
             //await Task.Delay(50);
 
             SetFlag();
