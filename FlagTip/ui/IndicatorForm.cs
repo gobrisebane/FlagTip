@@ -2,6 +2,7 @@
 using FlagTip.models;
 using System;
 using System.Drawing;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -11,11 +12,12 @@ namespace FlagTip.UI
 {
     public class IndicatorForm : Form
     {
-        [DllImport("user32.dll")]
-        private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
 
-        [DllImport("user32.dll")]
-        private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+
+        private PictureBox _flagBox;
+        private Image _korFlag;
+        private Image _engLowerFlag;
+        private Image _engUpperFlag;
 
         private const int GWL_EXSTYLE = -20;
         private const int WS_EX_TRANSPARENT = 0x20;
@@ -48,7 +50,23 @@ namespace FlagTip.UI
             StartPosition = FormStartPosition.Manual;
             Width = 6;
             Height = 20;
-            Opacity = 0;
+            Opacity = FLAG_OPACITY;
+
+
+            string basePath = AppDomain.CurrentDomain.BaseDirectory;
+            _korFlag = Image.FromFile(Path.Combine(basePath, "resources/flag/flag_kor.png"));
+            _engLowerFlag = Image.FromFile(Path.Combine(basePath, "resources/flag/flag_eng_lo.png"));
+            _engUpperFlag = Image.FromFile(Path.Combine(basePath, "resources/flag/flag_eng_up.png"));
+
+            _flagBox = new PictureBox
+            {
+                Dock = DockStyle.Fill,
+                SizeMode = PictureBoxSizeMode.StretchImage,
+                BackColor = Color.Transparent
+            };
+
+            Controls.Add(_flagBox);
+
 
             MakeClickThrough();
             _ = SetFlag();
@@ -81,13 +99,20 @@ namespace FlagTip.UI
             SetWindowLong(Handle, GWL_EXSTYLE, exStyle | WS_EX_TRANSPARENT | WS_EX_LAYERED);
         }
 
+
+        private const int OFFSET_X = 3;
+        private const int OFFSET_Y = 19;
+        private const int INDICATOR_WIDTH = 15;
+        private const int INDICATOR_HEIGHT = 10;
+        private const double FLAG_OPACITY = 0.70;
+
         public void SetPosition(int x, int y, int width, int height)
         {
             if (x != 0 && y != 0)
             {
-                Location = new Point(x, y);
-                Size = new Size(Math.Max(10, 6), Math.Max(6, 18));
-                Opacity = 0.7;
+                Location = new Point(x + OFFSET_X, y + OFFSET_Y);
+                Size = new Size(INDICATOR_WIDTH, INDICATOR_HEIGHT);
+                Opacity = FLAG_OPACITY;
 
                 EnsureTopMost();
             }
@@ -97,21 +122,35 @@ namespace FlagTip.UI
             }
         }
 
+
+
         public async Task SetFlag()
         {
             await Task.Delay(10);
 
             ImeState imeState = _imeTracker.DetectIme();
 
-            Console.WriteLine("---------FINAL-imeState : " + imeState);
+            switch (imeState)
+            {
+                case ImeState.KOR:
+                    _flagBox.Image = _korFlag;
+                    Opacity = FLAG_OPACITY;
+                    break;
 
+                case ImeState.ENG_LO:
+                    _flagBox.Image = _engLowerFlag;
+                    Opacity = FLAG_OPACITY;
+                    break;
 
-            if (imeState == ImeState.KOR)
-                BackColor = Color.Red;
-            else if (imeState == ImeState.ENG)
-                BackColor = Color.Blue;
-            else
-                BackColor = Color.Yellow;
+                case ImeState.ENG_UP:
+                    _flagBox.Image = _engUpperFlag;
+                    Opacity = FLAG_OPACITY;
+                    break;
+
+                default:
+                    Opacity = 0;
+                    break;
+            }
         }
 
         public void HideIndicator()

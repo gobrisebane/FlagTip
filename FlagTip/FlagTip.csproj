@@ -162,10 +162,16 @@
     <Folder Include="_bk\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="resources\ime\eng_dark.png">
+    <Content Include="resources\flag\flag_eng_lo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\ime\eng_dark_big.png">
+    <Content Include="resources\flag\flag_eng_up.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\flag\flag_kor.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ime\eng_dark.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\ime\eng_edge.png">
@@ -175,9 +181,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\ime\kor_dark.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="resources\ime\kor_dark_big.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\ime\kor_edge.png">

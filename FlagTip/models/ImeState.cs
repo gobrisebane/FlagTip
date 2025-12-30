@@ -11,7 +11,9 @@ namespace FlagTip.models
     {
         KOR = 0,
         ENG = 1,
-        UNKNOWN = 2
+        ENG_LO = 2,
+        ENG_UP = 3,
+        UNKNOWN = 4
 
     }
 }

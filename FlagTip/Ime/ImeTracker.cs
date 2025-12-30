@@ -36,21 +36,21 @@ namespace FlagTip.Ime
             string basePath = AppDomain.CurrentDomain.BaseDirectory;
 
 
-            /*Mat kernel = Cv2.GetStructuringElement(
+            Mat kernel = Cv2.GetStructuringElement(
                 MorphShapes.Rect,
                 new OpenCvSharp.Size(2, 2));
+            /*
+                        _korEdge = Cv2.ImRead(
+                            Path.Combine(basePath, "resources/ime/kor_dark.png"),
+                            ImreadModes.Grayscale);
+                        Cv2.Canny(_korEdge, _korEdge, 20, 80);
+                        Cv2.Dilate(_korEdge, _korEdge, kernel);   // ⭐ 핵심
 
-            _korEdge = Cv2.ImRead(
-                Path.Combine(basePath, "resources/ime/kor_dark.png"),
-                ImreadModes.Grayscale);
-            Cv2.Canny(_korEdge, _korEdge, 20, 80);
-            Cv2.Dilate(_korEdge, _korEdge, kernel);   // ⭐ 핵심
-
-            _engEdge = Cv2.ImRead(
-                Path.Combine(basePath, "resources/ime/eng_dark.png"),
-                ImreadModes.Grayscale);
-            Cv2.Canny(_engEdge, _engEdge, 20, 80);
-            Cv2.Dilate(_engEdge, _engEdge, kernel);   // ⭐ 핵심
+                        _engEdge = Cv2.ImRead(
+                            Path.Combine(basePath, "resources/ime/eng_dark.png"),
+                            ImreadModes.Grayscale);
+                        Cv2.Canny(_engEdge, _engEdge, 20, 80);
+                        Cv2.Dilate(_engEdge, _engEdge, kernel);   // ⭐ 핵심
             */
 
 
@@ -66,12 +66,22 @@ namespace FlagTip.Ime
                 Path.Combine(basePath, "resources/ime/eng_edge.png"),
                 ImreadModes.Grayscale);
 
+
+
+
+
+
             if (_engEdge.Empty())
                 throw new Exception("eng_edge.png 로드 실패");
 
 
 
+        }
 
+
+        internal bool IsCapsLockOn()
+        {
+            return (GetKeyState(VK_CAPITAL) & 0x0001) != 0;
         }
 
         public ImeState DetectIme()
@@ -101,22 +111,26 @@ namespace FlagTip.Ime
 
 
                 // 🔍 디버그용 저장 (여기!)
-                //SaveDebugCapture(src);
-                //SaveDebugEdge(edges);
+                SaveDebugCapture(src);
 
 
-                if (Match(edges, _korEdge, "kor"))
+
+                if (Match(edges, _engEdge, "eng"))
+                {
+                    if (IsCapsLockOn())
+                        imeResult = ImeState.ENG_UP;
+                    else
+                        imeResult = ImeState.ENG_LO;
+                }
+                else if (Match(edges, _korEdge, "kor"))
                 {
                     imeResult = ImeState.KOR;
-
-                } else  if (Match(edges, _engEdge, "eng"))
-                {
-                    imeResult = ImeState.ENG;
                 }
                 else
                 {
                     imeResult = WindowsImeDetector.GetWindowsImeState();
                 }
+
             }
 
 
@@ -157,10 +171,10 @@ namespace FlagTip.Ime
                         Cv2.MatchTemplate(source, resized, result, TemplateMatchModes.CCoeffNormed);
                         Cv2.MinMaxLoc(result, out _, out double maxVal, out _, out _);
 
-                        /*
+                        
                         Console.WriteLine(
                          $"[IME] method={name} scale={scale:F2}, score={maxVal:F3}");
-                        */
+                        
 
                           if (maxVal >= 0.65)
                             return true;

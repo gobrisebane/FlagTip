@@ -231,18 +231,11 @@ namespace FlagTip.Utils
             out int lpfdwSentence
         );
 
-        //internal static class User32
-        //{
-        //    [DllImport("user32.dll")]
-        //    internal static extern bool GetGUIThreadInfo(
-        //        int idThread,
-        //        ref GUITHREADINFO lpgui);
-        //}
 
 
 
 
-        // IME V2
+        internal const int VK_CAPITAL = 0x14;
 
         [DllImport("user32.dll")]
         internal static extern short GetKeyState(int nVirtKey);
@@ -364,7 +357,16 @@ namespace FlagTip.Utils
         [DllImport("user32.dll")]
         internal static extern uint GetDpiForWindow(IntPtr hwnd);
 
-        
+
+
+
+        [DllImport("user32.dll")]
+        internal static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+
+        [DllImport("user32.dll")]
+        internal static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+
+
 
     }
     }
