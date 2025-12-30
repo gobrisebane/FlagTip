@@ -3,19 +3,31 @@ using OpenCvSharp;
 using OpenCvSharp.Extensions;
 using System;
 using System.ComponentModel; // 추가
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using static FlagTip.Utils.NativeMethods;
-using System.Diagnostics;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 
 namespace FlagTip.Ime
 {
+
+  
+
+
+
+
+
     public class ImeTracker
     {
+
+        [DllImport("user32.dll")]
+        static extern uint GetDpiForWindow(IntPtr hwnd);
+
         private Mat _korEdge;
         private Mat _engEdge;
 
@@ -23,7 +35,6 @@ namespace FlagTip.Ime
         public ImeTracker()
         {
             string basePath = AppDomain.CurrentDomain.BaseDirectory;
-
 
 
             Mat kernel = Cv2.GetStructuringElement(
@@ -94,15 +105,15 @@ namespace FlagTip.Ime
 
 
                 // 🔍 디버그용 저장 (여기!)
-                //SaveDebugCapture(src);
-                //SaveDebugEdge(edges);
+                SaveDebugCapture(src);
+                SaveDebugEdge(edges);
 
-                if (Match(edges, _korEdge,"kor"))
+                if (Match(edges, _korEdge, "kor"))
                 {
                     return ImeState.KOR;
                 }
 
-                if (Match(edges, _engEdge,"eng"))
+                if (Match(edges, _engEdge, "eng"))
                 {
                     return ImeState.ENG;
                 }
@@ -171,7 +182,7 @@ namespace FlagTip.Ime
                          $"[IME] method={name} scale={scale:F2}, score={maxVal:F3}");
 
                         if (maxVal >= 0.65)
-                          //if (maxVal >= 0.45)
+                            //if (maxVal >= 0.45)
                             return true;
                     }
                 }
@@ -196,10 +207,20 @@ namespace FlagTip.Ime
                 if (!GetWindowRect(hTaskbar, out r)) return null;
             }
 
-            int width = 250;
-            int height = Math.Max(1, r.height - 8);
-            int x = r.right - 280;
-            int y = r.top + 4;
+            // ⭐ DPI 스케일 (Taskbar 기준)
+            float dpiScale = GetDpiForWindow(hTaskbar) / 96f;
+
+            // 100% 기준 값들
+            int logicalWidth = 250;
+            int logicalOffset = 280;
+            int logicalTopPadding = 4;
+            int logicalHeightPadding = 8;
+
+            int width = (int)(logicalWidth * dpiScale);
+            int height = Math.Max(1, r.height - (int)(logicalHeightPadding * dpiScale));
+
+            int x = r.right - (int)(logicalOffset * dpiScale);
+            int y = r.top + (int)(logicalTopPadding * dpiScale);
 
             Rectangle virtualScreen = SystemInformation.VirtualScreen;
             Rectangle wanted = new Rectangle(x, y, width, height);
@@ -226,7 +247,7 @@ namespace FlagTip.Ime
                         CopyPixelOperation.SourceCopy);
                 }
 
-                return bmp; // 🔴 저장/가공 ❌
+                return bmp;
             }
             catch (Win32Exception)
             {
@@ -266,3 +287,5 @@ namespace FlagTip.Ime
 
     }
 }
+
+

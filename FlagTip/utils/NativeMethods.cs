@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenCvSharp;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -360,8 +361,12 @@ namespace FlagTip.Utils
             uint uFlags);
 
 
+        [DllImport("user32.dll")]
+        internal static extern uint GetDpiForWindow(IntPtr hwnd);
 
-        }
+        
+
+    }
     }
 
 

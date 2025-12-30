@@ -40,8 +40,6 @@ namespace FlagTip
         private ImeTracker _imeTracker;
 
 
-
-
         public MainForm()
         {
             InitializeComponent();
@@ -54,6 +52,7 @@ namespace FlagTip
 
             Init();
         }
+
 
 
         private void Init()

@@ -7,6 +7,7 @@ using FlagTip.models;
 using FlagTip.Tracking;
 using FlagTip.UI;
 using FlagTip.Utils;
+using OpenCvSharp;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -68,6 +69,9 @@ namespace FlagTip.Caret
             _indicatorForm = indicatorForm;
             _imeTracker =  imeTracker;
             _cursorHelper = new CursorHelper(_indicatorForm);
+
+
+
         }
 
 
@@ -228,7 +232,6 @@ namespace FlagTip.Caret
             await SelectMode();
         }
 
-   
 
         public async Task SelectMode(int delayMs = 50)
         {
@@ -249,7 +252,7 @@ namespace FlagTip.Caret
 
 
 
-              
+
 
                 bool isCursorApp = CursorAppList.Contains(_processName);
 
@@ -337,6 +340,7 @@ namespace FlagTip.Caret
             SetFlagPosition();
 
 
+            Console.WriteLine($" >>>>> DPI = {NativeMethods.GetDpiForWindow(_hwnd)}");
 
 
             //_imeTracker.DetectIme();
@@ -456,7 +460,7 @@ namespace FlagTip.Caret
                 }
              }
 
-            
+
 
 
             //GUIThreadHelper.TryGetCaretFromGUIThreadInfo(_hwnd, out _rect);
@@ -477,6 +481,9 @@ namespace FlagTip.Caret
 
             //UIAHelper.TryGetCaretFromUIA(out _rect);
             //_method = CaretMethod.UIA;
+
+
+
 
         }
 
@@ -521,6 +528,7 @@ namespace FlagTip.Caret
 
         }
 
+    
 
 
 
@@ -528,6 +536,7 @@ namespace FlagTip.Caret
 
 
     }
+
 
 
 
