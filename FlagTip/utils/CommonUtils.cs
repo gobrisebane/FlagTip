@@ -7,9 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using static FlagTip.config.AppList;
-
 using static FlagTip.Utils.NativeMethods;
-
 //using static FlagTip.Input.Native.Imm32;
 using static FlagTip.Input.Native.User32;
 
@@ -137,6 +135,48 @@ namespace FlagTip.Utils
         }
 
 
+      
+
+
+        internal static ImeState GetImeState()
+        {
+
+            IntPtr fg = GetForegroundWindow();
+            if (fg == IntPtr.Zero)
+                return ImeState.ENG;
+
+            uint targetTid = GetWindowThreadProcessId(fg, IntPtr.Zero);
+
+            GUITHREADINFO info = new GUITHREADINFO
+            {
+                cbSize = Marshal.SizeOf<GUITHREADINFO>()
+            };
+
+            if (!User32.GetGUIThreadInfo((int)targetTid, ref info))
+                return ImeState.ENG;
+
+            IntPtr hwnd = info.hwndFocus != IntPtr.Zero
+                ? info.hwndFocus
+                : fg;
+
+            //if (info.hwndFocus != IntPtr.Zero)
+            //{
+            //    hwnd = info.hwndFocus;
+            //}
+
+            int r = IsKoreanIMEUsingIMM32(hwnd);
+
+            if (r == 1)
+                return ImeState.KOR;
+
+            if (r == 0)
+                return ImeState.ENG;
+
+            return ImeState.ENG;
+        }
+
+
+
         internal static int IsKoreanIMEUsingIMM32(IntPtr hWnd)
         {
             const int IMC_GETCONVERSIONMODE = 0x1;
@@ -194,44 +234,6 @@ namespace FlagTip.Utils
             }
         }
 
-
-        internal static ImeState GetImeState()
-        {
-
-            IntPtr fg = GetForegroundWindow();
-            if (fg == IntPtr.Zero)
-                return ImeState.ENG;
-
-            uint targetTid = GetWindowThreadProcessId(fg, IntPtr.Zero);
-
-            GUITHREADINFO info = new GUITHREADINFO
-            {
-                cbSize = Marshal.SizeOf<GUITHREADINFO>()
-            };
-
-            if (!User32.GetGUIThreadInfo((int)targetTid, ref info))
-                return ImeState.ENG;
-
-            IntPtr hwnd = info.hwndFocus != IntPtr.Zero
-                ? info.hwndFocus
-                : fg;
-
-            //if (info.hwndFocus != IntPtr.Zero)
-            //{
-            //    hwnd = info.hwndFocus;
-            //}
-
-            int r = IsKoreanIMEUsingIMM32(hwnd);
-
-            if (r == 1)
-                return ImeState.KOR;
-
-            if (r == 0)
-                return ImeState.ENG;
-
-            return ImeState.ENG;
-        }
-        
 
 
 

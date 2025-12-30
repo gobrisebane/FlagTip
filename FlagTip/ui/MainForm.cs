@@ -75,12 +75,12 @@ namespace FlagTip
 
 
             _keyboardProc = (nCode, wParam, lParam) =>
-        KeyboardHook.KeyboardHookCallback(
-            nCode,
-            wParam,
-            lParam,
-            _keyboardHook,
-            _caretController);
+                    KeyboardHook.KeyboardHookCallback(
+                    nCode,
+                    wParam,
+                    lParam,
+                    _keyboardHook,
+                    _caretController);
 
             _keyboardHook = KeyboardHook.SetKeyboardHook(_keyboardProc);
 
@@ -97,8 +97,7 @@ namespace FlagTip
             _foregroundWatcher.ForegroundChanged += OnForegroundChanged;
             _foregroundWatcher.Start();
 
-
-
+           
 
 
 
@@ -114,13 +113,13 @@ namespace FlagTip
 
         private async void OnForegroundChanged(IntPtr hwnd, string processName)
         {
-            await Task.Delay(50); 
-            BeginInvoke(new Action(() =>
+            await Task.Delay(50);
+            BeginInvoke(new Action(async () =>
             {
-                //Console.WriteLine($"--------------Foreground: {processName}");
-                _imeTracker.DetectIme();
-                _caretController.SelectMode();
+                Console.WriteLine($"--------------Foreground: {processName}");
 
+                await _indicatorForm.SetFlag();
+                await _caretController.SelectMode();
             }));
         }
 

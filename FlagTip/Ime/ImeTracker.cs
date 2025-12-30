@@ -25,19 +25,18 @@ namespace FlagTip.Ime
     public class ImeTracker
     {
 
-        [DllImport("user32.dll")]
-        static extern uint GetDpiForWindow(IntPtr hwnd);
-
+        
         private Mat _korEdge;
         private Mat _engEdge;
 
+        
 
         public ImeTracker()
         {
             string basePath = AppDomain.CurrentDomain.BaseDirectory;
 
 
-            Mat kernel = Cv2.GetStructuringElement(
+            /*Mat kernel = Cv2.GetStructuringElement(
                 MorphShapes.Rect,
                 new OpenCvSharp.Size(2, 2));
 
@@ -52,10 +51,10 @@ namespace FlagTip.Ime
                 ImreadModes.Grayscale);
             Cv2.Canny(_engEdge, _engEdge, 20, 80);
             Cv2.Dilate(_engEdge, _engEdge, kernel);   // ⭐ 핵심
+            */
 
 
-
-            /*_korEdge = Cv2.ImRead(
+            _korEdge = Cv2.ImRead(
                 Path.Combine(basePath, "resources/ime/kor_edge.png"),
                 ImreadModes.Grayscale);
 
@@ -70,7 +69,7 @@ namespace FlagTip.Ime
             if (_engEdge.Empty())
                 throw new Exception("eng_edge.png 로드 실패");
 
-*/
+
 
 
         }
@@ -78,78 +77,56 @@ namespace FlagTip.Ime
         public ImeState DetectIme()
         {
 
+            //ImeState ImeResult;
+            ImeState imeResult = ImeState.UNKNOWN;
+
             //SaveTemplateEdge(_korEdge, "kor_edge.png");
             //SaveTemplateEdge(_engEdge, "eng_edge.png");
 
-
             Bitmap captured = CaptureImeIcon();
             if (captured == null)
-                return ImeState.UNKNOWN;
+                return WindowsImeDetector.GetWindowsImeState();
 
             using (Mat src = BitmapConverter.ToMat(captured))
             using (Mat gray = new Mat())
             using (Mat edges = new Mat())
             {
                 Cv2.CvtColor(src, gray, ColorConversionCodes.BGR2GRAY);
-                //Cv2.Canny(gray, edges, 40, 120);
                 Cv2.Canny(gray, edges, 20, 80);
-                //Cv2.Canny(gray, edges, 10, 50);
-
 
                 var kernel = Cv2.GetStructuringElement(
                 MorphShapes.Rect,
                 new OpenCvSharp.Size(2, 2));
-
                 Cv2.Dilate(edges, edges, kernel);
 
 
-
                 // 🔍 디버그용 저장 (여기!)
-                SaveDebugCapture(src);
-                SaveDebugEdge(edges);
+                //SaveDebugCapture(src);
+                //SaveDebugEdge(edges);
+
 
                 if (Match(edges, _korEdge, "kor"))
                 {
-                    return ImeState.KOR;
-                }
+                    imeResult = ImeState.KOR;
 
-                if (Match(edges, _engEdge, "eng"))
+                } else  if (Match(edges, _engEdge, "eng"))
                 {
-                    return ImeState.ENG;
+                    imeResult = ImeState.ENG;
+                }
+                else
+                {
+                    imeResult = WindowsImeDetector.GetWindowsImeState();
                 }
             }
 
 
+            Console.WriteLine("imeResult : " + imeResult);
 
-
-
-
-
-
-            return ImeState.UNKNOWN;
+            return imeResult;
         }
 
 
-        private void SaveTemplateEdge(Mat edge, string fileName)
-        {
-            try
-            {
-                string dir = Path.Combine(
-                    AppDomain.CurrentDomain.BaseDirectory,
-                    "debug_captures");
-
-                Directory.CreateDirectory(dir);
-
-                Cv2.ImWrite(Path.Combine(dir, fileName), edge);
-            }
-            catch { }
-        }
-
-
-
-
-
-
+      
 
 
 
@@ -161,7 +138,9 @@ namespace FlagTip.Ime
 
 
 
-            double[] scales = { 1.0, 1.35 };
+            //double[] scales = { 1.0, 1.35};
+            double[] scales = { 1.0 };
+
             foreach (double scale in scales)
             {
                 var w = (int)(template.Width * scale);
@@ -178,11 +157,12 @@ namespace FlagTip.Ime
                         Cv2.MatchTemplate(source, resized, result, TemplateMatchModes.CCoeffNormed);
                         Cv2.MinMaxLoc(result, out _, out double maxVal, out _, out _);
 
+                        /*
                         Console.WriteLine(
                          $"[IME] method={name} scale={scale:F2}, score={maxVal:F3}");
+                        */
 
-                        if (maxVal >= 0.65)
-                            //if (maxVal >= 0.45)
+                          if (maxVal >= 0.65)
                             return true;
                     }
                 }
@@ -247,12 +227,35 @@ namespace FlagTip.Ime
                         CopyPixelOperation.SourceCopy);
                 }
 
+                bmp = NormalizeToDpi1(bmp, dpiScale);
+
                 return bmp;
             }
             catch (Win32Exception)
             {
                 return null;
             }
+        }
+
+        private Bitmap NormalizeToDpi1(Bitmap src, float dpiScale)
+        {
+            if (Math.Abs(dpiScale - 1.0f) < 0.01f)
+                return src;
+
+            int w = (int)(src.Width / dpiScale);
+            int h = (int)(src.Height / dpiScale);
+
+            Bitmap dst = new Bitmap(w, h, PixelFormat.Format24bppRgb);
+            dst.SetResolution(96, 96);   // ⭐ 핵심
+
+            using (Graphics g = Graphics.FromImage(dst))
+            {
+                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                g.DrawImage(src, 0, 0, w, h);
+            }
+
+            src.Dispose();
+            return dst;
         }
 
         private void SaveDebugCapture(Mat src)
@@ -282,6 +285,25 @@ namespace FlagTip.Ime
             }
             catch { }
         }
+        private void SaveTemplateEdge(Mat edge, string fileName)
+        {
+            try
+            {
+                string dir = Path.Combine(
+                    AppDomain.CurrentDomain.BaseDirectory,
+                    "debug_captures");
+
+                Directory.CreateDirectory(dir);
+
+                Cv2.ImWrite(Path.Combine(dir, fileName), edge);
+            }
+            catch { }
+        }
+
+
+
+
+      
 
 
 

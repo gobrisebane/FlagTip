@@ -103,10 +103,13 @@ namespace FlagTip.UI
 
             ImeState imeState = _imeTracker.DetectIme();
 
+            Console.WriteLine("---------FINAL-imeState : " + imeState);
+
+
             if (imeState == ImeState.KOR)
-                BackColor = Color.Blue;
-            else if (imeState == ImeState.ENG)
                 BackColor = Color.Red;
+            else if (imeState == ImeState.ENG)
+                BackColor = Color.Blue;
             else
                 BackColor = Color.Yellow;
         }

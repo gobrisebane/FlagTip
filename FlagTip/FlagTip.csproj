@@ -105,7 +105,7 @@
     <Compile Include="hooking\KeyboardHook.cs" />
     <Compile Include="hooking\MouseHook.cs" />
     <Compile Include="hooking\TextboxFocusTracker.cs" />
-    <Compile Include="Ime\ImeTracker_bk.cs" />
+    <Compile Include="Ime\WindowsImeDetector.cs" />
     <Compile Include="Ime\ImeTracker.cs" />
     <Compile Include="Input\Native\Imm32.cs" />
     <Compile Include="Input\Native\User32.cs" />

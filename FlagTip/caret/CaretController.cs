@@ -340,14 +340,6 @@ namespace FlagTip.Caret
             SetFlagPosition();
 
 
-            Console.WriteLine($" >>>>> DPI = {NativeMethods.GetDpiForWindow(_hwnd)}");
-
-
-            //_imeTracker.DetectIme();
-            //_imeTracker.DebugCaptureGrayIme();
-            //_imeTracker.ReadImeTrayIcon();
-
-
 
 
             if (_rect.left != 0 && _rect.top != 0)
@@ -362,6 +354,7 @@ namespace FlagTip.Caret
             }
 
 
+            //Console.WriteLine($" >>>>> DPI = {NativeMethods.GetDpiForWindow(_hwnd)}");
             Console.WriteLine($"{DateTime.Now:HH:mm:ss} [{CommonUtils.IsCaretInEditableArea(_hwnd, _rect, _method)}][{_processName}] ({_method}) Caret: L={_rect.left}, T={_rect.top}, R={_rect.right}, B={_rect.bottom}");
 
 
