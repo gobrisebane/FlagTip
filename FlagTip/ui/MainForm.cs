@@ -86,11 +86,11 @@ namespace FlagTip
 
 
 
-            //_tracker = new CaretTracker(_caretController);
-            //_caretController.AttachTracker(_tracker);
-            //_tracker.Start();
+            _tracker = new CaretTracker(_caretController);
+            _caretController.AttachTracker(_tracker);
+            _tracker.Start();
 
-
+            
 
 
             _foregroundWatcher = new ForegroundWatcher();
@@ -101,8 +101,8 @@ namespace FlagTip
 
 
 
-
-
+            
+            
 
            
 
@@ -113,10 +113,12 @@ namespace FlagTip
 
         private async void OnForegroundChanged(IntPtr hwnd, string processName)
         {
-            await Task.Delay(50);
+
             BeginInvoke(new Action(async () =>
             {
                 Console.WriteLine($"--------------Foreground: {processName}");
+
+                await Task.Delay(50);
 
                 await _indicatorForm.SetFlag();
                 await _caretController.SelectMode();

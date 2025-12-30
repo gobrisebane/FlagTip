@@ -1,4 +1,5 @@
 ﻿using FlagTip.models;
+using FlagTip.Utils;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
 using System;
@@ -9,6 +10,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using static FlagTip.Utils.CommonUtils;
 using static FlagTip.Utils.NativeMethods;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
@@ -79,10 +81,7 @@ namespace FlagTip.Ime
         }
 
 
-        internal bool IsCapsLockOn()
-        {
-            return (GetKeyState(VK_CAPITAL) & 0x0001) != 0;
-        }
+    
 
         public ImeState DetectIme()
         {
@@ -110,14 +109,14 @@ namespace FlagTip.Ime
                 Cv2.Dilate(edges, edges, kernel);
 
 
-                // 🔍 디버그용 저장 (여기!)
-                SaveDebugCapture(src);
+                // 🔍 디버그용 저장 
+                //SaveDebugCapture(src);
 
 
 
                 if (Match(edges, _engEdge, "eng"))
                 {
-                    if (IsCapsLockOn())
+                    if (CommonUtils.IsCapsLockOn())
                         imeResult = ImeState.ENG_UP;
                     else
                         imeResult = ImeState.ENG_LO;

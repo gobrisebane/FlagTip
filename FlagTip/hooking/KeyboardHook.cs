@@ -16,10 +16,7 @@ namespace FlagTip.Hooking
         private const int WM_KEYUP = 0x0101;
         private const int WM_SYSKEYDOWN = 0x0104;
         private const int WM_SYSKEYUP = 0x0105;
-
         private const uint LLKHF_REPEAT = 0x40000000;
-
-
 
         private static bool _ctrlUp;
         private static bool _ctrlDown;
@@ -27,11 +24,34 @@ namespace FlagTip.Hooking
         private static bool _altDown;
         private static bool _winDown;
 
-
-
-
         private static long _lastTriggerTick;
         private const int TRIGGER_INTERVAL_MS = 40;
+        private static bool _hangulKeyPressed = false;
+        private static bool _capsLockKeyPressed = false;
+
+
+        private static readonly HashSet<Keys> CaretKeys = new HashSet<Keys>
+        {
+            Keys.Enter,
+            Keys.Back,
+            Keys.Delete,
+            Keys.Home,
+            Keys.End,
+            Keys.F2,
+            Keys.PageUp,
+            Keys.PageDown,
+            Keys.Tab,
+            Keys.Insert,
+            Keys.Escape,
+            Keys.Left,
+            Keys.Right,
+            Keys.Up,
+            Keys.Down
+        };
+
+
+
+
 
 
 
@@ -105,20 +125,39 @@ namespace FlagTip.Hooking
                 {
                     if (_hangulKeyPressed)
                     {
-                        // 🔁 홀드 반복 → 무시
                         return CallNextHookEx(hookID, nCode, wParam, lParam);
                     }
 
                     _hangulKeyPressed = true;
-
-                    // ✅ 첫 눌림만 처리
                     caretController.NotifyImeToggle();
                 }
                 else
                 {
-                    // KeyUp → 상태 해제
                     _hangulKeyPressed = false;
                     caretController.NotifyImeToggle();
+                }
+
+                return CallNextHookEx(hookID, nCode, wParam, lParam);
+            }
+
+
+
+
+            if (key == Keys.CapsLock)
+            {
+                if (isKeyDown)
+                {
+                    if (_capsLockKeyPressed)
+                    {
+                        return CallNextHookEx(hookID, nCode, wParam, lParam);
+                    }
+                    _capsLockKeyPressed = true;
+                    caretController.NotifyCapsLockToggle();
+                }
+                else
+                {
+                    _capsLockKeyPressed = false;
+                    caretController.NotifyCapsLockToggle();
                 }
 
                 return CallNextHookEx(hookID, nCode, wParam, lParam);
@@ -209,49 +248,28 @@ namespace FlagTip.Hooking
 
 
 
-        private static readonly HashSet<Keys> CaretKeys = new HashSet<Keys>
-        {
-            Keys.Enter,
-            Keys.Back,
-            Keys.Delete,
-            Keys.Home,
-            Keys.End,
-            Keys.F2,
-            Keys.PageUp,
-            Keys.PageDown,
-            Keys.Tab,
-            Keys.Insert,
-            Keys.Escape,
-            Keys.Left,
-            Keys.Right,
-            Keys.Up,
-            Keys.Down
-        };
 
 
-        private static bool _hangulKeyPressed = false;
-        
+        /*    private static HashSet<Keys> _pressedKeys = new();
 
-    /*    private static HashSet<Keys> _pressedKeys = new();
-
-        private static bool IsKeyHold(Keys key, bool isKeyDown)
-        {
-            if (isKeyDown)
+            private static bool IsKeyHold(Keys key, bool isKeyDown)
             {
-                if (_pressedKeys.Contains(key))
-                    return true;   // 🔁 홀드 반복
+                if (isKeyDown)
+                {
+                    if (_pressedKeys.Contains(key))
+                        return true;   // 🔁 홀드 반복
 
-                _pressedKeys.Add(key);
-                return false;      // ✅ 첫 눌림
+                    _pressedKeys.Add(key);
+                    return false;      // ✅ 첫 눌림
+                }
+                else
+                {
+                    _pressedKeys.Remove(key);
+                    return false;
+                }
             }
-            else
-            {
-                _pressedKeys.Remove(key);
-                return false;
-            }
-        }
 
-*/
+    */
 
 
 

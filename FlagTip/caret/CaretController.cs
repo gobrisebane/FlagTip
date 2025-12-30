@@ -32,6 +32,7 @@ using static FlagTip.Utils.CommonUtils;
 using static FlagTip.Utils.NativeMethods;
 
 using static System.Collections.Specialized.BitVector32;
+using static System.Windows.Forms.AxHost;
 
 
 namespace FlagTip.Caret
@@ -147,20 +148,18 @@ namespace FlagTip.Caret
 
         public async Task NotifyImeToggle()
         {
-
-            var sw = Stopwatch.StartNew();   // ⏱ 시작
-            //Console.WriteLine("notify!");
+            //var sw = Stopwatch.StartNew(); 
            
-            
-            //await Task.Delay(50);
-
             SetFlag();
             await SelectMode();
 
+            //sw.Stop();
+            //Console.WriteLine($"FindTemplate time: {sw.ElapsedMilliseconds} ms");
+        }
 
-            sw.Stop();
-            Console.WriteLine($"FindTemplate time: {sw.ElapsedMilliseconds} ms");
-
+        public async Task NotifyCapsLockToggle()
+        {
+            SetFlag();            
         }
 
 
@@ -381,7 +380,6 @@ namespace FlagTip.Caret
 
             _indicatorForm?.BeginInvoke(new Action(() =>
             {
-                //_indicatorForm.SetFlag();
                 _indicatorForm.SetPosition(_rect.left, _rect.top, _rect.right - _rect.left, _rect.bottom - _rect.top);
             }
            ));
@@ -391,18 +389,24 @@ namespace FlagTip.Caret
 
         public void SetFlag()
         {
-
             _indicatorForm?.BeginInvoke(new Action(() =>
             {
                 _indicatorForm.SetFlag();
             }
             ));
-
         }
 
 
 
+        public void SetCapsLock()
+        {
+            _indicatorForm?.BeginInvoke(new Action(() =>
+            {
+                _indicatorForm.SetCapsLock();
 
+            }
+            ));
+        }
 
 
 
