@@ -25,6 +25,7 @@ namespace FlagTip.Ime
             string basePath = AppDomain.CurrentDomain.BaseDirectory;
 
 
+
             Mat kernel = Cv2.GetStructuringElement(
                 MorphShapes.Rect,
                 new OpenCvSharp.Size(2, 2));
@@ -40,7 +41,7 @@ namespace FlagTip.Ime
                 ImreadModes.Grayscale);
             Cv2.Canny(_engEdge, _engEdge, 20, 80);
             Cv2.Dilate(_engEdge, _engEdge, kernel);   // ⭐ 핵심
-            
+
 
 
             /*_korEdge = Cv2.ImRead(
@@ -57,8 +58,8 @@ namespace FlagTip.Ime
 
             if (_engEdge.Empty())
                 throw new Exception("eng_edge.png 로드 실패");
-*/
 
+*/
 
 
         }
@@ -167,10 +168,10 @@ namespace FlagTip.Ime
                         Cv2.MinMaxLoc(result, out _, out double maxVal, out _, out _);
 
                         Console.WriteLine(
-                         $"[IME] scale={scale:F2}, score={maxVal:F3}");
+                         $"[IME] method={name} scale={scale:F2}, score={maxVal:F3}");
 
-                        //if (maxVal >= 0.65)
-                        if (maxVal >= 0.45)
+                        if (maxVal >= 0.65)
+                          //if (maxVal >= 0.45)
                             return true;
                     }
                 }
