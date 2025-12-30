@@ -66,8 +66,8 @@ namespace FlagTip.Ime
         public ImeState DetectIme()
         {
 
-            SaveTemplateEdge(_korEdge, "kor_edge.png");
-            SaveTemplateEdge(_engEdge, "eng_edge.png");
+            //SaveTemplateEdge(_korEdge, "kor_edge.png");
+            //SaveTemplateEdge(_engEdge, "eng_edge.png");
 
 
             Bitmap captured = CaptureImeIcon();
@@ -93,8 +93,8 @@ namespace FlagTip.Ime
 
 
                 // 🔍 디버그용 저장 (여기!)
-                SaveDebugCapture(src);
-                SaveDebugEdge(edges);
+                //SaveDebugCapture(src);
+                //SaveDebugEdge(edges);
 
                 if (Match(edges, _korEdge,"kor"))
                 {
@@ -166,8 +166,8 @@ namespace FlagTip.Ime
                         Cv2.MatchTemplate(source, resized, result, TemplateMatchModes.CCoeffNormed);
                         Cv2.MinMaxLoc(result, out _, out double maxVal, out _, out _);
 
-                        //Console.WriteLine(
-                        // $"[IME] scale={scale:F2}, score={maxVal:F3}");
+                        Console.WriteLine(
+                         $"[IME] scale={scale:F2}, score={maxVal:F3}");
 
                         //if (maxVal >= 0.65)
                         if (maxVal >= 0.45)
