@@ -24,26 +24,42 @@ namespace FlagTip.Ime
         {
             string basePath = AppDomain.CurrentDomain.BaseDirectory;
 
-            // 🔑 입력과 동일한 커널
+
             Mat kernel = Cv2.GetStructuringElement(
                 MorphShapes.Rect,
                 new OpenCvSharp.Size(2, 2));
 
-            // --- KOR 템플릿 ---
             _korEdge = Cv2.ImRead(
                 Path.Combine(basePath, "resources/ime/kor_dark.png"),
                 ImreadModes.Grayscale);
-
             Cv2.Canny(_korEdge, _korEdge, 20, 80);
             Cv2.Dilate(_korEdge, _korEdge, kernel);   // ⭐ 핵심
 
-            // --- ENG 템플릿 ---
             _engEdge = Cv2.ImRead(
                 Path.Combine(basePath, "resources/ime/eng_dark.png"),
                 ImreadModes.Grayscale);
-
             Cv2.Canny(_engEdge, _engEdge, 20, 80);
             Cv2.Dilate(_engEdge, _engEdge, kernel);   // ⭐ 핵심
+            
+
+
+            /*_korEdge = Cv2.ImRead(
+                Path.Combine(basePath, "resources/ime/kor_edge.png"),
+                ImreadModes.Grayscale);
+
+            if (_korEdge.Empty())
+                throw new Exception("kor_edge.png 로드 실패");
+
+            // --- ENG EDGE 템플릿 (미리 생성된 파일) ---
+            _engEdge = Cv2.ImRead(
+                Path.Combine(basePath, "resources/ime/eng_edge.png"),
+                ImreadModes.Grayscale);
+
+            if (_engEdge.Empty())
+                throw new Exception("eng_edge.png 로드 실패");
+*/
+
+
 
         }
 
@@ -126,52 +142,39 @@ namespace FlagTip.Ime
 
 
 
-        private bool Match(Mat source, Mat template, String name)
+        private bool Match(Mat source, Mat template, string name)
         {
+            if (source is null || source.Empty()) return false;
+            if (template is null || template.Empty()) return false;
 
 
-            double[] scales = { 1.0, 1.35};
 
+            double[] scales = { 1.0, 1.35 };
             foreach (double scale in scales)
             {
-                using (Mat resized = template.Resize(
-                    new OpenCvSharp.Size(
-                        (int)(template.Width * scale),
-                        (int)(template.Height * scale))))
+                var w = (int)(template.Width * scale);
+                var h = (int)(template.Height * scale);
+                if (w <= 0 || h <= 0) continue;
+
+                using (Mat resized = template.Resize(new OpenCvSharp.Size(w, h)))
                 {
-                    if (resized.Width >= source.Width ||
-                        resized.Height >= source.Height)
+                    if (resized.Width >= source.Width || resized.Height >= source.Height)
                         continue;
 
                     using (Mat result = new Mat())
                     {
-                        Cv2.MatchTemplate(
-                            source,
-                            resized,
-                            result,
-                            TemplateMatchModes.CCoeffNormed);
+                        Cv2.MatchTemplate(source, resized, result, TemplateMatchModes.CCoeffNormed);
+                        Cv2.MinMaxLoc(result, out _, out double maxVal, out _, out _);
 
-                        Cv2.MinMaxLoc(
-                            result,
-                            out double minVal,
-                            out double maxVal,
-                            out _,
-                            out _);
+                        //Console.WriteLine(
+                        // $"[IME] scale={scale:F2}, score={maxVal:F3}");
 
-                        Console.WriteLine("source : " + name);
-                        Console.WriteLine(
-                            $"[IME-EDGE] scale={scale:F2}, score={maxVal:F3}");
-
-                        // ⭐ Edge는 점수가 낮다
+                        //if (maxVal >= 0.65)
                         if (maxVal >= 0.45)
-
-                        
-                        return true;
+                            return true;
                     }
                 }
             }
-
-
             return false;
         }
 
