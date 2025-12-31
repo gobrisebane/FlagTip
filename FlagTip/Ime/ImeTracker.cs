@@ -133,7 +133,7 @@ namespace FlagTip.Ime
             }
 
 
-            Console.WriteLine("imeResult : " + imeResult);
+            //Console.WriteLine("imeResult : " + imeResult);
 
             return imeResult;
         }
@@ -171,8 +171,8 @@ namespace FlagTip.Ime
                         Cv2.MinMaxLoc(result, out _, out double maxVal, out _, out _);
 
                         
-                        Console.WriteLine(
-                         $"[IME] method={name} scale={scale:F2}, score={maxVal:F3}");
+/*                        Console.WriteLine(
+                         $"[IME] method={name} scale={scale:F2}, score={maxVal:F3}");*/
                         
 
                           if (maxVal >= 0.65)

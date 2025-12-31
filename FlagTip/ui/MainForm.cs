@@ -29,7 +29,7 @@ namespace FlagTip
         private IndicatorForm _indicatorForm;
         private CaretController _caretController;
         private CaretTracker _tracker;
-        private ForegroundWatcher _foregroundWatcher;
+        //private ForegroundWatcher _foregroundWatcher;
 
         private IntPtr _mouseHook;
         private LowLevelMouseProc _mouseProc;
@@ -90,28 +90,21 @@ namespace FlagTip
             _caretController.AttachTracker(_tracker);
             _tracker.Start();
 
-            
-
-
-            _foregroundWatcher = new ForegroundWatcher();
-            _foregroundWatcher.ForegroundChanged += OnForegroundChanged;
-            _foregroundWatcher.Start();
-
-           
 
 
 
-            
-            
+            //_foregroundWatcher = new ForegroundWatcher();
+            //_foregroundWatcher.ForegroundChanged += OnForegroundChanged;
+            //_foregroundWatcher.Start();
 
-           
+
 
 
         }
 
 
 
-        private async void OnForegroundChanged(IntPtr hwnd, string processName)
+       /* private async void OnForegroundChanged(IntPtr hwnd, string processName)
         {
 
             //await Task.Delay(50);
@@ -139,13 +132,13 @@ namespace FlagTip
 
 
             }));
-        }
+        }*/
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
 
             _tracker?.Dispose();
-            _foregroundWatcher?.Dispose();
+            //_foregroundWatcher?.Dispose();
             UnhookWindowsHookEx(_mouseHook);
 
             base.OnFormClosing(e);

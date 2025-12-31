@@ -164,7 +164,12 @@ namespace FlagTip.Hooking
             }
 
 
-
+            if (isKeyUp && IsTypingKey(key))
+            {
+                // return
+                caretController.NotifyTyping();
+                return CallNextHookEx(hookID, nCode, wParam, lParam);
+            }
 
             // KeyUp 은 여기서 종료
             if (!isKeyDown)
@@ -222,7 +227,7 @@ namespace FlagTip.Hooking
             }
 
 
-            // modifier 조합 (_shiftDown 은 타이핑때문에 제외)
+                  // ctrl/alt 시에 적용 (_shiftDown 은 타이핑때문에 제외)
             if (_ctrlDown || _altDown)
             {
                 //return
@@ -233,12 +238,7 @@ namespace FlagTip.Hooking
 
 
 
-            if (isKeyUp&& IsTypingKey(key))
-            {
-                // return
-                caretController.NotifyTyping();
-                return CallNextHookEx(hookID, nCode, wParam, lParam);
-            }
+            
 
 
 

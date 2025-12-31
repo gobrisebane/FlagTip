@@ -94,6 +94,10 @@ namespace FlagTip.Caret
         public async void NotifyTyping()
         {
 
+
+            Console.WriteLine("hello typing lock");
+
+
             _tracker?.Pause();
 
             // 기존 타이머 취소
@@ -192,6 +196,7 @@ namespace FlagTip.Caret
             await Task.Delay(50);
             await SelectMode();
 
+
             for (int i = 0; i < count; i++)
             {
                 if (IsProcessCursorApp())
@@ -199,9 +204,9 @@ namespace FlagTip.Caret
 
                 await Task.Delay(80);
                 await SelectMode();
-
-
             }
+
+
         }
 
         public async Task MultiSelectModeBrowser(int count = 3)
@@ -354,7 +359,7 @@ namespace FlagTip.Caret
 
 
             //Console.WriteLine($" >>>>> DPI = {NativeMethods.GetDpiForWindow(_hwnd)}");
-            Console.WriteLine($"{DateTime.Now:HH:mm:ss} [{CommonUtils.IsCaretInEditableArea(_hwnd, _rect, _method)}][{_processName}] ({_method}) Caret: L={_rect.left}, T={_rect.top}, R={_rect.right}, B={_rect.bottom}");
+            Console.WriteLine($"{DateTime.Now:HH:mm:ss} [{CommonUtils.IsCaretInEditableArea(_hwnd, _rect, _method)}][{_processName}] ({_method}) Caret: L={_rect.left}, T={_rect.top}, W={_rect.right - _rect.left}, B={_rect.bottom}");
 
 
         }
