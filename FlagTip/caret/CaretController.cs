@@ -61,7 +61,7 @@ namespace FlagTip.Caret
         private string _className;
         private RECT _rect;
 
-
+        private bool _contextChanged;
 
 
 
@@ -321,14 +321,14 @@ namespace FlagTip.Caret
             await Task.Delay(delayMs);
 
 
-            bool contextChanged =
+            _contextChanged =
                 CaretContext.LastProcessName != _processName ||
                 CaretContext.LastClassName != _className || 
                 CaretContext.LastMethod == CaretMethod.None;
 
 
 
-            if (contextChanged)
+            if (_contextChanged)
             {
                 //Console.WriteLine("A1.CTX CHANGE");
                 selectCaretMethod();
@@ -399,8 +399,16 @@ namespace FlagTip.Caret
 
             _indicatorForm?.BeginInvoke(new Action(() =>
             {
-                _indicatorForm.SetPosition(_rect.left, _rect.top, _rect.right - _rect.left, _rect.bottom - _rect.top);
-                _indicatorForm.ShowIndicator();
+
+                _indicatorForm.SetPosition(_rect.left, _rect.top, _rect.right - _rect.left, 
+                    _rect.bottom - _rect.top, _contextChanged);
+
+               
+                //_indicatorForm.ShowIndicator();
+
+
+
+
             }
            ));
         }

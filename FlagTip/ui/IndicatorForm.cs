@@ -111,13 +111,12 @@ namespace FlagTip.UI
 
         private void OnForegroundChanged(IntPtr hwnd, string processName)
         {
+
             if (!IsHandleCreated)
                 return;
-
-
+            
             BeginInvoke(new Action(() =>
             {
-                    //HideIndicator();
                 _ = HandleForegroundAsync(hwnd, processName);
             }));
         }
@@ -128,11 +127,15 @@ namespace FlagTip.UI
         private async Task HandleForegroundAsync(IntPtr hwnd, string processName)
         {
 
+            //HideIndicator();
+            //await Task.Delay(1000);
 
             Console.WriteLine("--------- processName : " + processName);
 
-            await Task.Delay(50); // 첫 전환 안정화
+            await Task.Delay(50);
             await SetFlag();
+
+            //ShowIndicator();
 
             for (int i = 0; i < 3; i++)
             {
@@ -173,7 +176,8 @@ namespace FlagTip.UI
 
 
   
-        public void SetPosition(int x, int y, int width, int height)
+        public async Task SetPosition(int x, int y, int width, 
+            int height, bool contextChange = false)
         {
 
             if (x != 0 && y != 0 && width > 0)
@@ -182,8 +186,22 @@ namespace FlagTip.UI
                 Location = new Point(x + OFFSET_X, y + OFFSET_Y);
                 Size = new Size(INDICATOR_WIDTH, INDICATOR_HEIGHT);
 
-                //HideIndicator();
-                //ShowIndicator();
+
+                if (contextChange)
+                {
+
+                    HideIndicator();
+                    Console.WriteLine("1. context change.. need delay");
+                    await Task.Delay(50);
+
+                    ShowIndicator();
+                    //dont imeCheck
+                }
+                else if (!contextChange)
+                {
+                    Console.WriteLine("2. context not change.. instant");
+                    ShowIndicator();
+                }
 
 
             }
