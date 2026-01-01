@@ -34,6 +34,7 @@ using static FlagTip.Utils.NativeMethods;
 
 using static System.Collections.Specialized.BitVector32;
 using static System.Windows.Forms.AxHost;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
 
 
 namespace FlagTip.Caret
@@ -53,8 +54,6 @@ namespace FlagTip.Caret
 
         private IndicatorForm _indicatorForm;
         private ImeTracker _imeTracker;
-
-
         private CursorHelper _cursorHelper;
         private CaretMethod _method;
         private IntPtr _hwnd;
@@ -62,8 +61,7 @@ namespace FlagTip.Caret
         private string _className;
         private RECT _rect;
         uint _pid;
-
-        private bool _contextChanged;
+        private bool _contextChanged = true;
 
 
         public CaretController(IndicatorForm indicatorForm, ImeTracker imeTracker)
@@ -186,15 +184,98 @@ namespace FlagTip.Caret
 
         }
 
+        private bool _mouseContextChanged;
 
+        public async Task MouseLeftClickMode()
+        {
+
+
+            await Task.Delay(25);
+
+
+
+            _hwnd = GetForegroundWindow();
+            _processName = GetProcessName(_hwnd);
+
+
+            StringBuilder classNameBuilder = new StringBuilder(256);
+            GetClassName(_hwnd, classNameBuilder, classNameBuilder.Capacity);
+            _className = classNameBuilder.ToString();
+
+
+
+            _mouseContextChanged =
+            CaretContext.LastProcessName != _processName ||
+            CaretContext.LastClassName != _className ||
+            CaretContext.LastMethod == CaretMethod.None;
+
+
+
+
+
+
+            if (_mouseContextChanged)
+            {
+                _indicatorForm.HideIndicator();
+                SetFlag();
+                await Task.Delay(100);
+                await SelectMode();
+                Console.WriteLine("1. 새로운 컨텍스트임 / 딜레이");
+            }
+            else
+            {
+                Console.WriteLine("2. 현재 똑같은 컨텍스트임 / 즉시");
+                await SelectMode();
+            }
+
+
+            for (int i = 0; i < 2; i++)
+            {
+                if (IsProcessCursorApp())
+                    break;
+
+                await Task.Delay(80);
+                await SelectMode();
+            }
+
+
+
+            /*Console.WriteLine("000.CLICK");
+            await Task.Delay(50);
+
+            if (_contextChanged)
+            {
+                Console.WriteLine("111. context change so need delay and loop");
+                //await Task.Delay(100);
+                await SelectMode();
+                for (int i = 0; i < 3; i++)
+                {
+                    if (IsProcessCursorApp())
+                        break;
+
+                    await Task.Delay(80);
+                    await SelectMode();
+                }
+
+            } else
+            {
+                Console.WriteLine("222. context not change so NO DELAY INSTANT!");
+
+                await SelectMode();
+
+            }*/
+
+        }
 
 
         public async Task MultiSelectMode(int count = 3)
         {
 
+         
+            
+
             await Task.Delay(50);
             await SelectMode();
-
 
             for (int i = 0; i < count; i++)
             {
@@ -314,7 +395,8 @@ namespace FlagTip.Caret
 
 
 
-       
+
+
 
 
 
@@ -336,7 +418,6 @@ namespace FlagTip.Caret
                 //Console.WriteLine("A1.CTX CHANGE");
                 selectCaretMethod();
                 checkSpecificApps();
-
             }
             else
             {

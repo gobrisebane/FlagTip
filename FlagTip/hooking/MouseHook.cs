@@ -28,7 +28,6 @@ namespace FlagTip.Hooking
     {
 
         private static DateTime _lastWheelTime;
-        private static DateTime _mouseDownTime;
         private static bool _isLeftButtonDown;
         private static CancellationTokenSource _holdCts;
 
@@ -102,6 +101,11 @@ namespace FlagTip.Hooking
         }
 
 
+        private static DateTime _mouseDownTime;
+        private const int ClickThresholdMs = 300; // 이 이하면 "짧은 클릭"
+
+
+
         private static async Task HandleClickAsync(
            MouseMessages msg,
            Caret.CaretController caretController)
@@ -127,20 +131,35 @@ namespace FlagTip.Hooking
                 msg == MouseMessages.WM_MBUTTONDOWN || 
                 msg == MouseMessages.WM_XBUTTONDOWN)
             {
+                //_mouseDownTime = DateTime.UtcNow;
 
                 caretController.NotifyCaretMove();
-                await caretController.MultiSelectMode();
+
+                // original
+                //await caretController.MultiSelectMode();
 
 
+                await caretController.MouseLeftClickMode();
 
 
-            } else if (msg == MouseMessages.WM_LBUTTONUP || 
+            }
+
+
+            //original
+            /*
+            else if (msg == MouseMessages.WM_LBUTTONUP || 
                         msg == MouseMessages.WM_MBUTTONUP ||
                         msg == MouseMessages.WM_XBUTTONUP)
             {
+
+
+                var elapsed = (DateTime.UtcNow - _mouseDownTime).TotalMilliseconds;
+                if (elapsed < ClickThresholdMs)
+                    return;
+
                 await caretController.SelectMode();
 
-            }
+            }*/
 
 
 
@@ -151,7 +170,7 @@ namespace FlagTip.Hooking
         }
 
 
- 
+
 
 
         private static bool IsDoubleClick(POINT currentPos)

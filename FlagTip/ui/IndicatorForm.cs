@@ -62,15 +62,13 @@ namespace FlagTip.UI
 
         private Dictionary<uint, ImeState> _imeStateMap;
 
+
         public IndicatorForm(ImeTracker imeTracker)
         {
 
             _imeStateMap = new Dictionary<uint, ImeState>();
-
             _foregroundWatcher = new ForegroundWatcher();
-
             _imeTracker = imeTracker;
-
             FormBorderStyle = FormBorderStyle.None;
             TopMost = true;
             ShowInTaskbar = false;
@@ -183,17 +181,16 @@ namespace FlagTip.UI
 
 
 
+            // original
             /*await Task.Delay(50);
             await SetFlag();
-
-            //ShowIndicator();
-
+            ShowIndicator();
+            
             for (int i = 0; i < 3; i++)
             {
                 await SetFlag();
                 await Task.Delay(50);
             }*/
-
 
 
 
@@ -232,6 +229,10 @@ namespace FlagTip.UI
             int height)
         {
 
+            //HideIndicator();
+            //await Task.Delay(1000);
+
+
             if (x != 0 && y != 0 && width > 0)
             {
 
@@ -241,11 +242,13 @@ namespace FlagTip.UI
 
                 if (!_hasFlag)
                 {
+                            // 크롬-파일업로드 대비
                     _hasFlag = true;
                     await SetFlag();
+
                 }
 
-
+                // original showindicator
                 ShowIndicator();
 
 
@@ -255,10 +258,11 @@ namespace FlagTip.UI
 
                 //Console.WriteLine("22222. FLAG WORKS");
 
+                // original hideindicator
                 HideIndicator();
             }
 
-            
+
         }
 
 
@@ -279,24 +283,27 @@ namespace FlagTip.UI
             await Task.Delay(50);
             ImeState imeState = _imeTracker.DetectIme();
 
-            Console.WriteLine("....imeState : " + imeState);
+
+            _hasFlag = true;
+
+            //Console.WriteLine("....imeState : " + imeState);
 
             switch (imeState)
             {
                 case ImeState.KOR:
-                    Console.WriteLine("h111");
+                    //Console.WriteLine("h111");
                     _flagBox.Image = _korFlag;
                     _curImeState = ImeState.KOR;
                     break;
 
                 case ImeState.ENG_LO:
-                    Console.WriteLine("h222");
+                    //Console.WriteLine("h222");
                     _flagBox.Image = _engLowerFlag;
                     _curImeState = ImeState.ENG_LO;
                     break;
 
                 case ImeState.ENG_UP:
-                    Console.WriteLine("h333");
+                    //Console.WriteLine("h333");
                     _flagBox.Image = _engUpperFlag;
                     _curImeState = ImeState.ENG_UP;
                     break;
