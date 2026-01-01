@@ -139,11 +139,12 @@ namespace FlagTip.Hooking
                         msg == MouseMessages.WM_XBUTTONUP)
             {
                 await caretController.SelectMode();
+
             }
 
 
 
-            
+
 
 
 

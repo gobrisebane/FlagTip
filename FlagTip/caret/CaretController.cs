@@ -94,13 +94,11 @@ namespace FlagTip.Caret
         public async void NotifyTyping()
         {
 
-
-            Console.WriteLine("hello typing lock");
-
+            //Console.WriteLine("hello typing lock");
 
             _tracker?.Pause();
 
-            // 기존 타이머 취소
+                   // 기존 타이머 취소
             _typingCts?.Cancel();
             _typingCts?.Dispose();
 
@@ -229,6 +227,8 @@ namespace FlagTip.Caret
         }
 
 
+        
+
         public async Task SelectModeAfterWheel()
         {
             await SelectMode();
@@ -240,6 +240,9 @@ namespace FlagTip.Caret
         public async Task SelectMode(int delayMs = 50)
         {
 
+
+
+
             if (!await _selectLock.WaitAsync(0))
                 return;
 
@@ -250,11 +253,10 @@ namespace FlagTip.Caret
                 _method = CaretContext.LastMethod;
                 _rect = CaretContext.LastRect;
 
+
                 StringBuilder classNameBuilder = new StringBuilder(256);
                 GetClassName(_hwnd, classNameBuilder, classNameBuilder.Capacity);
                 _className = classNameBuilder.ToString();
-
-
 
 
 
@@ -268,6 +270,8 @@ namespace FlagTip.Caret
                 {
                     await ShowCaret(delayMs);
                 }
+
+
 
 
                 CaretContext.LastRect = _rect;
@@ -288,7 +292,13 @@ namespace FlagTip.Caret
 
 
 
-
+        public async Task checkSpecificApps()
+        {
+            if (_processName == "devenv")
+            {
+                SetFlag();
+            }
+        }
 
 
 
@@ -322,6 +332,7 @@ namespace FlagTip.Caret
             {
                 //Console.WriteLine("A1.CTX CHANGE");
                 selectCaretMethod();
+                checkSpecificApps();
             }
             else
             {
@@ -358,6 +369,9 @@ namespace FlagTip.Caret
             }
 
 
+
+
+
             //Console.WriteLine($" >>>>> DPI = {NativeMethods.GetDpiForWindow(_hwnd)}");
             Console.WriteLine($"{DateTime.Now:HH:mm:ss} [{CommonUtils.IsCaretInEditableArea(_hwnd, _rect, _method)}][{_processName}] ({_method}) Caret: L={_rect.left}, T={_rect.top}, W={_rect.right - _rect.left}, B={_rect.bottom}");
 
@@ -386,6 +400,7 @@ namespace FlagTip.Caret
             _indicatorForm?.BeginInvoke(new Action(() =>
             {
                 _indicatorForm.SetPosition(_rect.left, _rect.top, _rect.right - _rect.left, _rect.bottom - _rect.top);
+                _indicatorForm.ShowIndicator();
             }
            ));
         }

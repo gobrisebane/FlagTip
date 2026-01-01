@@ -48,7 +48,6 @@ namespace FlagTip
             WindowState = FormWindowState.Minimized;
 
 
-            Opacity = 0;
 
             Init();
         }
@@ -86,10 +85,9 @@ namespace FlagTip
 
 
 
-            _tracker = new CaretTracker(_caretController);
-            _caretController.AttachTracker(_tracker);
-            _tracker.Start();
-
+            //_tracker = new CaretTracker(_caretController);
+            //_caretController.AttachTracker(_tracker);
+            //_tracker.Start();
 
 
 
