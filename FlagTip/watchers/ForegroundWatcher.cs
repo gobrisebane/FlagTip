@@ -17,7 +17,12 @@ namespace FlagTip.watchers
         private WinEventDelegate _procDelegate;
         private IntPtr _hook;
 
-        public event Action<IntPtr, string> ForegroundChanged;
+        private uint _lastPid = 0;
+        private IntPtr _lastHwnd = IntPtr.Zero;
+
+        public event Action<IntPtr, uint, string> ForegroundChanged;
+        public event Action<uint, uint> ForegroundPidChanged;
+        // oldPid, newPid
 
         public void Start()
         {
@@ -32,15 +37,6 @@ namespace FlagTip.watchers
                 WINEVENT_OUTOFCONTEXT);
         }
 
-        public void Stop()
-        {
-            if (_hook != IntPtr.Zero)
-            {
-                UnhookWinEvent(_hook);
-                _hook = IntPtr.Zero;
-            }
-        }
-
         private void WinEventProc(
             IntPtr hWinEventHook,
             uint eventType,
@@ -50,17 +46,33 @@ namespace FlagTip.watchers
             uint dwEventThread,
             uint dwmsEventTime)
         {
-            if (hwnd == IntPtr.Zero) return;
+            if (hwnd == IntPtr.Zero)
+                return;
 
             GetWindowThreadProcessId(hwnd, out uint pid);
+
+            // PID 변경 감지
+            if (pid != _lastPid)
+            {
+                ForegroundPidChanged?.Invoke(_lastPid, pid);
+                _lastPid = pid;
+            }
+
+            _lastHwnd = hwnd;
+
             string processName = Process.GetProcessById((int)pid).ProcessName;
-
-            ForegroundChanged?.Invoke(hwnd, processName);
+            ForegroundChanged?.Invoke(hwnd, pid, processName);
         }
 
-        public void Dispose()
+        public void Stop()
         {
-            Stop();
+            if (_hook != IntPtr.Zero)
+            {
+                UnhookWinEvent(_hook);
+                _hook = IntPtr.Zero;
+            }
         }
+
+        public void Dispose() => Stop();
     }
 }

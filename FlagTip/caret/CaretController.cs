@@ -17,6 +17,7 @@ using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Messaging;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -60,9 +61,9 @@ namespace FlagTip.Caret
         private string _processName;
         private string _className;
         private RECT _rect;
+        uint _pid;
 
         private bool _contextChanged;
-
 
 
         public CaretController(IndicatorForm indicatorForm, ImeTracker imeTracker)
@@ -253,6 +254,8 @@ namespace FlagTip.Caret
                 _method = CaretContext.LastMethod;
                 _rect = CaretContext.LastRect;
 
+                GetWindowThreadProcessId(_hwnd, out _pid);
+
 
                 StringBuilder classNameBuilder = new StringBuilder(256);
                 GetClassName(_hwnd, classNameBuilder, classNameBuilder.Capacity);
@@ -333,6 +336,7 @@ namespace FlagTip.Caret
                 //Console.WriteLine("A1.CTX CHANGE");
                 selectCaretMethod();
                 checkSpecificApps();
+
             }
             else
             {
@@ -371,9 +375,10 @@ namespace FlagTip.Caret
 
 
 
+            //Console.WriteLine("_hwnd : " + _hwnd);
 
             //Console.WriteLine($" >>>>> DPI = {NativeMethods.GetDpiForWindow(_hwnd)}");
-            Console.WriteLine($"{DateTime.Now:HH:mm:ss} [{CommonUtils.IsCaretInEditableArea(_hwnd, _rect, _method)}][{_processName}] ({_method}) Caret: L={_rect.left}, T={_rect.top}, W={_rect.right - _rect.left}, B={_rect.bottom}");
+            Console.WriteLine($"{DateTime.Now:HH:mm:ss} [{CommonUtils.IsCaretInEditableArea(_hwnd, _rect, _method)}][{_processName}][{_pid}] ({_method}) Caret: L={_rect.left}, T={_rect.top}, W={_rect.right - _rect.left}, B={_rect.bottom}");
 
 
         }
@@ -401,7 +406,7 @@ namespace FlagTip.Caret
             {
 
                 _indicatorForm.SetPosition(_rect.left, _rect.top, _rect.right - _rect.left, 
-                    _rect.bottom - _rect.top, _contextChanged);
+                    _rect.bottom - _rect.top);
 
                
                 //_indicatorForm.ShowIndicator();

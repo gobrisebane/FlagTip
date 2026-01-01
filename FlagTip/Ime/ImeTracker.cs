@@ -113,7 +113,6 @@ namespace FlagTip.Ime
                 //SaveDebugCapture(src);
 
 
-
                 if (Match(edges, _engEdge, "eng"))
                 {
                     if (CommonUtils.IsCapsLockOn())
@@ -132,14 +131,15 @@ namespace FlagTip.Ime
 
             }
 
-
             //Console.WriteLine("imeResult : " + imeResult);
 
             return imeResult;
         }
 
+        
 
-      
+
+
 
 
 

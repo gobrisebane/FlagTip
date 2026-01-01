@@ -2,9 +2,12 @@
 using FlagTip.models;
 using FlagTip.watchers;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Remoting.Messaging;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static FlagTip.Utils.CommonUtils;
@@ -57,8 +60,12 @@ namespace FlagTip.UI
             }
         }
 
+        private Dictionary<uint, ImeState> _imeStateMap;
+
         public IndicatorForm(ImeTracker imeTracker)
         {
+
+            _imeStateMap = new Dictionary<uint, ImeState>();
 
             _foregroundWatcher = new ForegroundWatcher();
 
@@ -109,7 +116,7 @@ namespace FlagTip.UI
 
 
 
-        private void OnForegroundChanged(IntPtr hwnd, string processName)
+        private void OnForegroundChanged(IntPtr hwnd, uint pid, string processName)
         {
 
             if (!IsHandleCreated)
@@ -117,22 +124,66 @@ namespace FlagTip.UI
             
             BeginInvoke(new Action(() =>
             {
-                _ = HandleForegroundAsync(hwnd, processName);
+                _ = HandleForegroundAsync(hwnd, pid,  processName);
             }));
         }
 
 
+        private bool _hasFlag = false;
 
 
-        private async Task HandleForegroundAsync(IntPtr hwnd, string processName)
+
+        private async Task HandleForegroundAsync(IntPtr hwnd, uint pid, string processName)
         {
+
+            _hasFlag = false;
 
             //HideIndicator();
             //await Task.Delay(1000);
 
-            Console.WriteLine("--------- processName : " + processName);
 
-            await Task.Delay(50);
+
+
+           /* Console.WriteLine("--------- processName : " + processName);
+            Console.WriteLine("--------- pid : " + pid);
+
+
+            if (_imeStateMap.TryGetValue(pid, out ImeState savedState))
+            {
+                // 👉 이전에 쓰던 IME 상태 복원
+                //_imeTracker.SetIme(savedState); // 네가 이미 가진 메서드라고 가정
+
+                SetSpecificFlag(savedState);
+                Console.WriteLine($"[111. IME RESTORE] pid={pid}, state={savedState}");
+            }
+            else
+            {
+                // 👉 처음 보는 pid → 현재 IME 상태 감지해서 저장
+                await Task.Delay(30); // IME 안정화용
+                ImeState currentState = _imeTracker.DetectIme();
+                _imeStateMap[pid] = currentState;
+
+                Console.WriteLine($"[222. IME SAVE] pid={pid}, state={currentState}");
+            }*/
+
+
+
+
+            Console.WriteLine(
+                string.Join(", ",
+                    _imeStateMap.Select(kv => $"{kv.Key}:{kv.Value}")
+                )
+            );
+
+
+
+            //ShowIndicator();
+
+
+
+
+
+            /*await Task.Delay(50);
             await SetFlag();
 
             //ShowIndicator();
@@ -141,7 +192,8 @@ namespace FlagTip.UI
             {
                 await SetFlag();
                 await Task.Delay(50);
-            }
+            }*/
+
 
 
 
@@ -177,7 +229,7 @@ namespace FlagTip.UI
 
   
         public async Task SetPosition(int x, int y, int width, 
-            int height, bool contextChange = false)
+            int height)
         {
 
             if (x != 0 && y != 0 && width > 0)
@@ -187,31 +239,31 @@ namespace FlagTip.UI
                 Size = new Size(INDICATOR_WIDTH, INDICATOR_HEIGHT);
 
 
-                if (contextChange)
+                if (!_hasFlag)
                 {
-
-                    HideIndicator();
-                    Console.WriteLine("1. context change.. need delay");
-                    await Task.Delay(50);
-
-                    ShowIndicator();
-                    //dont imeCheck
+                    _hasFlag = true;
+                    await SetFlag();
                 }
-                else if (!contextChange)
-                {
-                    Console.WriteLine("2. context not change.. instant");
-                    ShowIndicator();
-                }
+
+
+                ShowIndicator();
 
 
             }
             else
             {
+
+                //Console.WriteLine("22222. FLAG WORKS");
+
                 HideIndicator();
             }
 
             
         }
+
+
+ 
+
 
 
 
@@ -220,10 +272,47 @@ namespace FlagTip.UI
 
 
             //HideIndicator();
+            //await Task.Delay(1000);
+
+
 
             await Task.Delay(50);
             ImeState imeState = _imeTracker.DetectIme();
 
+            Console.WriteLine("....imeState : " + imeState);
+
+            switch (imeState)
+            {
+                case ImeState.KOR:
+                    Console.WriteLine("h111");
+                    _flagBox.Image = _korFlag;
+                    _curImeState = ImeState.KOR;
+                    break;
+
+                case ImeState.ENG_LO:
+                    Console.WriteLine("h222");
+                    _flagBox.Image = _engLowerFlag;
+                    _curImeState = ImeState.ENG_LO;
+                    break;
+
+                case ImeState.ENG_UP:
+                    Console.WriteLine("h333");
+                    _flagBox.Image = _engUpperFlag;
+                    _curImeState = ImeState.ENG_UP;
+                    break;
+
+                default:
+                    break;
+            }
+            
+
+        }
+
+
+
+
+        public async Task SetSpecificFlag(ImeState imeState)
+        {
             switch (imeState)
             {
                 case ImeState.KOR:
@@ -244,10 +333,11 @@ namespace FlagTip.UI
                 default:
                     break;
             }
-            
-            //await Task.Delay(1000);
-            //ShowIndicator();
         }
+
+
+
+
 
 
 
