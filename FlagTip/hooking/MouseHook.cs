@@ -131,7 +131,7 @@ namespace FlagTip.Hooking
                 msg == MouseMessages.WM_MBUTTONDOWN || 
                 msg == MouseMessages.WM_XBUTTONDOWN)
             {
-                //_mouseDownTime = DateTime.UtcNow;
+                _mouseDownTime = DateTime.UtcNow;
 
                 caretController.NotifyCaretMove();
 
@@ -146,7 +146,6 @@ namespace FlagTip.Hooking
 
 
             //original
-            /*
             else if (msg == MouseMessages.WM_LBUTTONUP || 
                         msg == MouseMessages.WM_MBUTTONUP ||
                         msg == MouseMessages.WM_XBUTTONUP)
@@ -159,7 +158,7 @@ namespace FlagTip.Hooking
 
                 await caretController.SelectMode();
 
-            }*/
+            }
 
 
 

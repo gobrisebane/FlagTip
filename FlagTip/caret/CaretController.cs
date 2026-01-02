@@ -192,12 +192,8 @@ namespace FlagTip.Caret
 
             await Task.Delay(25);
 
-
-
             _hwnd = GetForegroundWindow();
             _processName = GetProcessName(_hwnd);
-
-
             StringBuilder classNameBuilder = new StringBuilder(256);
             GetClassName(_hwnd, classNameBuilder, classNameBuilder.Capacity);
             _className = classNameBuilder.ToString();
@@ -210,23 +206,25 @@ namespace FlagTip.Caret
             CaretContext.LastMethod == CaretMethod.None;
 
 
-
+            
 
 
 
             if (_mouseContextChanged)
             {
-                _indicatorForm.HideIndicator();
+
+                if (_processName == "devenv")
+                {
+                    _indicatorForm.HideIndicator();
+                    await Task.Delay(100);
+                }
+
                 SetFlag();
-                await Task.Delay(100);
-                await SelectMode();
-                Console.WriteLine("1. 새로운 컨텍스트임 / 딜레이");
+                await Task.Delay(50);
             }
-            else
-            {
-                Console.WriteLine("2. 현재 똑같은 컨텍스트임 / 즉시");
-                await SelectMode();
-            }
+
+
+            await SelectMode();
 
 
             for (int i = 0; i < 2; i++)
@@ -239,31 +237,6 @@ namespace FlagTip.Caret
             }
 
 
-
-            /*Console.WriteLine("000.CLICK");
-            await Task.Delay(50);
-
-            if (_contextChanged)
-            {
-                Console.WriteLine("111. context change so need delay and loop");
-                //await Task.Delay(100);
-                await SelectMode();
-                for (int i = 0; i < 3; i++)
-                {
-                    if (IsProcessCursorApp())
-                        break;
-
-                    await Task.Delay(80);
-                    await SelectMode();
-                }
-
-            } else
-            {
-                Console.WriteLine("222. context not change so NO DELAY INSTANT!");
-
-                await SelectMode();
-
-            }*/
 
         }
 
@@ -322,7 +295,7 @@ namespace FlagTip.Caret
         public async Task SelectMode(int delayMs = 50)
         {
 
-
+            
 
 
             if (!await _selectLock.WaitAsync(0))
@@ -341,6 +314,7 @@ namespace FlagTip.Caret
                 StringBuilder classNameBuilder = new StringBuilder(256);
                 GetClassName(_hwnd, classNameBuilder, classNameBuilder.Capacity);
                 _className = classNameBuilder.ToString();
+
 
 
 

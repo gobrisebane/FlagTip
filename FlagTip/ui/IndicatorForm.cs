@@ -60,13 +60,11 @@ namespace FlagTip.UI
             }
         }
 
-        private Dictionary<uint, ImeState> _imeStateMap;
 
 
         public IndicatorForm(ImeTracker imeTracker)
         {
 
-            _imeStateMap = new Dictionary<uint, ImeState>();
             _foregroundWatcher = new ForegroundWatcher();
             _imeTracker = imeTracker;
             FormBorderStyle = FormBorderStyle.None;
@@ -134,64 +132,22 @@ namespace FlagTip.UI
         private async Task HandleForegroundAsync(IntPtr hwnd, uint pid, string processName)
         {
 
+            Console.WriteLine("testing..");
+
             _hasFlag = false;
 
-            //HideIndicator();
-            //await Task.Delay(1000);
 
-
-
-
-           /* Console.WriteLine("--------- processName : " + processName);
-            Console.WriteLine("--------- pid : " + pid);
-
-
-            if (_imeStateMap.TryGetValue(pid, out ImeState savedState))
-            {
-                // 👉 이전에 쓰던 IME 상태 복원
-                //_imeTracker.SetIme(savedState); // 네가 이미 가진 메서드라고 가정
-
-                SetSpecificFlag(savedState);
-                Console.WriteLine($"[111. IME RESTORE] pid={pid}, state={savedState}");
-            }
-            else
-            {
-                // 👉 처음 보는 pid → 현재 IME 상태 감지해서 저장
-                await Task.Delay(30); // IME 안정화용
-                ImeState currentState = _imeTracker.DetectIme();
-                _imeStateMap[pid] = currentState;
-
-                Console.WriteLine($"[222. IME SAVE] pid={pid}, state={currentState}");
-            }*/
-
-
-
-
-            Console.WriteLine(
-                string.Join(", ",
-                    _imeStateMap.Select(kv => $"{kv.Key}:{kv.Value}")
-                )
-            );
-
-
-
-            //ShowIndicator();
-
-
-
-
-
-            // original
-            /*await Task.Delay(50);
+            await Task.Delay(50);
             await SetFlag();
-            ShowIndicator();
-            
+
+
             for (int i = 0; i < 3; i++)
             {
-                await SetFlag();
                 await Task.Delay(50);
-            }*/
+                await SetFlag();
+            }
 
+            ShowIndicator();
 
 
         }
@@ -199,24 +155,10 @@ namespace FlagTip.UI
         protected override void OnShown(EventArgs e)
         {
             base.OnShown(e);
-            //EnsureTopMost();
+            EnsureTopMost();
         }
 
-        private void EnsureTopMost()
-        {
-            if (!IsHandleCreated)
-                return;
-
-            SetWindowPos(
-                Handle,
-                HWND_TOPMOST,
-                0,
-                0,
-                0,
-                0,
-                SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
-        }
-
+      
         private void MakeClickThrough()
         {
             int exStyle = GetWindowLong(Handle, GWL_EXSTYLE);
@@ -229,8 +171,6 @@ namespace FlagTip.UI
             int height)
         {
 
-            //HideIndicator();
-            //await Task.Delay(1000);
 
 
             if (x != 0 && y != 0 && width > 0)
@@ -248,7 +188,6 @@ namespace FlagTip.UI
 
                 }
 
-                // original showindicator
                 ShowIndicator();
 
 
@@ -256,9 +195,7 @@ namespace FlagTip.UI
             else
             {
 
-                //Console.WriteLine("22222. FLAG WORKS");
 
-                // original hideindicator
                 HideIndicator();
             }
 
@@ -275,35 +212,25 @@ namespace FlagTip.UI
         {
 
 
-            //HideIndicator();
-            //await Task.Delay(1000);
-
-
-
             await Task.Delay(50);
             ImeState imeState = _imeTracker.DetectIme();
 
-
             _hasFlag = true;
 
-            //Console.WriteLine("....imeState : " + imeState);
 
             switch (imeState)
             {
                 case ImeState.KOR:
-                    //Console.WriteLine("h111");
                     _flagBox.Image = _korFlag;
                     _curImeState = ImeState.KOR;
                     break;
 
                 case ImeState.ENG_LO:
-                    //Console.WriteLine("h222");
                     _flagBox.Image = _engLowerFlag;
                     _curImeState = ImeState.ENG_LO;
                     break;
 
                 case ImeState.ENG_UP:
-                    //Console.WriteLine("h333");
                     _flagBox.Image = _engUpperFlag;
                     _curImeState = ImeState.ENG_UP;
                     break;
@@ -369,12 +296,28 @@ namespace FlagTip.UI
         public void ShowIndicator()
         {
             Show();
-            //EnsureTopMost();
+            EnsureTopMost();
         }
 
         public void HideIndicator()
         {
             Hide();
         }
+
+        private void EnsureTopMost()
+        {
+            if (!IsHandleCreated)
+                return;
+
+            SetWindowPos(
+                Handle,
+                HWND_TOPMOST,
+                0,
+                0,
+                0,
+                0,
+                SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
+        }
+
     }
 }
