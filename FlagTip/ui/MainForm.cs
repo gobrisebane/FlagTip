@@ -16,9 +16,14 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
+
 using static FlagTip.Hooking.KeyboardHook;
 using static FlagTip.Hooking.MouseHook;
 using static FlagTip.Utils.NativeMethods;
+
+
+
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace FlagTip
@@ -38,6 +43,7 @@ namespace FlagTip
         private LowLevelKeyboardProc _keyboardProc;
 
         private ImeTracker _imeTracker;
+        private AppWindowWatcher _appWatcher;
 
 
         public MainForm()
@@ -98,45 +104,28 @@ namespace FlagTip
 
 
 
+            _appWatcher = new AppWindowWatcher();
+            _appWatcher.ForegroundChanged += hwnd =>
+            {
+                _indicatorForm.BeginInvoke(new Action(() =>
+                {
+                    _ = _caretController.OnForegroundAppCreatedAsync(hwnd);
+                }));
+            };
+            _appWatcher.Start();
+
+
+
+
         }
 
 
 
-       /* private async void OnForegroundChanged(IntPtr hwnd, string processName)
-        {
-
-            //await Task.Delay(50);
-            //await Task.Delay(100);
-             //_indicatorForm.HideIndicator();
-
-            BeginInvoke(new Action(async () =>
-            {
-                Console.WriteLine($"--------------Foreground: {processName}");
-
-                //await Task.Delay(50);
-                //await Task.Delay(100);
-                //_indicatorForm.HideIndicator();
-                //await Task.Delay(1000);
-
-                await _indicatorForm.SetFlag();
-                await _caretController.SelectMode();
-
-
-                for (int i = 0; i < 3; i++)
-                {
-                    await _indicatorForm.SetFlag();
-                    await Task.Delay(50);
-                }
-
-
-            }));
-        }*/
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
 
             _tracker?.Dispose();
-            //_foregroundWatcher?.Dispose();
             UnhookWindowsHookEx(_mouseHook);
 
             base.OnFormClosing(e);

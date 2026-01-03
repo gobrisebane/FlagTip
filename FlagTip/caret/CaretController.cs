@@ -71,7 +71,22 @@ namespace FlagTip.Caret
             _cursorHelper = new CursorHelper(_indicatorForm);
 
 
+            _indicatorForm.ForegroundHandled += OnForegroundHandled;
+        }
 
+
+
+
+        public async Task OnForegroundAppCreatedAsync(IntPtr hwnd)
+        {
+            await Task.Delay(300);
+            await SelectMode();
+        }
+
+
+        private void OnForegroundHandled()
+        {
+            SelectMode();
         }
 
 
@@ -90,10 +105,21 @@ namespace FlagTip.Caret
         private readonly TimeSpan TypingResumeDelay = TimeSpan.FromSeconds(5);
 
 
+
+        
+
+
+        private DateTime _typingHoldUntilUtc = DateTime.MinValue;
+        private const int TYPING_HOLD_MS = 2000;
+
+
+
         public async void NotifyTyping()
         {
 
-            //Console.WriteLine("hello typing lock");
+            _typingHoldUntilUtc = DateTime.UtcNow.AddMilliseconds(TYPING_HOLD_MS);
+
+
 
             _tracker?.Pause();
 
@@ -131,6 +157,12 @@ namespace FlagTip.Caret
         }
 
 
+        bool IsTypingHoldActive()
+        {
+            return DateTime.UtcNow < _typingHoldUntilUtc;
+        }
+
+
         public void NotifyCaretMove()
         {
             _tracker?.Resume();
@@ -144,18 +176,16 @@ namespace FlagTip.Caret
             _selectAllLocked = false;
         }
 
+    
 
 
 
         public async Task NotifyImeToggle()
         {
-            //var sw = Stopwatch.StartNew(); 
            
             SetFlag();
             await SelectMode();
 
-            //sw.Stop();
-            //Console.WriteLine($"FindTemplate time: {sw.ElapsedMilliseconds} ms");
         }
 
         public async Task NotifyCapsLockToggle()
@@ -186,11 +216,17 @@ namespace FlagTip.Caret
 
         private bool _mouseContextChanged;
 
+
         public async Task MouseLeftClickMode()
         {
 
+            
 
             await Task.Delay(25);
+
+
+        
+
 
             _hwnd = GetForegroundWindow();
             _processName = GetProcessName(_hwnd);
@@ -204,9 +240,6 @@ namespace FlagTip.Caret
             CaretContext.LastProcessName != _processName ||
             CaretContext.LastClassName != _className ||
             CaretContext.LastMethod == CaretMethod.None;
-
-
-            
 
 
 
@@ -224,15 +257,22 @@ namespace FlagTip.Caret
             }
 
 
+
             await SelectMode();
 
 
             for (int i = 0; i < 2; i++)
             {
+
+                if (IsTypingHoldActive())
+                    return;
+
                 if (IsProcessCursorApp())
                     break;
 
                 await Task.Delay(80);
+
+
                 await SelectMode();
             }
 
@@ -265,8 +305,9 @@ namespace FlagTip.Caret
         public async Task MultiSelectModeBrowser(int count = 3)
         {
 
-            if(_processName == "chrome" || _processName == "edge")
+            if( IsProcessBrowserApp() )
             {
+
                 await SelectMode();
 
                 for (int i = 0; i < count; i++)
@@ -440,10 +481,23 @@ namespace FlagTip.Caret
 
 
 
+
         public async Task OnKeyTest()
         {
-            Console.WriteLine("TESTING.");
-            _imeTracker.DetectIme();
+            IntPtr hIMC = ImmGetContext(_hwnd);
+            if (hIMC == IntPtr.Zero)
+                //return false;
+
+            ImmGetConversionStatus(hIMC, out int conv, out _);
+            ImmReleaseContext(_hwnd, hIMC);
+
+
+
+
+            //Console.WriteLine("(conv & ImeNative.IME_CMODE_NATIVE) != 0 : " + (conv&ImeNative.IME_CMODE_NATIVE));
+
+            //Console.WriteLine("conv : " + conv);
+            //Console.WriteLine("IME_CMODE_NATIVE : " + IME_CMODE_NATIVE);
         }
 
 
@@ -456,19 +510,10 @@ namespace FlagTip.Caret
 
         public void SetFlagPosition()
         {
-
             _indicatorForm?.BeginInvoke(new Action(() =>
             {
-
                 _indicatorForm.SetPosition(_rect.left, _rect.top, _rect.right - _rect.left, 
                     _rect.bottom - _rect.top);
-
-               
-                //_indicatorForm.ShowIndicator();
-
-
-
-
             }
            ));
         }

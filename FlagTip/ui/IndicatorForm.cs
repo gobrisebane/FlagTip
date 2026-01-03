@@ -1,8 +1,10 @@
-﻿using FlagTip.Ime;
+﻿using FlagTip.Caret;
+using FlagTip.Ime;
 using FlagTip.models;
 using FlagTip.watchers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -110,7 +112,21 @@ namespace FlagTip.UI
             _foregroundWatcher?.Dispose();
         }
 
+        private readonly Dictionary<int, AppImeState> _appImeMap =
+    new Dictionary<int, AppImeState>();
 
+
+        [DllImport("user32.dll")]
+            static extern uint GetWindowThreadProcessId(
+            IntPtr hWnd,
+            out uint lpdwProcessId
+        );
+
+        uint GetWindowProcessId(IntPtr hwnd)
+        {
+            GetWindowThreadProcessId(hwnd, out uint pid);
+            return (uint)pid;
+        }
 
         private void OnForegroundChanged(IntPtr hwnd, uint pid, string processName)
         {
@@ -122,32 +138,75 @@ namespace FlagTip.UI
             {
                 _ = HandleForegroundAsync(hwnd, pid,  processName);
             }));
+
+
+
+
+
+           /* pid = GetWindowProcessId(hwnd);
+            if (pid == 0)
+                return;
+
+            //string processName;
+            try
+            {
+                processName = Process.GetProcessById(pid).ProcessName;
+            }
+            catch
+            {
+                return;
+            }
+
+            //ImeState imeState = DetectImeState(hwnd);
+            ImeState imeState = ImeState.ENG_LO;
+
+
+            if (_appImeMap.TryGetValue(pid, out var state))
+            {
+                state.ImeState = imeState;
+            }
+            else
+            {
+                _appImeMap[pid] = new AppImeState
+                {
+                    ProcessName = processName,
+                    Pid = pid,
+                    ImeState = imeState
+                };
+            }*/
+
+
+
+
+
+
+
+
+
         }
 
 
         private bool _hasFlag = false;
-
+        public event Action ForegroundHandled;
 
 
         private async Task HandleForegroundAsync(IntPtr hwnd, uint pid, string processName)
         {
 
-            Console.WriteLine("testing..");
 
             _hasFlag = false;
 
-
             await Task.Delay(50);
             await SetFlag();
+            ForegroundHandled?.Invoke();
 
 
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 5; i++)
             {
-                await Task.Delay(50);
+                await Task.Delay(100);
                 await SetFlag();
             }
 
-            ShowIndicator();
 
 
         }

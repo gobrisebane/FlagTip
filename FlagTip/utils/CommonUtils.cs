@@ -21,6 +21,13 @@ namespace FlagTip.Utils
 
 
 
+        public static bool IsProcessBrowserApp()
+        {
+            IntPtr hwnd = GetForegroundWindow();
+            string processName = GetProcessName(hwnd);
+            bool isCursorApp = BrowserAppList.Contains(processName);
+            return isCursorApp;
+        }
         public static bool IsProcessCursorApp()
         {
             IntPtr hwnd = GetForegroundWindow();

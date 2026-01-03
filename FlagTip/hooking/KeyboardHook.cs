@@ -192,6 +192,7 @@ namespace FlagTip.Hooking
             // ---- 단축키 ----
             if (_ctrlDown && key == Keys.Y)
             {
+                //TEST
                 TriggerSafe(caretController.OnKeyTest);
                 return CallNextHookEx(hookID, nCode, wParam, lParam);
             }
@@ -202,14 +203,19 @@ namespace FlagTip.Hooking
                 return CallNextHookEx(hookID, nCode, wParam, lParam);
             }
 
-           
-
+            
 
             if (_winDown)
             {
-                TriggerSafe(() => caretController.MultiSelectMode());
+
+                // TEST
+                //TriggerSafe(() => caretController.MultiSelectMode());
+                TriggerSafe(() => caretController.MultiSelectMode(10));
+
                 return CallNextHookEx(hookID, nCode, wParam, lParam);
             }
+
+
 
 
             if (CaretKeys.Contains(key))
@@ -220,7 +226,7 @@ namespace FlagTip.Hooking
 
                 if (key == Keys.Enter)
                 {
-                    TriggerSafe(() => caretController.MultiSelectModeBrowser(5));
+                    TriggerSafe(() => caretController.MultiSelectModeBrowser(8));
                 }
 
                 return CallNextHookEx(hookID, nCode, wParam, lParam);

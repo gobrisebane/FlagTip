@@ -12,6 +12,8 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using static FlagTip.Utils.CommonUtils;
 using static FlagTip.Utils.NativeMethods;
+using static FlagTip.Ime.ImeManager;
+
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 
@@ -86,57 +88,82 @@ namespace FlagTip.Ime
         public ImeState DetectIme()
         {
 
-            //ImeState ImeResult;
+            /*
             ImeState imeResult = ImeState.UNKNOWN;
 
-            //SaveTemplateEdge(_korEdge, "kor_edge.png");
-            //SaveTemplateEdge(_engEdge, "eng_edge.png");
-
-            Bitmap captured = CaptureImeIcon();
-            if (captured == null)
-                return WindowsImeDetector.GetWindowsImeState();
-
-            using (Mat src = BitmapConverter.ToMat(captured))
-            using (Mat gray = new Mat())
-            using (Mat edges = new Mat())
+            if (IsProcessBrowserApp())
             {
-                Cv2.CvtColor(src, gray, ColorConversionCodes.BGR2GRAY);
-                Cv2.Canny(gray, edges, 20, 80);
+                Console.WriteLine("A1. CHROME BROWSER");
 
-                var kernel = Cv2.GetStructuringElement(
-                MorphShapes.Rect,
-                new OpenCvSharp.Size(2, 2));
-                Cv2.Dilate(edges, edges, kernel);
+                imeResult = WindowsImeDetector.GetWindowsImeState();
 
+            
+            } else
+            {
 
-                // 🔍 디버그용 저장 
-                //SaveDebugCapture(src);
+                Console.WriteLine("A2. NOT BROWSER");
 
+                //SaveTemplateEdge(_korEdge, "kor_edge.png");
+                //SaveTemplateEdge(_engEdge, "eng_edge.png");
 
-                if (Match(edges, _engEdge, "eng"))
+                Bitmap captured = CaptureImeIcon();
+                if (captured == null)
+                    return WindowsImeDetector.GetWindowsImeState();
+
+                using (Mat src = BitmapConverter.ToMat(captured))
+                using (Mat gray = new Mat())
+                using (Mat edges = new Mat())
                 {
-                    if (CommonUtils.IsCapsLockOn())
-                        imeResult = ImeState.ENG_UP;
+                    Cv2.CvtColor(src, gray, ColorConversionCodes.BGR2GRAY);
+                    Cv2.Canny(gray, edges, 20, 80);
+
+                    var kernel = Cv2.GetStructuringElement(
+                    MorphShapes.Rect,
+                    new OpenCvSharp.Size(2, 2));
+                    Cv2.Dilate(edges, edges, kernel);
+
+                    // 🔍 디버그용 저장 
+                    //SaveDebugCapture(src);
+
+                    if (Match(edges, _engEdge, "eng"))
+                    {
+                        if (CommonUtils.IsCapsLockOn())
+                            imeResult = ImeState.ENG_UP;
+                        else
+                            imeResult = ImeState.ENG_LO;
+                    }
+                    else if (Match(edges, _korEdge, "kor"))
+                    {
+                        imeResult = ImeState.KOR;
+                    }
                     else
-                        imeResult = ImeState.ENG_LO;
+                    {
+                        imeResult = WindowsImeDetector.GetWindowsImeState();
+                    }
                 }
-                else if (Match(edges, _korEdge, "kor"))
-                {
-                    imeResult = ImeState.KOR;
-                }
-                else
-                {
-                    imeResult = WindowsImeDetector.GetWindowsImeState();
-                }
+            }*/
 
-            }
+            //ImeState imeResult = ImeState.UNKNOWN;
+            //imeResult = WindowsImeDetector.GetWindowsImeState();
 
-            //Console.WriteLine("imeResult : " + imeResult);
+
+            //ImeState imeResult = ImeState.UNKNOWN;
+            //imeResult = WindowsImeDetector.GetImeMode();
+
+
+            ImeState imeResult = ImeState.UNKNOWN;
+            imeResult = ImeManager.GetChromeImeMode();
+
+
 
             return imeResult;
         }
 
+
+
         
+
+
 
 
 

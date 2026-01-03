@@ -1,5 +1,6 @@
 ﻿using FlagTip.Input.Native;
 using FlagTip.models;
+using FlagTip.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,9 @@ namespace FlagTip.Ime
 
         internal static ImeState GetWindowsImeState()
         {
+
+            ImeState imeResult = ImeState.UNKNOWN;
+
 
             IntPtr fg = GetForegroundWindow();
             if (fg == IntPtr.Zero)
@@ -38,14 +42,76 @@ namespace FlagTip.Ime
           
             int r = IsKoreanIMEUsingIMM32(hwnd);
 
+
+
             if (r == 1)
-                return ImeState.KOR;
+            {
+                imeResult = ImeState.KOR;
+            } else if (r == 0)
+            {
+                if (CommonUtils.IsCapsLockOn())
+                    imeResult = ImeState.ENG_UP;
+                else
+                    imeResult = ImeState.ENG_LO;
+            }
 
-            if (r == 0)
-                return ImeState.ENG;
 
-            return ImeState.ENG;
+            return imeResult;
+
+
         }
+
+        [DllImport("user32.dll")]
+        static extern bool AttachThreadInput(uint idAttach, uint idAttachTo, bool fAttach);
+
+        [DllImport("user32.dll")]
+        static extern IntPtr GetFocus();
+
+        [DllImport("imm32.dll")]
+        static extern bool ImmGetConversionStatus(IntPtr hIMC, out uint lpdwConversion, out uint lpdwSentence);
+
+        [DllImport("kernel32.dll")]
+static extern uint GetCurrentThreadId(); // 최신 방식
+
+public static ImeState GetImeMode()
+{
+    IntPtr hwnd = GetForegroundWindow();
+    if (hwnd == IntPtr.Zero) return ImeState.UNKNOWN;
+
+    // 1. 네이티브 스레드 ID 가져오기
+    uint targetThread = GetWindowThreadProcessId(hwnd, out _);
+    uint currentThread = GetCurrentThreadId(); // 수정된 부분
+
+    // 2. 입력 스레드 연결 (포커스된 컨트롤의 정보를 얻기 위함)
+    bool attached = AttachThreadInput(currentThread, targetThread, true);
+    
+    try
+    {
+        // 실제로 포커스가 있는 자식 윈도우(입력창)를 찾음
+        IntPtr focusedHandle = GetFocus();
+        IntPtr targetHandle = (focusedHandle == IntPtr.Zero) ? hwnd : focusedHandle;
+        
+        IntPtr hIMC = ImmGetContext(targetHandle);
+        if (hIMC != IntPtr.Zero)
+        {
+            uint conversion, sentence;
+            bool success = ImmGetConversionStatus(hIMC, out conversion, out sentence);
+            ImmReleaseContext(targetHandle, hIMC);
+
+            if (success)
+            {
+                return (conversion & 0x0001) != 0 ? ImeState.KOR : ImeState.ENG_LO;
+            }
+        }
+    }
+    finally
+    {
+        // 연결 해제는 반드시 수행되어야 함
+        if (attached) AttachThreadInput(currentThread, targetThread, false);
+    }
+
+    return ImeState.UNKNOWN;
+}
 
 
         internal static int IsKoreanIMEUsingIMM32(IntPtr hWnd)

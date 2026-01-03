@@ -18,5 +18,18 @@ namespace FlagTip.config
         "indesign"
     };
 
+
+        public static readonly HashSet<string> BrowserAppList =
+   new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+   {
+        "chrome",
+        "msedge",
+        "firefox",
+        "opera",
+        "brave",
+        "vivaldi",
+        "whale"
+   };
+
     }
 }

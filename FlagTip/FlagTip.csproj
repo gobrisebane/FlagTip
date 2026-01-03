@@ -123,6 +123,7 @@
     <Compile Include="hooking\KeyboardHook.cs" />
     <Compile Include="hooking\MouseHook.cs" />
     <Compile Include="hooking\TextboxFocusTracker.cs" />
+    <Compile Include="Ime\ImeManager.cs" />
     <Compile Include="Ime\WindowsImeDetector.cs" />
     <Compile Include="Ime\ImeTracker.cs" />
     <Compile Include="Input\Native\Imm32.cs" />
@@ -130,6 +131,7 @@
     <Compile Include="Input\Tsf\TsfGuids.cs" />
     <Compile Include="Input\Tsf\TsfImeStateReader.cs" />
     <Compile Include="Input\Tsf\TsfInterfaces.cs" />
+    <Compile Include="models\AppImeState.cs" />
     <Compile Include="native\User32.cs" />
     <Compile Include="ui\MainForm.cs">
       <SubType>Form</SubType>
@@ -149,6 +151,8 @@
     </Compile>
     <Compile Include="utils\CommonUtils.cs" />
     <Compile Include="utils\NativeMethods.cs" />
+    <Compile Include="utils\WinEventNative.cs" />
+    <Compile Include="watchers\AppWindowWatcher.cs" />
     <Compile Include="watchers\ForegroundWatcher.cs" />
     <Compile Include="_bk\test.cs" />
   </ItemGroup>
