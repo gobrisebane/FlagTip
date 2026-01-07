@@ -91,13 +91,58 @@ namespace FlagTip.Ime
             
             ImeState imeResult = ImeState.UNKNOWN;
 
+
+
+
+            //SaveTemplateEdge(_korEdge, "kor_edge.png");
+            //SaveTemplateEdge(_engEdge, "eng_edge.png");
+
+            Bitmap captured = CaptureImeIcon();
+            if (captured == null)
+                return WindowsImeDetector.GetWindowsImeState();
+
+            using (Mat src = BitmapConverter.ToMat(captured))
+            using (Mat gray = new Mat())
+            using (Mat edges = new Mat())
+            {
+                Cv2.CvtColor(src, gray, ColorConversionCodes.BGR2GRAY);
+                Cv2.Canny(gray, edges, 20, 80);
+
+                var kernel = Cv2.GetStructuringElement(
+                MorphShapes.Rect,
+                new OpenCvSharp.Size(2, 2));
+                Cv2.Dilate(edges, edges, kernel);
+
+                // 🔍 디버그용 저장 
+                //SaveDebugCapture(src);
+
+                if (Match(edges, _engEdge, "eng"))
+                {
+                    if (CommonUtils.IsCapsLockOn())
+                        imeResult = ImeState.ENG_UP;
+                    else
+                        imeResult = ImeState.ENG_LO;
+                }
+                else if (Match(edges, _korEdge, "kor"))
+                {
+                    imeResult = ImeState.KOR;
+                }
+                else
+                {
+                    imeResult = WindowsImeDetector.GetWindowsImeState();
+                }
+            }
+            
+
+            /*
+
             if (IsProcessBrowserApp())
             {
                 Console.WriteLine("A1. CHROME BROWSER");
 
                 imeResult = WindowsImeDetector.GetWindowsImeState();
 
-            
+
             } else
             {
 
@@ -142,7 +187,7 @@ namespace FlagTip.Ime
                     }
                 }
             }
-
+            */
 
 
             //ImeState imeResult = ImeState.UNKNOWN;

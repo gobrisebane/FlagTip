@@ -125,7 +125,7 @@ namespace FlagTip.Hooking
 
                 return;
             }
-
+            
 
             if (msg == MouseMessages.WM_LBUTTONDOWN || 
                 msg == MouseMessages.WM_MBUTTONDOWN || 
@@ -136,13 +136,13 @@ namespace FlagTip.Hooking
                 caretController.NotifyCaretMove();
 
                 // original
-                //await caretController.MultiSelectMode();
+                await caretController.MultiSelectMode();
 
-                await caretController.MouseLeftClickMode();
+                //await caretController.MouseLeftClickMode();
 
-
+                
             }
-
+            
 
             //original
             else if (msg == MouseMessages.WM_LBUTTONUP || 

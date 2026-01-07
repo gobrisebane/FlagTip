@@ -247,8 +247,6 @@ namespace FlagTip.Caret
 
             UpdateForegroundContext();
             bool contextChanged = IsContextChanged();
-
-
             if (contextChanged)
             {
 
@@ -278,8 +276,6 @@ namespace FlagTip.Caret
 
                 await SelectMode();
             }
-
-
 
         }
 
@@ -342,6 +338,9 @@ namespace FlagTip.Caret
             
 
 
+
+
+
             if (!await _selectLock.WaitAsync(0))
                 return;
 
@@ -379,33 +378,6 @@ namespace FlagTip.Caret
         }
 
 
-
-
-
-        public async Task checkSpecificApps()
-        {
-            if (_processName == "devenv")
-            {
-                SetFlag();
-            }
-        }
-
-
-
-
-        public void ShowCursor()
-        {
-            _cursorHelper.Start();
-            _method = CaretMethod.Cursor;
-        }
-
-
-
-
-
-
-
-
         public async Task ShowCaret(int delayMs)
         {
             _cursorHelper.Stop();
@@ -421,6 +393,11 @@ namespace FlagTip.Caret
                 //Console.WriteLine("A1.CTX CHANGE");
                 selectCaretMethod();
                 checkSpecificApps();
+
+
+
+
+
             }
             else
             {
@@ -431,9 +408,12 @@ namespace FlagTip.Caret
 
 
 
+
+            // 메모장 더블클릭 때문에 추가
             if (_processName == "notepad" && _method == CaretMethod.GUIThreadInfo)
             {
-                if (_rect.left == 0 && _rect.top == 0) {
+                if (_rect.left == 0 && _rect.top == 0)
+                {
                     UIAHelper.TryGetCaretFromUIA(out _rect);
                 }
             }
@@ -460,12 +440,46 @@ namespace FlagTip.Caret
 
 
             //Console.WriteLine("_hwnd : " + _hwnd);
-
             //Console.WriteLine($" >>>>> DPI = {NativeMethods.GetDpiForWindow(_hwnd)}");
+
             Console.WriteLine($"{DateTime.Now:HH:mm:ss} [{CommonUtils.IsCaretInEditableArea(_hwnd, _rect, _method)}][{_processName}][{_pid}] ({_method}) Caret: L={_rect.left}, T={_rect.top}, W={_rect.right - _rect.left}, B={_rect.bottom}");
 
 
         }
+
+
+
+
+
+        public async Task checkSpecificApps()
+        {
+            // VS 디버그 모드때문에 반영
+
+            if (_processName == "devenv")
+            {
+                await Task.Delay(50);
+                SetFlag();
+            }
+
+        }
+
+
+
+
+        public void ShowCursor()
+        {
+            _cursorHelper.Start();
+            _method = CaretMethod.Cursor;
+        }
+
+
+
+
+
+
+
+
+       
 
 
 
@@ -483,7 +497,6 @@ namespace FlagTip.Caret
 
 
             //Console.WriteLine("(conv & ImeNative.IME_CMODE_NATIVE) != 0 : " + (conv&ImeNative.IME_CMODE_NATIVE));
-
             //Console.WriteLine("conv : " + conv);
             //Console.WriteLine("IME_CMODE_NATIVE : " + IME_CMODE_NATIVE);
         }
