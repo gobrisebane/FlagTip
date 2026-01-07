@@ -214,7 +214,27 @@ namespace FlagTip.Caret
 
         }
 
-        private bool _mouseContextChanged;
+
+        private void UpdateForegroundContext()
+        {
+            _hwnd = GetForegroundWindow();
+            _processName = GetProcessName(_hwnd);
+
+            StringBuilder classNameBuilder = new StringBuilder(256);
+            GetClassName(_hwnd, classNameBuilder, classNameBuilder.Capacity);
+            _className = classNameBuilder.ToString();
+
+            GetWindowThreadProcessId(_hwnd, out _pid);
+        }
+
+        private bool IsContextChanged()
+        {
+            return
+                CaretContext.LastProcessName != _processName ||
+                CaretContext.LastClassName != _className ||
+                CaretContext.LastMethod == CaretMethod.None;
+        }
+
 
 
         public async Task MouseLeftClickMode()
@@ -225,25 +245,11 @@ namespace FlagTip.Caret
             await Task.Delay(25);
 
 
-        
+            UpdateForegroundContext();
+            bool contextChanged = IsContextChanged();
 
 
-            _hwnd = GetForegroundWindow();
-            _processName = GetProcessName(_hwnd);
-            StringBuilder classNameBuilder = new StringBuilder(256);
-            GetClassName(_hwnd, classNameBuilder, classNameBuilder.Capacity);
-            _className = classNameBuilder.ToString();
-
-
-
-            _mouseContextChanged =
-            CaretContext.LastProcessName != _processName ||
-            CaretContext.LastClassName != _className ||
-            CaretContext.LastMethod == CaretMethod.None;
-
-
-
-            if (_mouseContextChanged)
+            if (contextChanged)
             {
 
                 if (_processName == "devenv")
@@ -257,10 +263,7 @@ namespace FlagTip.Caret
             }
 
 
-
             await SelectMode();
-
-
             for (int i = 0; i < 2; i++)
             {
 
@@ -344,20 +347,10 @@ namespace FlagTip.Caret
 
             try
             {
-                _hwnd = GetForegroundWindow();
-                _processName = GetProcessName(_hwnd);
+
+                UpdateForegroundContext();
                 _method = CaretContext.LastMethod;
                 _rect = CaretContext.LastRect;
-
-                GetWindowThreadProcessId(_hwnd, out _pid);
-
-
-                StringBuilder classNameBuilder = new StringBuilder(256);
-                GetClassName(_hwnd, classNameBuilder, classNameBuilder.Capacity);
-                _className = classNameBuilder.ToString();
-
-
-
 
                 bool isCursorApp = CursorAppList.Contains(_processName);
 
@@ -369,8 +362,6 @@ namespace FlagTip.Caret
                 {
                     await ShowCaret(delayMs);
                 }
-
-
 
 
                 CaretContext.LastRect = _rect;
@@ -421,14 +412,11 @@ namespace FlagTip.Caret
             await Task.Delay(delayMs);
 
 
-            _contextChanged =
-                CaretContext.LastProcessName != _processName ||
-                CaretContext.LastClassName != _className || 
-                CaretContext.LastMethod == CaretMethod.None;
 
 
+            bool contextChanged = IsContextChanged();
 
-            if (_contextChanged)
+            if (contextChanged)
             {
                 //Console.WriteLine("A1.CTX CHANGE");
                 selectCaretMethod();
@@ -513,7 +501,7 @@ namespace FlagTip.Caret
             _indicatorForm?.BeginInvoke(new Action(() =>
             {
                 _indicatorForm.SetPosition(_rect.left, _rect.top, _rect.right - _rect.left, 
-                    _rect.bottom - _rect.top);
+                    _rect.bottom - _rect.top, _processName);
             }
            ));
         }

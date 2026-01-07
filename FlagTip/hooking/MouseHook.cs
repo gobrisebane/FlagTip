@@ -138,7 +138,6 @@ namespace FlagTip.Hooking
                 // original
                 //await caretController.MultiSelectMode();
 
-
                 await caretController.MouseLeftClickMode();
 
 

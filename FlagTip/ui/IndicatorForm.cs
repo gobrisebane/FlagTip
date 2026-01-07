@@ -112,22 +112,9 @@ namespace FlagTip.UI
             _foregroundWatcher?.Dispose();
         }
 
-        private readonly Dictionary<int, AppImeState> _appImeMap =
-    new Dictionary<int, AppImeState>();
 
 
-        [DllImport("user32.dll")]
-            static extern uint GetWindowThreadProcessId(
-            IntPtr hWnd,
-            out uint lpdwProcessId
-        );
-
-        uint GetWindowProcessId(IntPtr hwnd)
-        {
-            GetWindowThreadProcessId(hwnd, out uint pid);
-            return (uint)pid;
-        }
-
+   
         private void OnForegroundChanged(IntPtr hwnd, uint pid, string processName)
         {
 
@@ -138,47 +125,6 @@ namespace FlagTip.UI
             {
                 _ = HandleForegroundAsync(hwnd, pid,  processName);
             }));
-
-
-
-
-
-           /* pid = GetWindowProcessId(hwnd);
-            if (pid == 0)
-                return;
-
-            //string processName;
-            try
-            {
-                processName = Process.GetProcessById(pid).ProcessName;
-            }
-            catch
-            {
-                return;
-            }
-
-            //ImeState imeState = DetectImeState(hwnd);
-            ImeState imeState = ImeState.ENG_LO;
-
-
-            if (_appImeMap.TryGetValue(pid, out var state))
-            {
-                state.ImeState = imeState;
-            }
-            else
-            {
-                _appImeMap[pid] = new AppImeState
-                {
-                    ProcessName = processName,
-                    Pid = pid,
-                    ImeState = imeState
-                };
-            }*/
-
-
-
-
-
 
 
 
@@ -227,10 +173,8 @@ namespace FlagTip.UI
 
   
         public async Task SetPosition(int x, int y, int width, 
-            int height)
+            int height, String processName = null)
         {
-
-
 
             if (x != 0 && y != 0 && width > 0)
             {
@@ -238,24 +182,28 @@ namespace FlagTip.UI
                 Location = new Point(x + OFFSET_X, y + OFFSET_Y);
                 Size = new Size(INDICATOR_WIDTH, INDICATOR_HEIGHT);
 
-
                 if (!_hasFlag)
                 {
                             // 크롬-파일업로드 대비
                     _hasFlag = true;
                     await SetFlag();
-
                 }
-
                 ShowIndicator();
-
-
             }
             else
             {
 
-
                 HideIndicator();
+
+
+                /*if (IsProcessBrowserApp(processName))
+                {
+                    Console.WriteLine("1.IT IS BROWSER..DO NOT HIDE");
+                } else
+                {
+                    HideIndicator();
+                }*/
+
             }
 
 

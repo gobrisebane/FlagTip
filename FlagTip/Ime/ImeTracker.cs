@@ -88,7 +88,7 @@ namespace FlagTip.Ime
         public ImeState DetectIme()
         {
 
-            /*
+            
             ImeState imeResult = ImeState.UNKNOWN;
 
             if (IsProcessBrowserApp())
@@ -141,7 +141,9 @@ namespace FlagTip.Ime
                         imeResult = WindowsImeDetector.GetWindowsImeState();
                     }
                 }
-            }*/
+            }
+
+
 
             //ImeState imeResult = ImeState.UNKNOWN;
             //imeResult = WindowsImeDetector.GetWindowsImeState();
@@ -151,8 +153,8 @@ namespace FlagTip.Ime
             //imeResult = WindowsImeDetector.GetImeMode();
 
 
-            ImeState imeResult = ImeState.UNKNOWN;
-            imeResult = ImeManager.GetChromeImeMode();
+            //ImeState imeResult = ImeState.UNKNOWN;
+            //imeResult = ImeManager.GetChromeImeMode();
 
 
 

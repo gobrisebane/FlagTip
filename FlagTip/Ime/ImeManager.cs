@@ -63,7 +63,28 @@ namespace FlagTip.Ime
 
 
 
+
+
+        // KEEP 버전
+        private const uint IMC_GETCONVERSIONSTATUS = 0x0001;
+
+
         public static ImeState GetChromeImeMode()
+        {
+            IntPtr hwnd = GetForegroundWindow(); // 현재 활성화된 창
+            IntPtr hImeWnd = ImmGetDefaultIMEWnd(hwnd);
+
+            // 메인 스레드에서 메시지를 보내 상태 확인
+            uint status = (uint)SendMessage(hImeWnd, WM_IME_CONTROL, (IntPtr)IMC_GETCONVERSIONSTATUS, IntPtr.Zero);
+
+            // status & 1 이 1이면 한글, 0이면 영어
+            return (status & 1) != 0 ? ImeState.KOR : ImeState.ENG_LO;
+        }
+
+        
+
+
+        public static ImeState GetChromeImeMode5()
         {
 
 

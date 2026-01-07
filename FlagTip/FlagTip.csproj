@@ -131,7 +131,6 @@
     <Compile Include="Input\Tsf\TsfGuids.cs" />
     <Compile Include="Input\Tsf\TsfImeStateReader.cs" />
     <Compile Include="Input\Tsf\TsfInterfaces.cs" />
-    <Compile Include="models\AppImeState.cs" />
     <Compile Include="native\User32.cs" />
     <Compile Include="ui\MainForm.cs">
       <SubType>Form</SubType>
