@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static FlagTip.Utils.NativeMethods;
 
-namespace FlagTip.watchers
+namespace FlagTip.Watchers
 {
     internal class ForegroundWatcher : IDisposable
     {

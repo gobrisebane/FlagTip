@@ -1,6 +1,6 @@
 ﻿using FlagTip.Caret;
-using FlagTip.hooking;
-using FlagTip.models;
+using FlagTip.Hooking;
+using FlagTip.Models;
 using FlagTip.UI;
 using System;
 using System.Collections.Generic;
@@ -15,8 +15,7 @@ using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Interop;
 using UIA;
-using static FlagTip.config.AppList;
-
+using static FlagTip.Config.AppList;
 using static FlagTip.Caret.CaretController;
 using static FlagTip.Utils.CommonUtils;
 using static FlagTip.Utils.NativeMethods;
@@ -138,7 +137,6 @@ namespace FlagTip.Hooking
                 // original
                 await caretController.MultiSelectMode();
 
-                //await caretController.MouseLeftClickMode();
 
                 
             }

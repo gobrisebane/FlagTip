@@ -1,12 +1,12 @@
 ﻿using FlagTip.Input.Native;
-using FlagTip.models;
+using FlagTip.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using static FlagTip.config.AppList;
+using static FlagTip.Config.AppList;
 using static FlagTip.Utils.NativeMethods;
 //using static FlagTip.Input.Native.Imm32;
 using static FlagTip.Input.Native.User32;

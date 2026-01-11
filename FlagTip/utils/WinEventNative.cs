@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FlagTip.utils
+namespace FlagTip.Utils
 {
     internal static class WinEventNative
     {

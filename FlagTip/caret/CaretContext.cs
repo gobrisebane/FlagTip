@@ -1,4 +1,4 @@
-﻿using FlagTip.models;
+﻿using FlagTip.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +13,6 @@ namespace FlagTip.Caret
     {
         internal static CaretMethod LastMethod { get; set; } = CaretMethod.None;
 
-        internal static CaretInitator LastCaretInitator { get; set; } = CaretInitator.None;
 
         internal static string LastProcessName { get; set; } = string.Empty;
 

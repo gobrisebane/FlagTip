@@ -1,4 +1,4 @@
-﻿using FlagTip.models;
+﻿using FlagTip.Models;
 using FlagTip.Utils;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
@@ -92,7 +92,7 @@ namespace FlagTip.Ime
             ImeState imeResult = ImeState.UNKNOWN;
 
 
-
+            //Console.WriteLine("A2. NOT BROWSER");
 
             //SaveTemplateEdge(_korEdge, "kor_edge.png");
             //SaveTemplateEdge(_engEdge, "eng_edge.png");
@@ -132,21 +132,25 @@ namespace FlagTip.Ime
                     imeResult = WindowsImeDetector.GetWindowsImeState();
                 }
             }
-            
+
+
+
 
             /*
 
             if (IsProcessBrowserApp())
             {
-                Console.WriteLine("A1. CHROME BROWSER");
+                //Console.WriteLine("A1. CHROME BROWSER");
 
                 imeResult = WindowsImeDetector.GetWindowsImeState();
 
+                //imeResult = ImeManager.GetChromeImeMode();
 
-            } else
+            }
+            else
             {
 
-                Console.WriteLine("A2. NOT BROWSER");
+                //Console.WriteLine("A2. NOT BROWSER");
 
                 //SaveTemplateEdge(_korEdge, "kor_edge.png");
                 //SaveTemplateEdge(_engEdge, "eng_edge.png");

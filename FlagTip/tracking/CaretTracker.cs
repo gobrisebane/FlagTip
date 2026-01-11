@@ -55,13 +55,12 @@ namespace FlagTip.Tracking
                 {
                     if (_paused)
                     {
-                        await Task.Delay(100, token); // 가볍게 쉼
+                        await Task.Delay(100, token);
                         continue;
                     }
 
                     await _caretController.SelectMode();
                     await Task.Delay(500, token);
-                    //await Task.Delay(3000, token);
 
                 }
                 catch (OperationCanceledException)

@@ -1,7 +1,7 @@
 ﻿using FlagTip.Caret;
 using FlagTip.Ime;
-using FlagTip.models;
-using FlagTip.watchers;
+using FlagTip.Models;
+using FlagTip.Watchers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static FlagTip.Utils.CommonUtils;
 using static FlagTip.Utils.NativeMethods;
+
 
 namespace FlagTip.UI
 {
@@ -38,14 +39,21 @@ namespace FlagTip.UI
         private const int WS_EX_NOACTIVATE = 0x08000000;
 
 
-        private const int OFFSET_X = 3;
-        private const int OFFSET_Y = 20;
-        //private const int INDICATOR_WIDTH = 15;
-        //private const int INDICATOR_HEIGHT = 10;
+        public int OFFSET_X;
+        public int OFFSET_Y;
 
         private const int INDICATOR_WIDTH = 16;
         private const int INDICATOR_HEIGHT = 11;
-        private const double FLAG_OPACITY = 0.70;
+
+
+        // 시작페이지에 맞을만한 사이즈
+        //private const int INDICATOR_WIDTH = 45;
+        //private const int INDICATOR_HEIGHT = 23;
+
+        //private const int INDICATOR_WIDTH = 35;
+        //private const int INDICATOR_HEIGHT = 18;
+
+
 
 
         private readonly ImeTracker _imeTracker;
@@ -57,7 +65,11 @@ namespace FlagTip.UI
             get
             {
                 CreateParams cp = base.CreateParams;
-                cp.ExStyle |= WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE;
+                cp.ExStyle |=
+                    WS_EX_TOOLWINDOW |
+                    WS_EX_NOACTIVATE |
+                    WS_EX_LAYERED |
+                    WS_EX_TRANSPARENT; 
                 return cp;
             }
         }
@@ -73,16 +85,30 @@ namespace FlagTip.UI
             TopMost = true;
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.Manual;
-            Width = 6;
-            Height = 20;
-            Opacity = FLAG_OPACITY;
+
+
+            Width = 16;
+            Height = 11;
+
+
+            BackColor = Color.FromArgb(245, 245, 245);
+            TransparencyKey = Color.FromArgb(245, 245, 245);
+
+            OFFSET_X = Properties.Settings.Default.OffsetX;
+            OFFSET_Y = Properties.Settings.Default.OffsetY;
+
+            double savedOpacity = Properties.Settings.Default.Opacity;
+            Opacity = savedOpacity;
 
 
             string basePath = AppDomain.CurrentDomain.BaseDirectory;
-            _korFlag = Image.FromFile(Path.Combine(basePath, "resources/flag/flag_kor_2.png"));
-            //_engLowerFlag = Image.FromFile(Path.Combine(basePath, "resources/flag/flag_eng_lo.png"));
-            _engLowerFlag = Image.FromFile(Path.Combine(basePath, "resources/flag/flag_eng_up_2.png"));
-            _engUpperFlag = Image.FromFile(Path.Combine(basePath, "resources/flag/flag_eng_up_2.png"));
+            _korFlag = Image.FromFile(Path.Combine(basePath, "resources/flag/flag_kor.png"));
+            _engLowerFlag = Image.FromFile(Path.Combine(basePath, "resources/flag/flag_eng_lo.png"));
+            _engUpperFlag = Image.FromFile(Path.Combine(basePath, "resources/flag/flag_eng_up.png"));
+
+            //_korFlag = Image.FromFile(Path.Combine(basePath, "resources/flag/flag_kor_large.png"));
+            //_engLowerFlag = Image.FromFile(Path.Combine(basePath, "resources/flag/flag_eng_large_lo.png"));
+            //_engUpperFlag = Image.FromFile(Path.Combine(basePath, "resources/flag/flag_eng_large_up.png"));
 
             _flagBox = new PictureBox
             {
@@ -99,11 +125,24 @@ namespace FlagTip.UI
 
         }
 
+        public void SetOpacity(double opacity)
+        {
+            this.Opacity = opacity;
+
+            // Settings에 즉시 저장
+            Properties.Settings.Default.Opacity = opacity;
+            Properties.Settings.Default.Save();
+        }
+
+        public double GetOpacity()
+        {
+            // 현재 Settings에 저장된 값 반환
+            return Properties.Settings.Default.Opacity;
+        }
+
         private void IndicatorForm_HandleCreated(object sender, EventArgs e)
         {
-            MakeClickThrough();
             _ = SetFlag();
-
             _foregroundWatcher.ForegroundChanged += OnForegroundChanged;
             _foregroundWatcher.Start();
         }
@@ -147,9 +186,9 @@ namespace FlagTip.UI
             ForegroundHandled?.Invoke();
 
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 6; i++)
             {
-                await Task.Delay(100);
+                await Task.Delay(150);
                 await SetFlag();
             }
 
@@ -163,13 +202,7 @@ namespace FlagTip.UI
             EnsureTopMost();
         }
 
-      
-        private void MakeClickThrough()
-        {
-            int exStyle = GetWindowLong(Handle, GWL_EXSTYLE);
-            SetWindowLong(Handle, GWL_EXSTYLE, exStyle | WS_EX_TRANSPARENT | WS_EX_LAYERED);
-        }
-
+  
 
   
         public async Task SetPosition(int x, int y, int width, 
@@ -324,6 +357,22 @@ namespace FlagTip.UI
                 0,
                 0,
                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
+        }
+
+
+
+        protected override void WndProc(ref Message m)
+        {
+            const int WM_NCHITTEST = 0x84;
+            const int HTTRANSPARENT = -1;
+
+            if (m.Msg == WM_NCHITTEST)
+            {
+                m.Result = (IntPtr)HTTRANSPARENT;
+                return;
+            }
+
+            base.WndProc(ref m);
         }
 
     }

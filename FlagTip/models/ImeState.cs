@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FlagTip.models
+namespace FlagTip.Models
 {
     public enum ImeState
     {

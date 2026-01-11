@@ -2,8 +2,9 @@
 using FlagTip.Hooking;
 using FlagTip.Ime;
 using FlagTip.Tracking;
+using FlagTip.Tray;
 using FlagTip.UI;
-using FlagTip.watchers;
+using FlagTip.Watchers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -44,6 +45,9 @@ namespace FlagTip
 
         private ImeTracker _imeTracker;
         private AppWindowWatcher _appWatcher;
+
+        private TrayController _trayController;
+        private SettingsForm _settingsForm;
 
 
         public MainForm()
@@ -97,13 +101,6 @@ namespace FlagTip
 
 
 
-            //_foregroundWatcher = new ForegroundWatcher();
-            //_foregroundWatcher.ForegroundChanged += OnForegroundChanged;
-            //_foregroundWatcher.Start();
-
-
-
-
             _appWatcher = new AppWindowWatcher();
             _appWatcher.ForegroundChanged += hwnd =>
             {
@@ -116,21 +113,73 @@ namespace FlagTip
 
 
 
+            _trayController = new TrayController();
+
+
+
+            _trayController.OptionRequested += () =>
+            {
+                ShowSettingsOption();
+            };
+            _trayController.AboutRequested += () =>
+            {
+                ShowSettingsAbout();
+            };
+
+
+
+            _settingsForm = new SettingsForm(_indicatorForm);
+
+
 
         }
 
 
+        private void ShowSettings()
+        {
+            if (_settingsForm == null || _settingsForm.IsDisposed)
+            {
+                _settingsForm = new SettingsForm(_indicatorForm);
+            }
+
+            // 항상 Show() 호출
+            _settingsForm.Show();
+            _settingsForm.BringToFront();
+        }
+
+        private void ShowSettingsOption()
+        {
+            ShowSettings();
+            _settingsForm.SelectOptionTab();
+        }
+
+        private void ShowSettingsAbout()
+        {
+            ShowSettings();
+            _settingsForm.SelectAboutTab();
+        }
 
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
-
+            _trayController?.Dispose();
             _tracker?.Dispose();
             UnhookWindowsHookEx(_mouseHook);
+            UnhookWindowsHookEx(_keyboardHook);
+
 
             base.OnFormClosing(e);
         }
 
-        
+
+  
+
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+            Hide();
+        }
+
+
     }
 }

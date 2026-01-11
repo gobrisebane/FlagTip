@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FlagTip.config
+namespace FlagTip.Config
 {
     internal class AppList
     {

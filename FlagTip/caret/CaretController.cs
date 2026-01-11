@@ -1,9 +1,8 @@
 ﻿using Accessibility;
 using FlagTip.apps;
-using FlagTip.helpers;
 using FlagTip.Helpers;
 using FlagTip.Ime;
-using FlagTip.models;
+using FlagTip.Models;
 using FlagTip.Tracking;
 using FlagTip.UI;
 using FlagTip.Utils;
@@ -26,7 +25,7 @@ using System.Windows.Automation;
 using System.Windows.Forms;
 using UIA;
 using UIAutomationClient;
-using static FlagTip.config.AppList;
+using static FlagTip.Config.AppList;
 using static FlagTip.Helpers.MSAAHelper;
 using static FlagTip.Input.Tsf.TsfImeStateReader;
 using static FlagTip.Utils.CommonUtils;
@@ -157,12 +156,7 @@ namespace FlagTip.Caret
         }
 
 
-        bool IsTypingHoldActive()
-        {
-            return DateTime.UtcNow < _typingHoldUntilUtc;
-        }
-
-
+  
         public void NotifyCaretMove()
         {
             _tracker?.Resume();
@@ -237,47 +231,7 @@ namespace FlagTip.Caret
 
 
 
-        public async Task MouseLeftClickMode()
-        {
-
-            
-
-            await Task.Delay(25);
-
-
-            UpdateForegroundContext();
-            bool contextChanged = IsContextChanged();
-            if (contextChanged)
-            {
-
-                if (_processName == "devenv")
-                {
-                    _indicatorForm.HideIndicator();
-                    await Task.Delay(100);
-                }
-
-                SetFlag();
-                await Task.Delay(50);
-            }
-
-
-            await SelectMode();
-            for (int i = 0; i < 2; i++)
-            {
-
-                if (IsTypingHoldActive())
-                    return;
-
-                if (IsProcessCursorApp())
-                    break;
-
-                await Task.Delay(80);
-
-
-                await SelectMode();
-            }
-
-        }
+  
 
 
         public async Task MultiSelectMode(int count = 3)
@@ -547,9 +501,6 @@ namespace FlagTip.Caret
         public void selectCaretMethod()
         {
 
-
-        
-
             if (_processName == "winword"
                 ||  _processName == "applicationframehost" 
                 || _processName == "devenv"
@@ -557,9 +508,14 @@ namespace FlagTip.Caret
              {
                  UIAHelper.TryGetCaretFromUIA(out _rect);
                  _method = CaretMethod.UIA;
-             }
-             else if (_processName == "notepad")
-             {
+            }
+             else if ( IsProcessBrowserApp() )
+            {
+                MSAAHelper.TryGetCaretFromMSAA(_hwnd, out _rect);
+                _method = CaretMethod.MSAA;
+            }
+            else if (_processName == "notepad")
+            {
                 GUIThreadHelper.TryGetCaretFromGUIThreadInfo(_hwnd, out _rect);
                 _method = CaretMethod.GUIThreadInfo;
             }

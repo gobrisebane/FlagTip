@@ -1,5 +1,5 @@
 ﻿using FlagTip.Caret;
-using FlagTip.models;
+using FlagTip.Models;
 using FlagTip.UI;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace FlagTip.helpers
+namespace FlagTip.Helpers
 {
     public class CursorHelper
     {

@@ -1,5 +1,5 @@
 ﻿using FlagTip.Input.Native;
-using FlagTip.models;
+using FlagTip.Models;
 using FlagTip.Utils;
 using System;
 using System.Collections.Generic;
@@ -41,7 +41,6 @@ namespace FlagTip.Ime
 
           
             int r = IsKoreanIMEUsingIMM32(hwnd);
-
 
 
             if (r == 1)

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UIA;
 using static FlagTip.Utils.NativeMethods;
 
-namespace FlagTip.hooking
+namespace FlagTip.Hooking
 {
     internal static class TextboxFocusTracker
     {

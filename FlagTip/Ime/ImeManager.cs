@@ -1,8 +1,10 @@
-﻿using FlagTip.models;
+﻿using FlagTip.Models;
 using Microsoft.Win32;
 using System;
 using System.Runtime.InteropServices;
 using System.Web.UI.WebControls;
+using System.Windows.Automation;
+using System.Windows.Forms;
 using static FlagTip.Utils.NativeMethods;
 
 
@@ -69,7 +71,134 @@ namespace FlagTip.Ime
         private const uint IMC_GETCONVERSIONSTATUS = 0x0001;
 
 
+
+
+
+
+
+
+
+       
+
+        //안됨
+
+        // IME 변환 모드 상수
+        private const uint IME_CMODE_HANGEUL = 0x0001;
+        private const uint IME_CMODE_NATIVE = 0x0001; // HANGEUL과 동일
+
         public static ImeState GetChromeImeMode()
+        {
+            try
+            {
+                IntPtr foregroundWnd = GetForegroundWindow();
+                if (foregroundWnd == IntPtr.Zero) return ImeState.UNKNOWN;
+
+                uint threadId = GetWindowThreadProcessId(foregroundWnd, out _);
+                GUITHREADINFO guiInfo = new GUITHREADINFO();
+                guiInfo.cbSize = Marshal.SizeOf(guiInfo);
+
+                if (GetGUIThreadInfo(threadId, ref guiInfo))
+                {
+                    // hwndFocus가 없으면 hwndActive를 사용
+                    IntPtr targetHandle = (guiInfo.hwndFocus != IntPtr.Zero) ? guiInfo.hwndFocus : foregroundWnd;
+
+                    IntPtr hIMC = ImmGetContext(targetHandle);
+                    if (hIMC != IntPtr.Zero)
+                    {
+                        uint conversion, sentence;
+                        // 상태를 가져와서 비트 연산으로 한글 모드인지 확인
+                        if (ImmGetConversionStatus(hIMC, out conversion, out sentence))
+                        {
+                            ImmReleaseContext(targetHandle, hIMC);
+
+                            // conversion 비트에 IME_CMODE_HANGEUL(1)이 포함되어 있으면 한글
+                            return (conversion & IME_CMODE_HANGEUL) != 0 ? ImeState.KOR : ImeState.ENG_LO;
+                        }
+                        ImmReleaseContext(targetHandle, hIMC);
+                    }
+                }
+            }
+            catch { }
+            return ImeState.UNKNOWN;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+        public static ImeState GetChromeImeMode8()
+        {
+            try
+            {
+                Console.WriteLine("hello");
+                // 1. 현재 UI Automation이 포커스하고 있는 요소 가져오기
+                AutomationElement focusedElement = AutomationElement.FocusedElement;
+
+                if (focusedElement == null) return ImeState.UNKNOWN;
+
+                // 2. 해당 요소의 Native 윈도우 핸들(HWND) 가져오기
+                IntPtr handle = new IntPtr(focusedElement.Current.NativeWindowHandle);
+
+                if (handle != IntPtr.Zero)
+                {
+                    // 3. IME 컨텍스트를 얻어와서 상태 확인
+                    IntPtr hIMC = ImmGetContext(handle);
+                    if (hIMC != IntPtr.Zero)
+                    {
+                        bool isHangul = ImmGetOpenStatus(hIMC);
+                        ImmReleaseContext(handle, hIMC);
+
+                        return (isHangul) ? ImeState.KOR : ImeState.ENG_LO;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // UI Automation 접근 중 요소가 사라지거나 에러가 날 경우 처리
+                Console.WriteLine($"Error checking IME: {ex.Message}");
+            }
+
+            return ImeState.UNKNOWN;
+        }
+
+
+
+        // 작동안됨
+        public static ImeState GetChromeImeMode7()
+        {
+            IntPtr foregroundWnd = GetForegroundWindow();
+
+            // 1. IME 컨텍스트 가져오기
+            // 일반적인 경우 GetForegroundWindow를 쓰지만, 
+            // 크롬 내부 입력창의 정확한 상태를 위해 ImmGetContext를 호출합니다.
+            IntPtr hIMC = ImmGetContext(foregroundWnd);
+
+            try
+            {
+                // 2. 상태 확인
+                // true 반환 시 한글(조합) 모드, false 반환 시 영문 모드
+                return (ImmGetOpenStatus(hIMC)) ? ImeState.KOR : ImeState.ENG_LO;
+            }
+            finally
+            {
+                // 3. 반드시 컨텍스트 해제
+                ImmReleaseContext(foregroundWnd, hIMC);
+            }
+        }
+
+
+
+
+
+        public static ImeState GetChromeImeMode6()
         {
             IntPtr hwnd = GetForegroundWindow(); // 현재 활성화된 창
             IntPtr hImeWnd = ImmGetDefaultIMEWnd(hwnd);

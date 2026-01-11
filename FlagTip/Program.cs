@@ -2,6 +2,7 @@
 using FlagTip.Helpers;
 using FlagTip.Hooking;
 using FlagTip.Tracking;
+using FlagTip.Tray;
 using FlagTip.UI;
 using System;
 using System.Diagnostics;
@@ -24,6 +25,7 @@ namespace FlagTip
         static readonly IntPtr DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2
             = new IntPtr(-4);
 
+
         // -------------------- Main --------------------
         [STAThread]
         static void Main(string[] args)
@@ -34,7 +36,7 @@ namespace FlagTip
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-         
+
 
             Application.Run(new MainForm());
 

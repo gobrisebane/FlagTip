@@ -1,7 +1,7 @@
 ﻿using Accessibility;
 using FlagTip.Caret;
 using FlagTip.Input.Native;
-using FlagTip.models;
+using FlagTip.Models;
 using FlagTip.Utils;
 using System;
 using System.Collections.Generic;

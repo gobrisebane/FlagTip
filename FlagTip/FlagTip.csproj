@@ -107,22 +107,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="apps\NotepadHelper.cs" />
-    <Compile Include="caret\CaretController.cs" />
-    <Compile Include="caret\CaretContext.cs" />
-    <Compile Include="config\AppList.cs" />
-    <Compile Include="helpers\CursorHelper.cs" />
-    <Compile Include="helpers\GUIThreadHelper.cs" />
-    <Compile Include="helpers\MSAAHelper.cs" />
-    <Compile Include="helpers\OtherHelper.cs" />
-    <Compile Include="helpers\UIAorGUIHelper.cs" />
-    <Compile Include="helpers\UIAExplorerHelper.cs" />
-    <Compile Include="helpers\bk_UIATextPattern2Helper.cs" />
-    <Compile Include="helpers\bk_WebView2Helper.cs" />
-    <Compile Include="helpers\MouseHelper.cs" />
-    <Compile Include="helpers\UIAHelper.cs" />
-    <Compile Include="hooking\KeyboardHook.cs" />
-    <Compile Include="hooking\MouseHook.cs" />
-    <Compile Include="hooking\TextboxFocusTracker.cs" />
+    <Compile Include="Caret\CaretController.cs" />
+    <Compile Include="Caret\CaretContext.cs" />
+    <Compile Include="Config\AppList.cs" />
+    <Compile Include="Helpers\CursorHelper.cs" />
+    <Compile Include="Helpers\GUIThreadHelper.cs" />
+    <Compile Include="Helpers\MSAAHelper.cs" />
+    <Compile Include="Helpers\OtherHelper.cs" />
+    <Compile Include="Helpers\UIAorGUIHelper.cs" />
+    <Compile Include="Helpers\UIAExplorerHelper.cs" />
+    <Compile Include="Helpers\bk_UIATextPattern2Helper.cs" />
+    <Compile Include="Helpers\bk_WebView2Helper.cs" />
+    <Compile Include="Helpers\MouseHelper.cs" />
+    <Compile Include="Helpers\UIAHelper.cs" />
+    <Compile Include="Hooking\KeyboardHook.cs" />
+    <Compile Include="Hooking\MouseHook.cs" />
+    <Compile Include="Hooking\TextboxFocusTracker.cs" />
     <Compile Include="Ime\ImeManager.cs" />
     <Compile Include="Ime\WindowsImeDetector.cs" />
     <Compile Include="Ime\ImeTracker.cs" />
@@ -131,34 +131,47 @@
     <Compile Include="Input\Tsf\TsfGuids.cs" />
     <Compile Include="Input\Tsf\TsfImeStateReader.cs" />
     <Compile Include="Input\Tsf\TsfInterfaces.cs" />
-    <Compile Include="native\User32.cs" />
-    <Compile Include="ui\MainForm.cs">
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Tray\TrayController.cs" />
+    <Compile Include="UI\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ui\MainForm.Designer.cs">
+    <Compile Include="UI\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="models\CaretInitator.cs" />
-    <Compile Include="models\CaretMethod.cs" />
-    <Compile Include="models\ImeState.cs" />
-    <Compile Include="models\Models.cs" />
+    <Compile Include="Models\CaretMethod.cs" />
+    <Compile Include="Models\ImeState.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="tracking\CaretTracker.cs" />
-    <Compile Include="ui\IndicatorForm.cs">
+    <Compile Include="Tracking\CaretTracker.cs" />
+    <Compile Include="UI\IndicatorForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="utils\CommonUtils.cs" />
-    <Compile Include="utils\NativeMethods.cs" />
-    <Compile Include="utils\WinEventNative.cs" />
-    <Compile Include="watchers\AppWindowWatcher.cs" />
-    <Compile Include="watchers\ForegroundWatcher.cs" />
+    <Compile Include="UI\SettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\SettingsForm.Designer.cs">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Utils\CommonUtils.cs" />
+    <Compile Include="Utils\NativeMethods.cs" />
+    <Compile Include="Utils\WinEventNative.cs" />
+    <Compile Include="Watchers\AppWindowWatcher.cs" />
+    <Compile Include="Watchers\ForegroundWatcher.cs" />
     <Compile Include="_bk\test.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="UIA">
@@ -193,39 +206,47 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="resources\flag\flag_eng_lo.png">
+    <Content Include="Resources\Flag\flag_eng_large_lo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\flag\flag_eng_up.png">
+    <Content Include="Resources\Flag\flag_eng_large_up.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\flag\flag_eng_up_2.png">
+    <Content Include="Resources\Flag\flag_eng_lo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\flag\flag_kor.png">
+    <Content Include="Resources\Flag\flag_eng_up.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\flag\flag_kor_2.png">
+    <Content Include="Resources\Flag\flag_kor.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\ime\eng_dark.png">
+    <Content Include="Resources\Flag\flag_kor_large.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\ime\eng_edge.png">
+    <Content Include="Resources\Ime\eng_dark.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\ime\eng_light.png">
+    <Content Include="Resources\Ime\eng_edge.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\ime\kor_dark.png">
+    <Content Include="Resources\Ime\eng_light.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\ime\kor_edge.png">
+    <Content Include="Resources\Ime\kor_dark.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\ime\kor_light.png">
+    <Content Include="Resources\Ime\kor_edge.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\Ime\kor_light.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\SettingsForm.resx">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
