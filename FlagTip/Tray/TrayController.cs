@@ -44,7 +44,8 @@ namespace FlagTip.Tray
 
             _trayIcon = new NotifyIcon
             {
-                Icon = SystemIcons.Application,
+                //Icon = SystemIcons.Application,
+                Icon = FlagTip.Resources.FlagTipIcon,
                 ContextMenuStrip = menu,
                 Text = "FlagTip",
                 Visible = true

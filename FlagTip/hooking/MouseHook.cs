@@ -27,9 +27,6 @@ namespace FlagTip.Hooking
     {
 
         private static DateTime _lastWheelTime;
-        private static bool _isLeftButtonDown;
-        private static CancellationTokenSource _holdCts;
-
         private static DateTime _lastClickTime = DateTime.MinValue;
         private static POINT _lastClickPos;
 

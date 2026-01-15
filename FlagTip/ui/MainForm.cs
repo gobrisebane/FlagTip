@@ -53,6 +53,8 @@ namespace FlagTip
         public MainForm()
         {
             InitializeComponent();
+
+
             
             ShowInTaskbar = false;
             WindowState = FormWindowState.Minimized;
@@ -73,7 +75,9 @@ namespace FlagTip
             _indicatorForm.Show();
 
             _caretController = new CaretController(_indicatorForm, _imeTracker);
-
+            _caretController.SetCursorFollowEnabled(
+                Properties.Settings.Default.FollowCursor
+            );
 
 
             _mouseProc = (nCode, wParam, lParam) =>
@@ -95,9 +99,9 @@ namespace FlagTip
 
 
 
-            //_tracker = new CaretTracker(_caretController);
-            //_caretController.AttachTracker(_tracker);
-            //_tracker.Start();
+            _tracker = new CaretTracker(_caretController);
+            _caretController.AttachTracker(_tracker);
+            _tracker.Start();
 
 
 
@@ -128,7 +132,7 @@ namespace FlagTip
 
 
 
-            _settingsForm = new SettingsForm(_indicatorForm);
+            _settingsForm = new SettingsForm(_indicatorForm, _caretController);
 
 
 
@@ -139,7 +143,7 @@ namespace FlagTip
         {
             if (_settingsForm == null || _settingsForm.IsDisposed)
             {
-                _settingsForm = new SettingsForm(_indicatorForm);
+                _settingsForm = new SettingsForm(_indicatorForm, _caretController);
             }
 
             // 항상 Show() 호출
@@ -177,7 +181,7 @@ namespace FlagTip
         protected override void OnShown(EventArgs e)
         {
             base.OnShown(e);
-            Hide();
+            //Hide();
         }
 
 

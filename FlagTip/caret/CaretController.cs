@@ -44,7 +44,7 @@ namespace FlagTip.Caret
 
 
 
-    internal class CaretController
+    public class CaretController
     {
 
         private readonly SemaphoreSlim _selectLock = new SemaphoreSlim(1, 1);
@@ -60,7 +60,6 @@ namespace FlagTip.Caret
         private string _className;
         private RECT _rect;
         uint _pid;
-        private bool _contextChanged = true;
 
 
         public CaretController(IndicatorForm indicatorForm, ImeTracker imeTracker)
@@ -85,7 +84,7 @@ namespace FlagTip.Caret
 
         private void OnForegroundHandled()
         {
-            SelectMode();
+            _ = SelectMode();
         }
 
 
@@ -346,7 +345,7 @@ namespace FlagTip.Caret
             {
                 //Console.WriteLine("A1.CTX CHANGE");
                 selectCaretMethod();
-                checkSpecificApps();
+                _ = checkSpecificApps();
 
 
 
@@ -392,9 +391,7 @@ namespace FlagTip.Caret
 
 
 
-
-            //Console.WriteLine("_hwnd : " + _hwnd);
-            //Console.WriteLine($" >>>>> DPI = {NativeMethods.GetDpiForWindow(_hwnd)}");
+            Log($"{DateTime.Now:HH:mm:ss} [{CommonUtils.IsCaretInEditableArea(_hwnd, _rect, _method)}][{_processName}][{_pid}] ({_method}) Caret: L={_rect.left}, T={_rect.top}, W={_rect.right - _rect.left}, B={_rect.bottom}");
 
             Console.WriteLine($"{DateTime.Now:HH:mm:ss} [{CommonUtils.IsCaretInEditableArea(_hwnd, _rect, _method)}][{_processName}][{_pid}] ({_method}) Caret: L={_rect.left}, T={_rect.top}, W={_rect.right - _rect.left}, B={_rect.bottom}");
 
@@ -467,7 +464,7 @@ namespace FlagTip.Caret
         {
             _indicatorForm?.BeginInvoke(new Action(() =>
             {
-                _indicatorForm.SetPosition(_rect.left, _rect.top, _rect.right - _rect.left, 
+                _ = _indicatorForm.SetPosition(_rect.left, _rect.top, _rect.right - _rect.left, 
                     _rect.bottom - _rect.top, _processName);
             }
            ));
@@ -479,7 +476,7 @@ namespace FlagTip.Caret
         {
             _indicatorForm?.BeginInvoke(new Action(() =>
             {
-                _indicatorForm.SetFlag();
+                _ = _indicatorForm.SetFlag();
             }
             ));
         }
@@ -494,6 +491,14 @@ namespace FlagTip.Caret
 
             }
             ));
+        }
+
+        public void SetCursorFollowEnabled(bool enabled)
+        {
+            _cursorHelper.Enabled = enabled;
+
+            if (!enabled)
+                _cursorHelper.Stop();
         }
 
 

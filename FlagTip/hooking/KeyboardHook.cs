@@ -129,12 +129,12 @@ namespace FlagTip.Hooking
                     }
 
                     _hangulKeyPressed = true;
-                    caretController.NotifyImeToggle();
+                    _ = caretController.NotifyImeToggle();
                 }
                 else
                 {
                     _hangulKeyPressed = false;
-                    caretController.NotifyImeToggle();
+                    _ = caretController.NotifyImeToggle();
                 }
 
                 return CallNextHookEx(hookID, nCode, wParam, lParam);
@@ -152,12 +152,12 @@ namespace FlagTip.Hooking
                         return CallNextHookEx(hookID, nCode, wParam, lParam);
                     }
                     _capsLockKeyPressed = true;
-                    caretController.NotifyCapsLockToggle();
+                    _ = caretController.NotifyCapsLockToggle();
                 }
                 else
                 {
                     _capsLockKeyPressed = false;
-                    caretController.NotifyCapsLockToggle();
+                    _ = caretController.NotifyCapsLockToggle();
                 }
 
                 return CallNextHookEx(hookID, nCode, wParam, lParam);

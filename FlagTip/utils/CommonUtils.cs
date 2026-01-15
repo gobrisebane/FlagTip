@@ -2,14 +2,15 @@
 using FlagTip.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using static FlagTip.Config.AppList;
-using static FlagTip.Utils.NativeMethods;
 //using static FlagTip.Input.Native.Imm32;
 using static FlagTip.Input.Native.User32;
+using static FlagTip.Utils.NativeMethods;
 
 
 
@@ -156,6 +157,35 @@ namespace FlagTip.Utils
         }
 
 
+        public static void Log2(string msg)
+        {
+            File.AppendAllText(
+                Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "FlagTip\\startup.log"),
+                $"{DateTime.Now:HH:mm:ss} {msg}\n"
+            );
+        }
+
+
+        public static void Log(string msg)
+        {
+            var dir = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "FlagTip");
+
+            Directory.CreateDirectory(dir);
+
+            var path = Path.Combine(dir, "startup.log");
+
+            var newLine = $"{DateTime.Now:HH:mm:ss} {msg}\n";
+
+            string oldText = File.Exists(path)
+                ? File.ReadAllText(path)
+                : string.Empty;
+
+            File.WriteAllText(path, newLine + oldText);
+        }
 
 
 

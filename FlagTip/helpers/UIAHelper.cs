@@ -12,6 +12,7 @@ using System.Windows.Automation;
 using System.Windows.Automation.Text;
 using UIAutomationClient;
 using static FlagTip.Utils.NativeMethods;
+using static FlagTip.Utils.CommonUtils;
 
 
 /*
@@ -259,8 +260,10 @@ namespace FlagTip.Helpers
                     return true;
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                Log("!!! UIA CATCH ERROR" + ex.Message);
+                Console.WriteLine("오류: " + ex.Message);
                 return false;
             }
             finally

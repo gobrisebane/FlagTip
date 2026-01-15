@@ -12,7 +12,7 @@ using static FlagTip.Utils.NativeMethods;
 
 namespace FlagTip.Tracking
 {
-    internal class CaretTracker : IDisposable
+    public class CaretTracker : IDisposable
     {
         private readonly CaretController _caretController;
         private CancellationTokenSource _cts;

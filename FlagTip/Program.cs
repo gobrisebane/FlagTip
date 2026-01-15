@@ -31,13 +31,17 @@ namespace FlagTip
         static void Main(string[] args)
         {
 
+
+            Thread.Sleep(3000);
+
+            //WaitForExplorer();
+
+            
             SetProcessDpiAwarenessContext(
         DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
-
             Application.Run(new MainForm());
 
 
@@ -48,7 +52,16 @@ namespace FlagTip
         }
 
 
-       
+
+        static void WaitForExplorer()
+        {
+            while (Process.GetProcessesByName("explorer").Length == 0)
+            {
+                Thread.Sleep(500);
+            }
+        }
+
+
 
 
 

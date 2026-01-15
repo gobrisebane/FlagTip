@@ -55,7 +55,6 @@ namespace FlagTip.UI
 
 
 
-
         private readonly ImeTracker _imeTracker;
 
         protected override bool ShowWithoutActivation => true;
@@ -118,6 +117,8 @@ namespace FlagTip.UI
             };
 
             Controls.Add(_flagBox);
+
+
 
 
             this.HandleCreated += IndicatorForm_HandleCreated;

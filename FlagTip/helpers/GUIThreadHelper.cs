@@ -8,7 +8,9 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using static FlagTip.Utils.NativeMethods;
+using static OpenCvSharp.ML.LogisticRegression;
 
+using static FlagTip.Utils.CommonUtils;
 
 
 
@@ -56,9 +58,12 @@ namespace FlagTip.Helpers
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                // 예외 무시, 실패시 false 반환
+                Log("!!! GUITHREAD ERROR" + ex.Message);
+                Console.WriteLine("오류: " + ex.Message);
+                return false;
+
 
             }
 

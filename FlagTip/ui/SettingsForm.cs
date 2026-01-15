@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FlagTip.Caret;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -16,19 +17,21 @@ namespace FlagTip.UI
     {
 
         private IndicatorForm _indicatorForm;
+        private CaretController _caretController;
         private TableLayoutPanel optionLayout;
 
-        public SettingsForm(IndicatorForm indicatorForm)
+        public SettingsForm(IndicatorForm indicatorForm, CaretController caretController)
         {
             InitializeComponent();
 
             _indicatorForm = indicatorForm;
+            _caretController = caretController;
 
             Text = "FlagTip";
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
             MinimizeBox = false;
-            ClientSize = new Size(480, 360);
+            ClientSize = new Size(640, 340);
             StartPosition = FormStartPosition.CenterScreen;
 
             InitializeAboutTab();
@@ -108,7 +111,18 @@ namespace FlagTip.UI
 
         private void InitializeOptionTab()
         {
-           
+            chkFollowCursor.Checked = Properties.Settings.Default.FollowCursor;
+            chkFollowCursor.CheckedChanged += ChkFollowCursor_CheckedChanged;
+        }
+
+        private void ChkFollowCursor_CheckedChanged(object sender, EventArgs e)
+        {
+            bool enabled = chkFollowCursor.Checked;
+
+            Properties.Settings.Default.FollowCursor = enabled;
+            Properties.Settings.Default.Save();
+
+            _caretController.SetCursorFollowEnabled(enabled);
         }
 
         private bool IsRunAtStartupEnabled()
@@ -222,7 +236,7 @@ namespace FlagTip.UI
             });
         }
 
-        private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void chromeErrorLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
 
             Process.Start(new ProcessStartInfo
@@ -231,5 +245,7 @@ namespace FlagTip.UI
                 UseShellExecute = true
             });
         }
+
+
     }
 }

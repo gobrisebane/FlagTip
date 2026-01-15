@@ -15,6 +15,9 @@ namespace FlagTip.Helpers
     public class CursorHelper
     {
 
+
+        public bool Enabled { get; set; } = true;
+
         private System.Threading.Timer _timer;
         private IndicatorForm _indicatorForm;
         private int offsetX = 10;
@@ -43,32 +46,32 @@ namespace FlagTip.Helpers
             // UI 스레드 보장
             _indicatorForm.BeginInvoke(new Action(() =>
             {
-                _indicatorForm.SetPosition(x, y, width, height);
+                _ = _indicatorForm.SetPosition(x, y, width, height);
             }));
         }
 
         public void Start()
         {
-            if (!IsRunning)
+           
+            if (!Enabled || IsRunning)
+                return;
+
+            _indicatorForm.BeginInvoke(new Action(() =>
             {
-                _indicatorForm.BeginInvoke(new Action(() =>
-                {
-                    _indicatorForm.Show();
-                }));
+                _indicatorForm.Show();
+            }));
+            IsRunning = true;
+            _timer.Change(0, 31);
 
-                IsRunning = true;
-                _timer.Change(0, 31); // 즉시 시작, 30fps
-
-            }
         }
 
         public void Stop()
         {
-            if (IsRunning)
-            {
-                _timer.Change(Timeout.Infinite, Timeout.Infinite);
-                IsRunning = false;
-            }
+            if (!IsRunning)
+                return;
+
+            _timer.Change(Timeout.Infinite, Timeout.Infinite);
+            IsRunning = false;
         }
     }
 }

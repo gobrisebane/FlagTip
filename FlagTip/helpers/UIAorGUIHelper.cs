@@ -11,6 +11,8 @@ using System.Windows.Automation;
 using System.Windows.Forms; // Cursor.Position 사용
 using UIAutomationClient;
 using static FlagTip.Utils.NativeMethods;
+using static FlagTip.Utils.CommonUtils;
+
 
 
 namespace FlagTip.Helpers
@@ -44,6 +46,8 @@ namespace FlagTip.Helpers
             }
             catch (Exception ex)
             {
+
+                Log("!!! UIAorGUI CATCH ERROR" + ex.Message);
                 Console.WriteLine("오류: " + ex.Message);
                 return false;
             }

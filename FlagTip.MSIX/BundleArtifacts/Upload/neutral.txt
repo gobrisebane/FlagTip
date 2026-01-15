@@ -1,0 +1,3 @@
+MainPackage=C:\PC_WORK\_PROJECT\FlagTip\FlagTip.MSIX\bin\AnyCPU\Release\Upload\FlagTip.MSIX_1.0.10.0_AnyCPU.msix
+SymbolPackage=C:\PC_WORK\_PROJECT\FlagTip\FlagTip.MSIX\bin\AnyCPU\Release\Upload\FlagTip.MSIX_1.0.10.0\FlagTip.MSIX_1.0.10.0_AnyCPU.appxsym
+ResourcePack=C:\PC_WORK\_PROJECT\FlagTip\FlagTip.MSIX\bin\AnyCPU\Release\Upload\FlagTip.MSIX_1.0.10.0_scale-100.msix

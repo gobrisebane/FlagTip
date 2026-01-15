@@ -58,5 +58,17 @@ namespace FlagTip.Properties {
                 this["OffsetY"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool FollowCursor {
+            get {
+                return ((bool)(this["FollowCursor"]));
+            }
+            set {
+                this["FollowCursor"] = value;
+            }
+        }
     }
 }

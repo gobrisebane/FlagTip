@@ -45,7 +45,8 @@
             this.linkLabelWebsite = new System.Windows.Forms.LinkLabel();
             this.linkLabelEmail = new System.Windows.Forms.LinkLabel();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-            this.linkLabel2 = new System.Windows.Forms.LinkLabel();
+            this.chromeErrorLink = new System.Windows.Forms.LinkLabel();
+            this.chkFollowCursor = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabOption.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackOffsetY)).BeginInit();
@@ -68,7 +69,8 @@
             // 
             // tabOption
             // 
-            this.tabOption.Controls.Add(this.linkLabel2);
+            this.tabOption.Controls.Add(this.chkFollowCursor);
+            this.tabOption.Controls.Add(this.chromeErrorLink);
             this.tabOption.Controls.Add(this.trackOffsetY);
             this.tabOption.Controls.Add(this.lblOffsetY);
             this.tabOption.Controls.Add(this.lblOffsetX);
@@ -87,7 +89,7 @@
             // 
             // trackOffsetY
             // 
-            this.trackOffsetY.Location = new System.Drawing.Point(40, 252);
+            this.trackOffsetY.Location = new System.Drawing.Point(40, 215);
             this.trackOffsetY.Maximum = 30;
             this.trackOffsetY.Name = "trackOffsetY";
             this.trackOffsetY.Size = new System.Drawing.Size(264, 45);
@@ -96,7 +98,7 @@
             // lblOffsetY
             // 
             this.lblOffsetY.AutoSize = true;
-            this.lblOffsetY.Location = new System.Drawing.Point(38, 234);
+            this.lblOffsetY.Location = new System.Drawing.Point(38, 197);
             this.lblOffsetY.Name = "lblOffsetY";
             this.lblOffsetY.Size = new System.Drawing.Size(38, 12);
             this.lblOffsetY.TabIndex = 5;
@@ -105,7 +107,7 @@
             // lblOffsetX
             // 
             this.lblOffsetX.AutoSize = true;
-            this.lblOffsetX.Location = new System.Drawing.Point(36, 148);
+            this.lblOffsetX.Location = new System.Drawing.Point(36, 111);
             this.lblOffsetX.Name = "lblOffsetX";
             this.lblOffsetX.Size = new System.Drawing.Size(38, 12);
             this.lblOffsetX.TabIndex = 4;
@@ -113,7 +115,7 @@
             // 
             // trackOffsetX
             // 
-            this.trackOffsetX.Location = new System.Drawing.Point(38, 168);
+            this.trackOffsetX.Location = new System.Drawing.Point(38, 131);
             this.trackOffsetX.Maximum = 30;
             this.trackOffsetX.Name = "trackOffsetX";
             this.trackOffsetX.Size = new System.Drawing.Size(266, 45);
@@ -122,7 +124,7 @@
             // chkRunAtStartup
             // 
             this.chkRunAtStartup.AutoSize = true;
-            this.chkRunAtStartup.Location = new System.Drawing.Point(37, 31);
+            this.chkRunAtStartup.Location = new System.Drawing.Point(331, 49);
             this.chkRunAtStartup.Name = "chkRunAtStartup";
             this.chkRunAtStartup.Size = new System.Drawing.Size(160, 16);
             this.chkRunAtStartup.TabIndex = 2;
@@ -132,7 +134,7 @@
             // lblOpacity
             // 
             this.lblOpacity.AutoSize = true;
-            this.lblOpacity.Location = new System.Drawing.Point(36, 67);
+            this.lblOpacity.Location = new System.Drawing.Point(36, 30);
             this.lblOpacity.Name = "lblOpacity";
             this.lblOpacity.Size = new System.Drawing.Size(61, 12);
             this.lblOpacity.TabIndex = 1;
@@ -140,7 +142,7 @@
             // 
             // trackOpacity
             // 
-            this.trackOpacity.Location = new System.Drawing.Point(38, 91);
+            this.trackOpacity.Location = new System.Drawing.Point(40, 49);
             this.trackOpacity.Maximum = 100;
             this.trackOpacity.Minimum = 10;
             this.trackOpacity.Name = "trackOpacity";
@@ -259,16 +261,25 @@
             this.linkLabel1.Text = "https://github.com/gobrisebane/FlagTip";
             this.linkLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // linkLabel2
+            // chromeErrorLink
             // 
-            this.linkLabel2.AutoSize = true;
-            this.linkLabel2.Location = new System.Drawing.Point(38, 343);
-            this.linkLabel2.Name = "linkLabel2";
-            this.linkLabel2.Size = new System.Drawing.Size(61, 12);
-            this.linkLabel2.TabIndex = 7;
-            this.linkLabel2.TabStop = true;
-            this.linkLabel2.Text = "linkLabel2";
-            this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
+            this.chromeErrorLink.AutoSize = true;
+            this.chromeErrorLink.Location = new System.Drawing.Point(329, 131);
+            this.chromeErrorLink.Name = "chromeErrorLink";
+            this.chromeErrorLink.Size = new System.Drawing.Size(209, 12);
+            this.chromeErrorLink.TabIndex = 8;
+            this.chromeErrorLink.TabStop = true;
+            this.chromeErrorLink.Text = "크롬, 엣지에 비정상 동작 시 대응방법";
+            this.chromeErrorLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.chromeErrorLink_LinkClicked);
+            // 
+            // chkFollowCursor
+            // 
+            this.chkFollowCursor.Location = new System.Drawing.Point(331, 76);
+            this.chkFollowCursor.Name = "chkFollowCursor";
+            this.chkFollowCursor.Size = new System.Drawing.Size(263, 43);
+            this.chkFollowCursor.TabIndex = 9;
+            this.chkFollowCursor.Text = "미지원프로그램에서 플래그가 커서를 따라가게 하기 (포토샵, 일러스트레이터, 왓츠앱)";
+            this.chkFollowCursor.UseVisualStyleBackColor = true;
             // 
             // SettingsForm
             // 
@@ -311,6 +322,7 @@
         private System.Windows.Forms.Label lblOffsetX;
         private System.Windows.Forms.LinkLabel linkLabelEmail;
         private System.Windows.Forms.LinkLabel linkLabel1;
-        private System.Windows.Forms.LinkLabel linkLabel2;
+        private System.Windows.Forms.LinkLabel chromeErrorLink;
+        private System.Windows.Forms.CheckBox chkFollowCursor;
     }
 }

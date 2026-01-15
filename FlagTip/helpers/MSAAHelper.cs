@@ -14,6 +14,7 @@ using System.Windows;
 using System.Windows.Automation;
 using static FlagTip.Utils.NativeMethods;
 
+using static FlagTip.Utils.CommonUtils;
 
 namespace FlagTip.Helpers
 {
@@ -69,8 +70,11 @@ namespace FlagTip.Helpers
 
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
+
+                Log("!!! MSAA ERROR" + ex.Message);
+                Console.WriteLine("오류: " + ex.Message);
                 return false;
             }
         }

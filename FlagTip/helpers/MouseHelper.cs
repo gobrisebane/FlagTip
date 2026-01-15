@@ -48,7 +48,7 @@ namespace FlagTip.Helpers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"TryGetCaretFromMouseClick Error: {ex.Message}");
+                //Console.WriteLine($"TryGetCaretFromMouseClick Error: {ex.Message}");
             }
 
             return false;
