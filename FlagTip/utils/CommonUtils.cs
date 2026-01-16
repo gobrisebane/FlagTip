@@ -157,7 +157,8 @@ namespace FlagTip.Utils
         }
 
 
-        public static void Log2(string msg)
+
+        public static void Log(string msg)
         {
             File.AppendAllText(
                 Path.Combine(
@@ -168,7 +169,7 @@ namespace FlagTip.Utils
         }
 
 
-        public static void Log(string msg)
+        public static void Log2(string msg)
         {
             var dir = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),

@@ -391,7 +391,7 @@ namespace FlagTip.Caret
 
 
 
-            Log($"{DateTime.Now:HH:mm:ss} [{CommonUtils.IsCaretInEditableArea(_hwnd, _rect, _method)}][{_processName}][{_pid}] ({_method}) Caret: L={_rect.left}, T={_rect.top}, W={_rect.right - _rect.left}, B={_rect.bottom}");
+            Log($"{DateTime.Now:HH:mm:ss} [{CommonUtils.IsCaretInEditableArea(_hwnd, _rect, _method)}][{_processName}][{_pid}] ({_method}) Caret: L={_rect.left}, T={_rect.top}, W={_rect.right - _rect.left}, B={_rect.bottom}___6");
 
             Console.WriteLine($"{DateTime.Now:HH:mm:ss} [{CommonUtils.IsCaretInEditableArea(_hwnd, _rect, _method)}][{_processName}][{_pid}] ({_method}) Caret: L={_rect.left}, T={_rect.top}, W={_rect.right - _rect.left}, B={_rect.bottom}");
 
@@ -444,12 +444,6 @@ namespace FlagTip.Caret
             ImmGetConversionStatus(hIMC, out int conv, out _);
             ImmReleaseContext(_hwnd, hIMC);
 
-
-
-
-            //Console.WriteLine("(conv & ImeNative.IME_CMODE_NATIVE) != 0 : " + (conv&ImeNative.IME_CMODE_NATIVE));
-            //Console.WriteLine("conv : " + conv);
-            //Console.WriteLine("IME_CMODE_NATIVE : " + IME_CMODE_NATIVE);
         }
 
 
@@ -512,7 +506,7 @@ namespace FlagTip.Caret
                 )
              {
                  UIAHelper.TryGetCaretFromUIA(out _rect);
-                 _method = CaretMethod.UIA;
+                _method = CaretMethod.UIA;
             }
              else if ( IsProcessBrowserApp() )
             {
@@ -532,14 +526,14 @@ namespace FlagTip.Caret
             else
              {
 
-                 if (GUIThreadHelper.TryGetCaretFromGUIThreadInfo(_hwnd, out _rect))
-                 {
+                if (GUIThreadHelper.TryGetCaretFromGUIThreadInfo(_hwnd, out _rect))
+                {
                      _method = CaretMethod.GUIThreadInfo;
-                 }
-                 else if (MSAAHelper.TryGetCaretFromMSAA(_hwnd, out _rect))
-                 {
+                }
+                else if (MSAAHelper.TryGetCaretFromMSAA(_hwnd, out _rect))
+                {
                      _method = CaretMethod.MSAA;
-                 }
+                }
                 else if (UIAHelper.TryGetCaretFromUIA(out _rect))
                 {
                     _method = CaretMethod.UIA;
@@ -548,31 +542,11 @@ namespace FlagTip.Caret
                 {
                     _rect = new RECT();
                     _method = CaretMethod.None;
-
                 }
              }
 
 
 
-
-            //GUIThreadHelper.TryGetCaretFromGUIThreadInfo(_hwnd, out _rect);
-            //_method = CaretMethod.GUIThreadInfo;
-
-
-            //UIAExplorerHelper.TryGetCaretFromUIAExplorer(out _rect);
-            //_method = CaretMethod.UIAExplorer;
-
-
-            //MSAAHelper.TryGetCaretFromMSAA(_hwnd, out _rect);
-            //_method = CaretMethod.MSAA;
-
-
-            //UIAExplorerHelper.TryGetCaretFromUIAExplorer(out _rect);
-            //_method = CaretMethod.UIAExplorer;
-
-
-            //UIAHelper.TryGetCaretFromUIA(out _rect);
-            //_method = CaretMethod.UIA;
 
 
 

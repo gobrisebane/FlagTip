@@ -57,7 +57,7 @@ namespace FlagTip.Helpers
                     0   // CHILDID_SELF
                 );
 
-                if ( (x == 0 && y == 0) || w == 0 )
+                if ((x == 0 && y == 0) || w == 0)
                     return false;
 
 

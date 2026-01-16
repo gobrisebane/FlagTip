@@ -75,7 +75,7 @@ namespace FlagTip.UI
 
 
 
-        public IndicatorForm(ImeTracker imeTracker)
+       public IndicatorForm(ImeTracker imeTracker)
         {
 
             _foregroundWatcher = new ForegroundWatcher();
@@ -100,15 +100,32 @@ namespace FlagTip.UI
             Opacity = savedOpacity;
 
 
-            string basePath = AppDomain.CurrentDomain.BaseDirectory;
-            _korFlag = Image.FromFile(Path.Combine(basePath, "resources/flag/flag_kor.png"));
-            _engLowerFlag = Image.FromFile(Path.Combine(basePath, "resources/flag/flag_eng_lo.png"));
-            _engUpperFlag = Image.FromFile(Path.Combine(basePath, "resources/flag/flag_eng_up.png"));
 
-            //_korFlag = Image.FromFile(Path.Combine(basePath, "resources/flag/flag_kor_large.png"));
-            //_engLowerFlag = Image.FromFile(Path.Combine(basePath, "resources/flag/flag_eng_large_lo.png"));
-            //_engUpperFlag = Image.FromFile(Path.Combine(basePath, "resources/flag/flag_eng_large_up.png"));
 
+
+
+
+            try
+            {
+                string basePath = AppDomain.CurrentDomain.BaseDirectory;
+                Log($"BasePath = {basePath}");
+
+                _korFlag = LoadImageSafe(Path.Combine(basePath, "resources/flag/flag_kor.png"));
+                _engLowerFlag = LoadImageSafe(Path.Combine(basePath, "resources/flag/flag_eng_lo.png"));
+                _engUpperFlag = LoadImageSafe(Path.Combine(basePath, "resources/flag/flag_eng_up.png"));
+
+                //_korFlag = Image.FromFile(Path.Combine(basePath, "resources/flag/flag_kor.png"));
+                //_engLowerFlag = Image.FromFile(Path.Combine(basePath, "resources/flag/flag_eng_lo.png"));
+                //_engUpperFlag = Image.FromFile(Path.Combine(basePath, "resources/flag/flag_eng_up.png"));
+
+            }
+            catch (Exception ex)
+            {
+                Log($"[IMAGE LOAD ERROR] {ex}");
+            }
+
+
+       
             _flagBox = new PictureBox
             {
                 Dock = DockStyle.Fill,
@@ -126,6 +143,39 @@ namespace FlagTip.UI
 
         }
 
+/*
+        public IndicatorForm2(ImeTracker imeTracker)
+        {
+            _foregroundWatcher = new ForegroundWatcher();
+            _imeTracker = imeTracker;
+
+            FormBorderStyle = FormBorderStyle.None;
+            TopMost = true;
+            ShowInTaskbar = false;
+            StartPosition = FormStartPosition.Manual;
+
+            Width = 16;
+            Height = 11;
+
+            BackColor = Color.Magenta;
+            TransparencyKey = Color.Magenta;
+
+            OFFSET_X = Properties.Settings.Default.OffsetX;
+            OFFSET_Y = Properties.Settings.Default.OffsetY;
+            Opacity = Properties.Settings.Default.Opacity;
+
+            var redBox = new Panel
+            {
+                Dock = DockStyle.Fill,
+                BackColor = Color.Red
+            };
+
+            Controls.Add(redBox);
+
+            HandleCreated += IndicatorForm_HandleCreated;
+            FormClosed += IndicatorForm_FormClosed;
+        }
+*/
         public void SetOpacity(double opacity)
         {
             this.Opacity = opacity;
@@ -141,9 +191,20 @@ namespace FlagTip.UI
             return Properties.Settings.Default.Opacity;
         }
 
-        private void IndicatorForm_HandleCreated(object sender, EventArgs e)
+        private async void IndicatorForm_HandleCreated(object sender, EventArgs e)
         {
-            _ = SetFlag();
+
+            
+            try
+            {
+                await SetFlag();
+            }
+            catch (Exception ex)
+            {
+                Log($"[HandleCreated SetFlag ERROR] {ex}");
+            }
+            
+
             _foregroundWatcher.ForegroundChanged += OnForegroundChanged;
             _foregroundWatcher.Start();
         }
@@ -230,14 +291,7 @@ namespace FlagTip.UI
                 HideIndicator();
 
 
-                /*if (IsProcessBrowserApp(processName))
-                {
-                    Console.WriteLine("1.IT IS BROWSER..DO NOT HIDE");
-                } else
-                {
-                    HideIndicator();
-                }*/
-
+          
             }
 
 
@@ -252,37 +306,53 @@ namespace FlagTip.UI
         public async Task SetFlag()
         {
 
-
-            await Task.Delay(50);
-            ImeState imeState = _imeTracker.DetectIme();
-
-            _hasFlag = true;
-
-
-            switch (imeState)
+            try
             {
-                case ImeState.KOR:
-                    _flagBox.Image = _korFlag;
-                    _curImeState = ImeState.KOR;
-                    break;
 
-                case ImeState.ENG_LO:
-                    _flagBox.Image = _engLowerFlag;
-                    _curImeState = ImeState.ENG_LO;
-                    break;
+                await Task.Delay(50);
+                ImeState imeState = _imeTracker.DetectIme();
 
-                case ImeState.ENG_UP:
-                    _flagBox.Image = _engUpperFlag;
-                    _curImeState = ImeState.ENG_UP;
-                    break;
+                _hasFlag = true;
 
-                default:
-                    break;
+
+                switch (imeState)
+                {
+                    case ImeState.KOR:
+                        _flagBox.Image = _korFlag;
+                        _curImeState = ImeState.KOR;
+                        break;
+
+                    case ImeState.ENG_LO:
+                        _flagBox.Image = _engLowerFlag;
+                        _curImeState = ImeState.ENG_LO;
+                        break;
+
+                    case ImeState.ENG_UP:
+                        _flagBox.Image = _engUpperFlag;
+                        _curImeState = ImeState.ENG_UP;
+                        break;
+
+                    default:
+                        break;
+                }
+
             }
-            
+            catch (Exception ex)
+            {
+                Log($"[SetFlag ERROR] {ex}");
+            }
+
 
         }
-
+        private Image LoadImageSafe(string path)
+        {
+            using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (var img = Image.FromStream(fs))
+            {
+                // 스트림에서 완전히 분리
+                return new Bitmap(img);
+            }
+        }
 
 
 
