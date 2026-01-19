@@ -28,55 +28,62 @@ namespace FlagTip.Helpers
             GUITHREADINFO guiInfo = new GUITHREADINFO();
             guiInfo.cbSize = Marshal.SizeOf<GUITHREADINFO>();
 
+            if (!User32.GetGUIThreadInfo(0, ref guiInfo))
+                return false;
+
+            if (guiInfo.hwndFocus == IntPtr.Zero)
+                return false;
+
+            Guid iidIAccessible = new Guid("618736E0-3C3D-11CF-810C-00AA00389B71");
+
+            int hr = NativeMethods.AccessibleObjectFromWindow(
+                guiInfo.hwndFocus,
+                NativeMethods.OBJID_CARET,
+                ref iidIAccessible,
+                out object accObj
+            );
+
+            if (hr != 0)
+                return false;
+
+            var acc = accObj as Accessibility.IAccessible;
+            if (acc == null)
+                return false;
+
+            int x, y, w, h;
+
             try
             {
-                if (!User32.GetGUIThreadInfo(0, ref guiInfo))
-                    return false;
-
-                Guid iidIAccessible = new Guid("618736E0-3C3D-11CF-810C-00AA00389B71");
-
-                int hr = NativeMethods.AccessibleObjectFromWindow(
-                    guiInfo.hwndFocus,
-                    NativeMethods.OBJID_CARET,
-                    ref iidIAccessible,
-                    out object accObj
-                );
-
-                if (hr != 0)
-                    return false;
-
-                var acc = accObj as Accessibility.IAccessible;
-                if (acc == null)
-                    return false;
-
-                acc.accLocation(
-                    out int x,
-                    out int y,
-                    out int w,
-                    out int h,
-                    0   // CHILDID_SELF
-                );
-
-                if ((x == 0 && y == 0) || w == 0)
-                    return false;
-
-
-
-                rect.left = x;
-                rect.top = y;
-                rect.right = x + w;
-                rect.bottom = y + h;
-
-
-                return true;
+                // 🔥 가장 위험한 지점
+                acc.accLocation(out x, out y, out w, out h, 0);
             }
-            catch (Exception ex)
+            catch (ArgumentException)
             {
-
-                Log("!!! MSAA ERROR" + ex.Message);
-                Console.WriteLine("오류: " + ex.Message);
+                // Chrome Ctrl+V / IME 중 자주 발생
                 return false;
             }
+            catch (COMException)
+            {
+                return false;
+            }
+
+            // ❗ 좌표 검증 강화
+            if (w <= 0 || h <= 0)
+                return false;
+
+            if (x == 0 && y == 0)
+                return false;
+
+            // ❗ 화면 밖 좌표 방지 (멀티모니터 포함)
+            if (x < -10000 || y < -10000 || x > 100000 || y > 100000)
+                return false;
+
+            rect.left = x;
+            rect.top = y;
+            rect.right = x + w;
+            rect.bottom = y + h;
+
+            return true;
         }
 
 

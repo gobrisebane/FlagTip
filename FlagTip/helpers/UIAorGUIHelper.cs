@@ -20,7 +20,7 @@ namespace FlagTip.Helpers
     internal class UIAorGUIHelper
     {
 
-        internal static bool TryGetCaretFromUIAorGUI(IntPtr hwnd, out RECT rect)
+        internal static bool TryGetCaretFromUIAorGUI(IntPtr hwnd, out RECT rect, String processName)
         {
             
             //caretLocation = new RECT();
@@ -35,7 +35,7 @@ namespace FlagTip.Helpers
                     return true;
                 }
 
-                if (GUIThreadHelper.TryGetCaretFromGUIThreadInfo(hwnd, out rect) 
+                if (GUIThreadHelper.TryGetCaretFromGUIThreadInfo(hwnd, out rect, processName) 
                     && CommonUtils.IsRectValid(rect))
                 {
                     return true;

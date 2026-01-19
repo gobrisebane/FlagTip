@@ -26,6 +26,7 @@ namespace FlagTip.UI
 
         private PictureBox _flagBox;
         private Image _korFlag;
+        private Image _jpnFlag;
         private Image _engLowerFlag;
         private Image _engUpperFlag;
 
@@ -111,6 +112,7 @@ namespace FlagTip.UI
                 Log($"BasePath = {basePath}");
 
                 _korFlag = LoadImageSafe(Path.Combine(basePath, "resources/flag/flag_kor.png"));
+                _jpnFlag = LoadImageSafe(Path.Combine(basePath, "resources/flag/flag_jpn.png"));
                 _engLowerFlag = LoadImageSafe(Path.Combine(basePath, "resources/flag/flag_eng_lo.png"));
                 _engUpperFlag = LoadImageSafe(Path.Combine(basePath, "resources/flag/flag_eng_up.png"));
 
@@ -315,11 +317,18 @@ namespace FlagTip.UI
                 _hasFlag = true;
 
 
+
+
                 switch (imeState)
                 {
                     case ImeState.KOR:
                         _flagBox.Image = _korFlag;
                         _curImeState = ImeState.KOR;
+                        break;
+
+                    case ImeState.JPN:
+                        _flagBox.Image = _jpnFlag;
+                        _curImeState = ImeState.JPN;
                         break;
 
                     case ImeState.ENG_LO:

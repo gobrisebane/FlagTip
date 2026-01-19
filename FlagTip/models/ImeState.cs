@@ -13,7 +13,8 @@ namespace FlagTip.Models
         ENG = 1,
         ENG_LO = 2,
         ENG_UP = 3,
-        UNKNOWN = 4
+        JPN = 4,
+        UNKNOWN = 5
 
     }
 }

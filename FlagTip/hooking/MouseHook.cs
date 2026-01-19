@@ -131,13 +131,20 @@ namespace FlagTip.Hooking
 
                 caretController.NotifyCaretMove();
 
+
+                await caretController.OnKeyTest();
+
+
+
                 // original
                 await caretController.MultiSelectMode();
 
 
-                
+
+
+
             }
-            
+
 
             //original
             else if (msg == MouseMessages.WM_LBUTTONUP || 

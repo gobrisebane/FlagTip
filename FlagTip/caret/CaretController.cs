@@ -27,13 +27,14 @@ using UIA;
 using UIAutomationClient;
 using static FlagTip.Config.AppList;
 using static FlagTip.Helpers.MSAAHelper;
-using static FlagTip.Input.Tsf.TsfImeStateReader;
 using static FlagTip.Utils.CommonUtils;
 using static FlagTip.Utils.NativeMethods;
 
 using static System.Collections.Specialized.BitVector32;
 using static System.Windows.Forms.AxHost;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
+
+
 
 
 namespace FlagTip.Caret
@@ -173,10 +174,24 @@ namespace FlagTip.Caret
 
 
 
+
         public async Task NotifyImeToggle()
         {
-           
             SetFlag();
+            await SelectMode();
+        }
+
+
+        public async Task NotifyImeToggleKorJpn()
+        {
+            
+
+            for (int i = 0; i < 3; i++)
+            {
+                await Task.Delay(100);
+                SetFlag();
+            }
+
             await SelectMode();
 
         }
@@ -291,9 +306,6 @@ namespace FlagTip.Caret
             
 
 
-
-
-
             if (!await _selectLock.WaitAsync(0))
                 return;
 
@@ -337,19 +349,13 @@ namespace FlagTip.Caret
             await Task.Delay(delayMs);
 
 
-
-
             bool contextChanged = IsContextChanged();
 
             if (contextChanged)
             {
                 //Console.WriteLine("A1.CTX CHANGE");
                 selectCaretMethod();
-                _ = checkSpecificApps();
-
-
-
-
+                _ = CheckDevEnv();
 
             }
             else
@@ -362,20 +368,34 @@ namespace FlagTip.Caret
 
 
 
-            // 메모장 더블클릭 때문에 추가
-            if (_processName == "notepad" && _method == CaretMethod.GUIThreadInfo)
-            {
-                if (_rect.left == 0 && _rect.top == 0)
-                {
-                    UIAHelper.TryGetCaretFromUIA(out _rect);
-                }
-            }
+
+
+
+
+
+
+
+
+            FixForSpecialApps();
 
 
 
             SetFlagPosition();
 
 
+
+            /*
+            if (_processName == "powerpnt")
+            {
+                if (!IsPowerPointTextSelection())
+                {
+                    Console.WriteLine("disable caret please..");
+                    _indicatorForm?.BeginInvoke(new Action(() =>
+                        _indicatorForm.HideIndicator()
+                     ));
+                }
+            }
+            */
 
 
             if (_rect.left != 0 && _rect.top != 0)
@@ -395,14 +415,66 @@ namespace FlagTip.Caret
 
             Console.WriteLine($"{DateTime.Now:HH:mm:ss} [{CommonUtils.IsCaretInEditableArea(_hwnd, _rect, _method)}][{_processName}][{_pid}] ({_method}) Caret: L={_rect.left}, T={_rect.top}, W={_rect.right - _rect.left}, B={_rect.bottom}");
 
+        }
+
+
+
+
+        
+
+
+
+
+
+        public void FixForSpecialApps()
+        {
+            
+            // 메모장 더블클릭 때문에 추가
+            if (_processName == "notepad" && _method == CaretMethod.GUIThreadInfo)
+            {
+                if (_rect.left == 0 && _rect.top == 0)
+                {
+                    UIAHelper.TryGetCaretFromUIA(out _rect);
+                }
+            }
+
+
+         
+
+
+            CheckClickImeButton();
+
+
+        }
+
+
+        public async Task CheckClickImeButton()
+        {
+            POINT pt;
+            GetCursorPos(out pt);
+
+            IntPtr hwnd = WindowFromPoint(pt);
+
+            StringBuilder sb = new StringBuilder(256);
+            GetClassName(hwnd, sb, sb.Capacity);
+
+            string className = sb.ToString();
+
+
+            if (className == "TrayNotifyWnd"
+                || className == "NotifyIconOverflowWindow"
+                || className == "ToolbarWindow32")
+            {
+                SetFlag();
+            }
+
 
         }
 
 
 
 
-
-        public async Task checkSpecificApps()
+        public async Task CheckDevEnv()
         {
             // VS 디버그 모드때문에 반영
 
@@ -437,12 +509,35 @@ namespace FlagTip.Caret
 
         public async Task OnKeyTest()
         {
+
+            /*
             IntPtr hIMC = ImmGetContext(_hwnd);
             if (hIMC == IntPtr.Zero)
                 //return false;
 
             ImmGetConversionStatus(hIMC, out int conv, out _);
             ImmReleaseContext(_hwnd, hIMC);
+            */
+
+
+
+            /*
+                uint tid = GetWindowThreadProcessId(_hwnd, IntPtr.Zero);
+                IntPtr hkl = GetKeyboardLayout(tid);
+
+                ushort langId = (ushort)((ulong)hkl & 0xFFFF);
+                ushort deviceId = (ushort)(((ulong)hkl >> 16) & 0xFFFF);
+
+                Console.WriteLine($"HKL        : 0x{hkl.ToInt64():X}");
+                Console.WriteLine($"Lang ID    : 0x{langId:X4}");
+                Console.WriteLine($"Device ID  : 0x{deviceId:X4}");
+                Console.WriteLine($"Language   : {LangIdToString(langId)}");
+            */
+
+
+
+
+
 
         }
 
@@ -497,6 +592,9 @@ namespace FlagTip.Caret
 
 
 
+
+
+
         public void selectCaretMethod()
         {
 
@@ -515,18 +613,18 @@ namespace FlagTip.Caret
             }
             else if (_processName == "notepad")
             {
-                GUIThreadHelper.TryGetCaretFromGUIThreadInfo(_hwnd, out _rect);
+                GUIThreadHelper.TryGetCaretFromGUIThreadInfo(_hwnd, out _rect, _processName);
                 _method = CaretMethod.GUIThreadInfo;
             }
              else if (_processName == "explorer")
              {
-                UIAExplorerHelper.TryGetCaretFromUIAExplorer(_hwnd, out _rect);
+                UIAExplorerHelper.TryGetCaretFromUIAExplorer(_hwnd, out _rect, _processName);
                 _method = CaretMethod.UIAExplorer;
             }
             else
              {
 
-                if (GUIThreadHelper.TryGetCaretFromGUIThreadInfo(_hwnd, out _rect))
+                if (GUIThreadHelper.TryGetCaretFromGUIThreadInfo(_hwnd, out _rect, _processName))
                 {
                      _method = CaretMethod.GUIThreadInfo;
                 }
@@ -548,10 +646,26 @@ namespace FlagTip.Caret
 
 
 
+       
 
 
 
         }
+
+
+
+
+
+     
+
+
+
+
+
+
+
+
+
 
 
 
@@ -566,16 +680,16 @@ namespace FlagTip.Caret
                     OtherHelper.TryGetCaretFromSelectionUIA(out _rect);
                     break;
                 case CaretMethod.UIAorGUI:
-                    UIAorGUIHelper.TryGetCaretFromUIAorGUI(_hwnd, out _rect);
+                    UIAorGUIHelper.TryGetCaretFromUIAorGUI(_hwnd, out _rect, _processName);
                     break;
                 case CaretMethod.MSAA:
                     MSAAHelper.TryGetCaretFromMSAA(_hwnd, out _rect);
                     break;
                 case CaretMethod.GUIThreadInfo:
-                    GUIThreadHelper.TryGetCaretFromGUIThreadInfo(_hwnd, out _rect);
+                    GUIThreadHelper.TryGetCaretFromGUIThreadInfo(_hwnd, out _rect, _processName);
                     break;
                 case CaretMethod.UIAExplorer:
-                    UIAExplorerHelper.TryGetCaretFromUIAExplorer(_hwnd, out _rect);
+                    UIAExplorerHelper.TryGetCaretFromUIAExplorer(_hwnd, out _rect, _processName);
                     break;
                 case CaretMethod.UIA:
                     UIAHelper.TryGetCaretFromUIA(out _rect);

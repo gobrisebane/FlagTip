@@ -189,6 +189,33 @@ namespace FlagTip.Utils
         }
 
 
+        public static string LangIdToString(ushort langId)
+        {
+            switch (langId)
+            {
+                case 0x0409:
+                    return "English (US)";
+                case 0x0411:
+                    return "Japanese";
+                case 0x0412:
+                    return "Korean";
+                case 0x0804:
+                    return "Chinese (Simplified)";
+                case 0x0404:
+                    return "Chinese (Traditional)";
+                default:
+                    return "Unknown";
+            }
+        }
+
+
+
+        
+
+
+
+
+
 
 
 

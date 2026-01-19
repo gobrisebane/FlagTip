@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
-
+/*
 namespace FlagTip.Input.Tsf
 {
     [ComImport]
@@ -51,3 +51,4 @@ internal struct VARIANT
     [FieldOffset(8)]
     public IntPtr ptr;
 }
+*/

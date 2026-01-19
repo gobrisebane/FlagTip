@@ -20,14 +20,14 @@ namespace FlagTip.Helpers
     {
 
 
-        internal static bool TryGetCaretFromUIAExplorer(IntPtr hwnd,out RECT caretLocation)
+        internal static bool TryGetCaretFromUIAExplorer(IntPtr hwnd,out RECT caretLocation, String processName)
         {
             caretLocation = new RECT();
 
             try
             {
 
-                if (UIAorGUIHelper.TryGetCaretFromUIAorGUI(hwnd, out caretLocation)
+                if (UIAorGUIHelper.TryGetCaretFromUIAorGUI(hwnd, out caretLocation, processName)
                     && CommonUtils.IsRectValid(caretLocation))
                 {
                     return true;

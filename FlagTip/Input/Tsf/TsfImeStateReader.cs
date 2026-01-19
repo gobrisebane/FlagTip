@@ -5,7 +5,7 @@ using System.Runtime.InteropServices.ComTypes;
 
 namespace FlagTip.Input.Tsf
 {
-    internal static class TsfImeStateReader
+    /*internal static class TsfImeStateReader
     {
         internal static ImeState GetTsfImeState()
         {
@@ -40,5 +40,8 @@ namespace FlagTip.Input.Tsf
 
             return imeOn ? ImeState.KOR : ImeState.ENG;
         }
+    
     }
+
+*/
 }

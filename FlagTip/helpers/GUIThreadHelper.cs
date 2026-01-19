@@ -1,31 +1,33 @@
 ﻿using FlagTip.Caret;
 using FlagTip.Models;
+using FlagTip.UI;
 using FlagTip.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Automation;
+using static FlagTip.Utils.CommonUtils;
 using static FlagTip.Utils.NativeMethods;
 using static OpenCvSharp.ML.LogisticRegression;
-
-using static FlagTip.Utils.CommonUtils;
-
-
-
+using PowerPoint = Microsoft.Office.Interop.PowerPoint;
 
 
 namespace FlagTip.Helpers
 
 {
+
+  
     internal class GUIThreadHelper
     {
 
 
 
 
-        internal static bool TryGetCaretFromGUIThreadInfo(IntPtr hwnd, out RECT rect)
+        internal static bool TryGetCaretFromGUIThreadInfo(IntPtr hwnd, out RECT rect, String processName)
         {
             rect = new RECT();
 
@@ -37,6 +39,7 @@ namespace FlagTip.Helpers
 
                 if (NativeMethods.GetGUIThreadInfo(threadId, ref guiInfo))
                 {
+
                     RECT r = guiInfo.rcCaret;
                     POINT pt = new POINT { X = r.left, Y = r.top };
                     if (NativeMethods.ClientToScreen(guiInfo.hwndCaret, ref pt))
@@ -50,9 +53,16 @@ namespace FlagTip.Helpers
                         r.bottom = pt.Y + height;
                     }
 
-
                     if (CommonUtils.IsRectValid(r))
                     {
+                        if (processName == "powerpnt")
+                        {
+                            if (!IsPowerPointTextSelection())
+                            {
+                                r.right = 0;
+                            }
+                        }
+
                         rect = r;
                         return true;
                     }
@@ -73,8 +83,45 @@ namespace FlagTip.Helpers
 
 
 
+
+        internal static bool IsPowerPointTextSelection()
+        {
+            try
+            {
+                var ppt = (PowerPoint.Application)
+                    Marshal.GetActiveObject("PowerPoint.Application");
+
+                if (ppt.ActiveWindow == null)
+                    return false;
+
+                var selection = ppt.ActiveWindow.Selection;
+
+                return selection.Type == PowerPoint.PpSelectionType.ppSelectionText;
+            }
+            catch (COMException)
+            {
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+
+
+
+
+
     }
 }
+
+
+     
+
+
+
+
 
 
 

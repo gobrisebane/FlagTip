@@ -43,18 +43,19 @@ namespace FlagTip.Ime
             Mat kernel = Cv2.GetStructuringElement(
                 MorphShapes.Rect,
                 new OpenCvSharp.Size(2, 2));
+            
             /*
-                        _korEdge = Cv2.ImRead(
-                            Path.Combine(basePath, "resources/ime/kor_dark.png"),
-                            ImreadModes.Grayscale);
-                        Cv2.Canny(_korEdge, _korEdge, 20, 80);
-                        Cv2.Dilate(_korEdge, _korEdge, kernel);   // ⭐ 핵심
+                _korEdge = Cv2.ImRead(
+                    Path.Combine(basePath, "resources/ime/kor_dark.png"),
+                    ImreadModes.Grayscale);
+                Cv2.Canny(_korEdge, _korEdge, 20, 80);
+                Cv2.Dilate(_korEdge, _korEdge, kernel);   // ⭐ 핵심
 
-                        _engEdge = Cv2.ImRead(
-                            Path.Combine(basePath, "resources/ime/eng_dark.png"),
-                            ImreadModes.Grayscale);
-                        Cv2.Canny(_engEdge, _engEdge, 20, 80);
-                        Cv2.Dilate(_engEdge, _engEdge, kernel);   // ⭐ 핵심
+                _engEdge = Cv2.ImRead(
+                    Path.Combine(basePath, "resources/ime/eng_dark.png"),
+                    ImreadModes.Grayscale);
+                Cv2.Canny(_engEdge, _engEdge, 20, 80);
+                Cv2.Dilate(_engEdge, _engEdge, kernel);   // ⭐ 핵심
             */
 
 
@@ -71,10 +72,6 @@ namespace FlagTip.Ime
                 ImreadModes.Grayscale);
 
 
-
-
-
-
             if (_engEdge.Empty())
                 throw new Exception("eng_edge.png 로드 실패");
 
@@ -88,52 +85,57 @@ namespace FlagTip.Ime
         public ImeState DetectIme()
         {
 
-            
             ImeState imeResult = ImeState.UNKNOWN;
 
+            imeResult = WindowsImeDetector.GetWindowsImeState();
 
-            //Console.WriteLine("A2. NOT BROWSER");
+            /*
 
-            //SaveTemplateEdge(_korEdge, "kor_edge.png");
-            //SaveTemplateEdge(_engEdge, "eng_edge.png");
-
-            Bitmap captured = CaptureImeIcon();
-            if (captured == null)
-                return WindowsImeDetector.GetWindowsImeState();
-
-            using (Mat src = BitmapConverter.ToMat(captured))
-            using (Mat gray = new Mat())
-            using (Mat edges = new Mat())
-            {
-                Cv2.CvtColor(src, gray, ColorConversionCodes.BGR2GRAY);
-                Cv2.Canny(gray, edges, 20, 80);
-
-                var kernel = Cv2.GetStructuringElement(
-                MorphShapes.Rect,
-                new OpenCvSharp.Size(2, 2));
-                Cv2.Dilate(edges, edges, kernel);
-
-                // 🔍 디버그용 저장 
-                //SaveDebugCapture(src);
-
-                if (Match(edges, _engEdge, "eng"))
-                {
-                    if (CommonUtils.IsCapsLockOn())
-                        imeResult = ImeState.ENG_UP;
-                    else
-                        imeResult = ImeState.ENG_LO;
-                }
-                else if (Match(edges, _korEdge, "kor"))
-                {
-                    imeResult = ImeState.KOR;
-                }
-                else
-                {
-                    imeResult = WindowsImeDetector.GetWindowsImeState();
-                }
-            }
+                        ImeState imeResult = ImeState.UNKNOWN;
 
 
+                        //Console.WriteLine("A2. NOT BROWSER");
+
+                        //SaveTemplateEdge(_korEdge, "kor_edge.png");
+                        //SaveTemplateEdge(_engEdge, "eng_edge.png");
+
+                        Bitmap captured = CaptureImeIcon();
+                        if (captured == null)
+                            return WindowsImeDetector.GetWindowsImeState();
+
+                        using (Mat src = BitmapConverter.ToMat(captured))
+                        using (Mat gray = new Mat())
+                        using (Mat edges = new Mat())
+                        {
+                            Cv2.CvtColor(src, gray, ColorConversionCodes.BGR2GRAY);
+                            Cv2.Canny(gray, edges, 20, 80);
+
+                            var kernel = Cv2.GetStructuringElement(
+                            MorphShapes.Rect,
+                            new OpenCvSharp.Size(2, 2));
+                            Cv2.Dilate(edges, edges, kernel);
+
+                            // 🔍 디버그용 저장 
+                            //SaveDebugCapture(src);
+
+                            if (Match(edges, _engEdge, "eng"))
+                            {
+                                if (CommonUtils.IsCapsLockOn())
+                                    imeResult = ImeState.ENG_UP;
+                                else
+                                    imeResult = ImeState.ENG_LO;
+                            }
+                            else if (Match(edges, _korEdge, "kor"))
+                            {
+                                imeResult = ImeState.KOR;
+                            }
+                            else
+                            {
+                                imeResult = WindowsImeDetector.GetWindowsImeState();
+                            }
+                        }
+
+                        */
 
 
             /*

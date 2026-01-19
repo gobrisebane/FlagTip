@@ -23,11 +23,23 @@ namespace FlagTip.Hooking
         private static bool _shiftDown;
         private static bool _altDown;
         private static bool _winDown;
+        private static bool _spaceDown;
+
 
         private static long _lastTriggerTick;
         private const int TRIGGER_INTERVAL_MS = 40;
         private static bool _hangulKeyPressed = false;
         private static bool _capsLockKeyPressed = false;
+
+
+        private static bool _jpImeKeyPressed = false;
+        private const int VK_KANA = 0x15; // かな
+        private const int VK_CONVERT = 0x1C; // 変換
+        private const int VK_NONCONVERT = 0x1D; // 無変換
+        private const int VK_KANJI = 0xF3; // 半角/全角
+        private const int VK_LMENU = 0xA4;
+        private const int VK_RMENU = 0xA5;
+        private const int VK_CAPITAL = 0x14;
 
 
         private static readonly HashSet<Keys> CaretKeys = new HashSet<Keys>
@@ -87,7 +99,7 @@ namespace FlagTip.Hooking
                     case Keys.ControlKey:
                     case Keys.LControlKey:
                     case Keys.RControlKey:
-                        _ctrlUp= up;
+                        _ctrlUp = up;
                         _ctrlDown = down;
                         break;
 
@@ -103,6 +115,10 @@ namespace FlagTip.Hooking
                         _altDown = down;
                         break;
 
+                    case Keys.Space:
+                        _spaceDown = down;
+                        break;
+
                     case Keys.LWin:
                     case Keys.RWin:
                         _winDown = down;
@@ -113,11 +129,8 @@ namespace FlagTip.Hooking
 
 
 
-            //if (isKeyDown && key == Keys.HangulMode)
-            //{
-            //    caretController.NotifyImeToggle();
-            //    return CallNextHookEx(hookID, nCode, wParam, lParam);
-            //}
+
+
 
             if (key == Keys.HangulMode)
             {
@@ -142,26 +155,44 @@ namespace FlagTip.Hooking
 
 
 
-
             if (key == Keys.CapsLock)
             {
                 if (isKeyDown)
                 {
-                    if (_capsLockKeyPressed)
+                    // --- dual ---
+                    if (_ctrlDown || _altDown || _winDown)
                     {
+                        if (_capsLockKeyPressed)
+                            return CallNextHookEx(hookID, nCode, wParam, lParam);
+
+                        _capsLockKeyPressed = true;
+
+                        _ = caretController.NotifyCapsLockToggle();
                         return CallNextHookEx(hookID, nCode, wParam, lParam);
                     }
+
+                    // --- single ---
+                    if (_capsLockKeyPressed)
+                        return CallNextHookEx(hookID, nCode, wParam, lParam);
+
                     _capsLockKeyPressed = true;
+
                     _ = caretController.NotifyCapsLockToggle();
                 }
                 else
                 {
+                    // KeyUp 에서 플래그만 해제
                     _capsLockKeyPressed = false;
-                    _ = caretController.NotifyCapsLockToggle();
                 }
 
                 return CallNextHookEx(hookID, nCode, wParam, lParam);
             }
+
+
+
+
+
+
 
 
             if (isKeyUp && IsTypingKey(key))
@@ -189,38 +220,11 @@ namespace FlagTip.Hooking
 
 
 
-            // ---- 단축키 ----
-            if (_ctrlDown && key == Keys.Y)
-            {
-                //TEST
-                TriggerSafe(caretController.OnKeyTest);
-                return CallNextHookEx(hookID, nCode, wParam, lParam);
-            }
-
-            if (_ctrlDown && key == Keys.A)
-            {
-                caretController.NotifySelectAll();
-                return CallNextHookEx(hookID, nCode, wParam, lParam);
-            }
-
             
-
-            if (_winDown)
-            {
-
-                // TEST
-                //TriggerSafe(() => caretController.MultiSelectMode());
-                TriggerSafe(() => caretController.MultiSelectMode(10));
-
-                return CallNextHookEx(hookID, nCode, wParam, lParam);
-            }
-
-
 
 
             if (CaretKeys.Contains(key))
             {
-                //return
                 caretController.NotifyCaretMove();
                 TriggerSafe(() => caretController.OnKeyChangedAsync());
 
@@ -233,18 +237,98 @@ namespace FlagTip.Hooking
             }
 
 
-                  // ctrl/alt 시에 적용 (_shiftDown 은 타이핑때문에 제외)
-            if (_ctrlDown || _altDown)
+
+
+
+            if (_ctrlDown || _altDown || _shiftDown || _winDown)
             {
-                //return
-                TriggerSafe(() => caretController.OnKeyChangedAsync());
+
+                // ---- 단축키 ----
+                if (_ctrlDown && key == Keys.Y)
+                {
+                    //TEST
+                    TriggerSafe(caretController.OnKeyTest);
+                    return CallNextHookEx(hookID, nCode, wParam, lParam);
+                }
+
+                
+
+
+                    if (_ctrlDown && key == Keys.A)
+                {
+                    caretController.NotifySelectAll();
+                    return CallNextHookEx(hookID, nCode, wParam, lParam);
+                }
+
+
+
+
+                if ((_altDown && _shiftDown) || (_winDown && _spaceDown))
+                {
+                    _ = caretController.NotifyImeToggleKorJpn();
+                }
+
+                if (_ctrlDown || _altDown)
+                {
+                    TriggerSafe(() => caretController.OnKeyChangedAsync());
+                }
+
+
+                if (_winDown)
+                {
+
+                    //TriggerSafe(() => caretController.MultiSelectMode());
+                    TriggerSafe(() => caretController.MultiSelectMode(5));
+
+                    return CallNextHookEx(hookID, nCode, wParam, lParam);
+                }
+
+
                 return CallNextHookEx(hookID, nCode, wParam, lParam);
             }
 
 
 
 
+
+
+
+            uint vk = info.vkCode;
+
+            // ---- 일본 IME 관련 키 ----
+            bool isImeTriggerKey =
+            vk == VK_KANJI ||      // 半角/全角
+            vk == VK_NONCONVERT || // 無変換
+            vk == VK_CONVERT ||    // 変換
+            vk == VK_KANA;       // かな
+
+            if (isImeTriggerKey)
+            {
+
+
+                if (isKeyDown)
+                {
+                    if (_jpImeKeyPressed)
+                        return CallNextHookEx(hookID, nCode, wParam, lParam);
+
+                    _jpImeKeyPressed = true;
+
+                    _ = caretController.NotifyImeToggle();
+                }
+                else
+                {
+                    _jpImeKeyPressed = false;
+                }
+
+                return CallNextHookEx(hookID, nCode, wParam, lParam);
+            }
+
+
+
             
+
+
+
 
 
 
@@ -256,26 +340,8 @@ namespace FlagTip.Hooking
 
 
 
-        /*    private static HashSet<Keys> _pressedKeys = new();
 
-            private static bool IsKeyHold(Keys key, bool isKeyDown)
-            {
-                if (isKeyDown)
-                {
-                    if (_pressedKeys.Contains(key))
-                        return true;   // 🔁 홀드 반복
 
-                    _pressedKeys.Add(key);
-                    return false;      // ✅ 첫 눌림
-                }
-                else
-                {
-                    _pressedKeys.Remove(key);
-                    return false;
-                }
-            }
-
-    */
 
 
 
