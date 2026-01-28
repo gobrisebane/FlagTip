@@ -70,8 +70,8 @@ namespace FlagTip.Helpers
             }
             catch (Exception ex)
             {
-                Log("!!! GUITHREAD ERROR" + ex.Message);
-                Console.WriteLine("오류: " + ex.Message);
+                // Log("!!! GUITHREAD ERROR" + ex.Message);
+                // Console.WriteLine("오류: " + ex.Message);
                 return false;
 
 

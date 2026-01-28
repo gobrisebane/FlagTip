@@ -31,7 +31,6 @@ namespace FlagTip
         static void Main(string[] args)
         {
 
-
             Thread.Sleep(3000);
 
             //WaitForExplorer();
@@ -42,6 +41,9 @@ namespace FlagTip
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
+
+
             Application.Run(new MainForm());
 
 

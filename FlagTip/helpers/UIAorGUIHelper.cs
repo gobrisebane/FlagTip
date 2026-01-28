@@ -47,8 +47,8 @@ namespace FlagTip.Helpers
             catch (Exception ex)
             {
 
-                Log("!!! UIAorGUI CATCH ERROR" + ex.Message);
-                Console.WriteLine("오류: " + ex.Message);
+                // Log("!!! UIAorGUI CATCH ERROR" + ex.Message);
+                // Console.WriteLine("오류: " + ex.Message);
                 return false;
             }
 

@@ -1,0 +1,180 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<?define FlagTipSource=..\FlagTip\bin\Release ?>
+    <Fragment>
+        <DirectoryRef Id="INSTALLFOLDER">
+            <Component Id="cmp51650DE65974E66B20D50C0F4BBA83BA" Guid="{E06FB7A7-FF7D-449B-9B08-E12F9ACFC0E2}">
+                <File Id="filDB411A7293EF8E0423939230D0A3D361" KeyPath="yes" Source="$(var.FlagTipSource)\FlagTip.exe" />
+            </Component>
+            <Component Id="cmp0D350ACA06B05EFD2F61BCC3B1CDDAC5" Guid="{84085BC1-61B2-492B-903F-5BB7BD98FD59}">
+                <File Id="fil352BAF70404A4537B67A6719A4DBD9BC" KeyPath="yes" Source="$(var.FlagTipSource)\FlagTip.exe.config" />
+            </Component>
+            <Component Id="cmpD9ADA924F33687DA9F568D81EE0EF7BD" Guid="{EFED5250-6C7E-481B-A0CF-B0062FB309DB}">
+                <File Id="filB9727571516DAB57631EBC682D4C89A2" KeyPath="yes" Source="$(var.FlagTipSource)\FlagTip.pdb" />
+            </Component>
+            <Component Id="cmpFF270796B5ECFDCA6FBC9A5B42997622" Guid="{8CD09050-8004-40DE-92D8-5306CE07AEC5}">
+                <File Id="filF3FD1E724D473C5E4FDE0C01A7C08ABB" KeyPath="yes" Source="$(var.FlagTipSource)\OpenCvSharp.dll" />
+            </Component>
+            <Component Id="cmp9AD59129D493FC811D1909EC103DE2BF" Guid="{0BBFEEDC-56EB-4830-B262-D8A474165575}">
+                <File Id="fil908EF09AB22DF4399FC68845BA14F1D9" KeyPath="yes" Source="$(var.FlagTipSource)\OpenCvSharp.Extensions.dll" />
+            </Component>
+            <Component Id="cmp3DFC18D4D943F85478550903679F0803" Guid="{3FD57659-3D97-462E-ABF4-D77621233E7A}">
+                <File Id="fil4B99CEAE7A3C080B764853AFB40A7FDB" KeyPath="yes" Source="$(var.FlagTipSource)\OpenCvSharp.Extensions.xml" />
+            </Component>
+            <Component Id="cmp3130C45B39F42CB4532BE4BED6757D8E" Guid="{1486532B-D6C9-4251-973D-C27F7717950F}">
+                <File Id="fil8E43F874782D05A015D5858F55C06DCC" KeyPath="yes" Source="$(var.FlagTipSource)\OpenCvSharp.xml" />
+            </Component>
+            <Component Id="cmpA748C45814948C0E47F0962CF5A9E2C5" Guid="{8D1EC8A4-8F03-48D1-BFC4-693D3B1AD7C2}">
+                <File Id="filAF63FF48A59E0E5E7F49BFD1CBBB0CC3" KeyPath="yes" Source="$(var.FlagTipSource)\System.Buffers.dll" />
+            </Component>
+            <Component Id="cmp43B367B7670D98D184AF521921EF1F06" Guid="{FA03FC1F-F1B9-4A04-9856-6F5E2E6F7C24}">
+                <File Id="fil847587E301997E5BCE3BEE66F570E914" KeyPath="yes" Source="$(var.FlagTipSource)\System.Buffers.xml" />
+            </Component>
+            <Component Id="cmp08EBD8C605FF27A4F0FCEC5A1317087B" Guid="{48B52186-BBC5-4D48-8FF0-F5A2AE1052BB}">
+                <File Id="fil01C46D7B4C6F372B6DD0D0DC961DAE47" KeyPath="yes" Source="$(var.FlagTipSource)\System.Drawing.Common.dll" />
+            </Component>
+            <Component Id="cmp251DA74A1D672DDB1A86F605778E45AE" Guid="{AAD3E86A-62FC-4100-A6E6-56F5DCC6DEF9}">
+                <File Id="fil32D0F3892DF4D897D78489AB1C07FD39" KeyPath="yes" Source="$(var.FlagTipSource)\System.Drawing.Common.pdb" />
+            </Component>
+            <Component Id="cmpB20E1011DEB08F88C4923BC6A6C03832" Guid="{653136DE-9398-4176-9845-DC65AF7053C1}">
+                <File Id="fil5C4121529045290CBE7CB6C06D35790D" KeyPath="yes" Source="$(var.FlagTipSource)\System.Drawing.Common.xml" />
+            </Component>
+            <Component Id="cmp642ED5B0D0BD1F16347D1310992C55A0" Guid="{1187C9C3-086E-47E8-8DF9-D81B0F4F34F2}">
+                <File Id="filFA1D7EC932018D1CCB80F9F43D328009" KeyPath="yes" Source="$(var.FlagTipSource)\System.Memory.dll" />
+                <RegistryValue Root="HKCR" Key="Record\{070BE217-EA69-38B6-A444-1E1AE0AC5DFD}\4.0.5.0" Name="Class" Value="System.Buffers.StandardFormat" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="Record\{070BE217-EA69-38B6-A444-1E1AE0AC5DFD}\4.0.5.0" Name="Assembly" Value="System.Memory, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="Record\{070BE217-EA69-38B6-A444-1E1AE0AC5DFD}\4.0.5.0" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="Record\{070BE217-EA69-38B6-A444-1E1AE0AC5DFD}\4.0.5.0" Name="CodeBase" Value="file:///[#filFA1D7EC932018D1CCB80F9F43D328009]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="Record\{3A552E7C-47BA-336D-BA0B-FCEFCF65E035}\4.0.5.0" Name="Class" Value="System.Buffers.MemoryHandle" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="Record\{3A552E7C-47BA-336D-BA0B-FCEFCF65E035}\4.0.5.0" Name="Assembly" Value="System.Memory, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="Record\{3A552E7C-47BA-336D-BA0B-FCEFCF65E035}\4.0.5.0" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="Record\{3A552E7C-47BA-336D-BA0B-FCEFCF65E035}\4.0.5.0" Name="CodeBase" Value="file:///[#filFA1D7EC932018D1CCB80F9F43D328009]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="Record\{CA445607-4AE2-3DC4-ACB0-69629A119F0F}\4.0.5.0" Name="Class" Value="System.SequencePosition" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="Record\{CA445607-4AE2-3DC4-ACB0-69629A119F0F}\4.0.5.0" Name="Assembly" Value="System.Memory, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="Record\{CA445607-4AE2-3DC4-ACB0-69629A119F0F}\4.0.5.0" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="Record\{CA445607-4AE2-3DC4-ACB0-69629A119F0F}\4.0.5.0" Name="CodeBase" Value="file:///[#filFA1D7EC932018D1CCB80F9F43D328009]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="Record\{E0DFD169-4B39-33BE-A136-84C30A3CFAF4}\4.0.5.0" Name="Class" Value="System.Buffers.OperationStatus" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="Record\{E0DFD169-4B39-33BE-A136-84C30A3CFAF4}\4.0.5.0" Name="Assembly" Value="System.Memory, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="Record\{E0DFD169-4B39-33BE-A136-84C30A3CFAF4}\4.0.5.0" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="Record\{E0DFD169-4B39-33BE-A136-84C30A3CFAF4}\4.0.5.0" Name="CodeBase" Value="file:///[#filFA1D7EC932018D1CCB80F9F43D328009]" Type="string" Action="write" />
+            </Component>
+            <Component Id="cmpCA76CA3139BC1AFF84F4D7B62A0A2E50" Guid="{74645A5B-CA7B-4DC3-AF15-050156CA8485}">
+                <File Id="fil15AAA59830C5BBED182F2B20C24EED09" KeyPath="yes" Source="$(var.FlagTipSource)\System.Memory.xml" />
+            </Component>
+            <Component Id="cmp89AE5ECEB789ECF60BE6CC568D60B2F9" Guid="{AADDE934-BECF-44B6-818F-E7DBB984AE96}">
+                <File Id="fil07CC506FCE6F39AF87379627460A5FFB" KeyPath="yes" Source="$(var.FlagTipSource)\System.Numerics.Vectors.dll" />
+            </Component>
+            <Component Id="cmp7F4E1743772CD37619404A9AC36DC178" Guid="{691328CB-95C1-4D15-B748-4BFDF4313AAA}">
+                <File Id="fil38F381E638DECC1D77506EC6574A8C81" KeyPath="yes" Source="$(var.FlagTipSource)\System.Numerics.Vectors.xml" />
+            </Component>
+            <Component Id="cmpAFCF21A15F6EDA45A32D147050609285" Guid="{03E75860-6EFF-4100-9A4F-A9E0191AD5CC}">
+                <File Id="filAE286E96EA00902BC284AEBF3030D6E4" KeyPath="yes" Source="$(var.FlagTipSource)\System.Runtime.CompilerServices.Unsafe.dll" />
+            </Component>
+            <Component Id="cmpC91BFEFF501F5C69C8F325CE32921C40" Guid="{13EFD870-47FA-4C47-BC96-51CC7F78DD83}">
+                <File Id="filB829C3862F1FEA164719D0F8015AAD50" KeyPath="yes" Source="$(var.FlagTipSource)\System.Runtime.CompilerServices.Unsafe.xml" />
+            </Component>
+            <Directory Id="dir6B576183710E9E97A1B56873152298B5" Name="dll">
+                <Directory Id="dir0D18385E5D5B9FAA291CC921F38CD5DC" Name="x64">
+                    <Component Id="cmpED18B6653ED03B97E3353F581E179044" Guid="{B3A39227-4002-4956-958F-F401F56E281A}">
+                        <File Id="fil469ADEE0CDFD331ADCE6C29EE72CC0C1" KeyPath="yes" Source="$(var.FlagTipSource)\dll\x64\OpenCvSharpExtern.dll" />
+                    </Component>
+                    <Component Id="cmpD95EE1D2525C4A73CAC6892A6354C63C" Guid="{A1DD8C6F-5A68-4718-87F5-26622E342E62}">
+                        <File Id="fil4B9C9A4103F99CE672F985A6EF44448F" KeyPath="yes" Source="$(var.FlagTipSource)\dll\x64\opencv_videoio_ffmpeg4110_64.dll" />
+                    </Component>
+                </Directory>
+                <Directory Id="dir15680C6A7B24054BF0F4BC613FFB8552" Name="x86">
+                    <Component Id="cmp1B1DF445C550E08FDA0A1FB001D98941" Guid="{1CA2D2A0-AB60-4F06-A75E-BDF3EA239133}">
+                        <File Id="fil2AA7856D517F4C89FB712139416FB7BD" KeyPath="yes" Source="$(var.FlagTipSource)\dll\x86\OpenCvSharpExtern.dll" />
+                    </Component>
+                    <Component Id="cmpB91362A6DAC47FB9BE68A6304193F3DF" Guid="{1636D930-CE90-4730-8254-A61681B7C968}">
+                        <File Id="fil4E757D9DC59A0A2CC85B6FC7A5235951" KeyPath="yes" Source="$(var.FlagTipSource)\dll\x86\opencv_videoio_ffmpeg4110.dll" />
+                    </Component>
+                </Directory>
+            </Directory>
+            <Directory Id="dir09903639A005C2D197EB19C866CDE8EB" Name="resources">
+                <Directory Id="dir0352DF28B621F866CF52A7E05663D777" Name="flag">
+                    <Component Id="cmp70937868F169C8A5A3DB59B6F6CF2E22" Guid="{AC82E832-E444-4F39-9BD5-951D68408D63}">
+                        <File Id="fil27A9A9E54E818ED13C960D86678CB410" KeyPath="yes" Source="$(var.FlagTipSource)\resources\flag\flag_eng_large_lo.png" />
+                    </Component>
+                    <Component Id="cmp5B1780CAB5A05FC4DE2A310CA2D95593" Guid="{9407A0DB-D21D-43CB-BDCF-88387AEA89E4}">
+                        <File Id="fil0797BC952ACC895C4503BBB76DFEC726" KeyPath="yes" Source="$(var.FlagTipSource)\resources\flag\flag_eng_large_up.png" />
+                    </Component>
+                    <Component Id="cmp7071C8C96CB7A2A4E756C3478B562CA9" Guid="{8C345F00-82C9-494A-AB3A-DF04AFAED5B9}">
+                        <File Id="fil90FAC5F2B2ACEC88FEC00BBDE0D6C601" KeyPath="yes" Source="$(var.FlagTipSource)\resources\flag\flag_eng_lo.png" />
+                    </Component>
+                    <Component Id="cmpFB94E106996496C96258AB3628CAB0FB" Guid="{69E0B010-64A0-474E-A20A-C0B9624EF367}">
+                        <File Id="fil53CE1409C4D84B733DE8ED9B08AA4A93" KeyPath="yes" Source="$(var.FlagTipSource)\resources\flag\flag_eng_up.png" />
+                    </Component>
+                    <Component Id="cmpE4A712AFAFE23D5C57C2FA3D8F7D6537" Guid="{4E9A931B-7934-44E9-8873-6FE6D13EE605}">
+                        <File Id="filEFE21245EAA3CDE7724568FD637DEC64" KeyPath="yes" Source="$(var.FlagTipSource)\resources\flag\flag_jpn.png" />
+                    </Component>
+                    <Component Id="cmpF0D2B8CC1DE8A99EAB90DFD06704913E" Guid="{C5F41849-3FAA-4D44-9348-040CE53FCB57}">
+                        <File Id="fil5F96DDE6B9ECC9F716D10AC4C15FC19B" KeyPath="yes" Source="$(var.FlagTipSource)\resources\flag\flag_kor.png" />
+                    </Component>
+                    <Component Id="cmp0E4ED62926C6A1D7C888CFE87DE51D3F" Guid="{6CAE5371-0AE2-4B3D-8D13-10233AB3FCD2}">
+                        <File Id="filFBFF953A1F0B8590CA6CE38020B52806" KeyPath="yes" Source="$(var.FlagTipSource)\resources\flag\flag_kor_large.png" />
+                    </Component>
+                </Directory>
+                <Directory Id="dir880AB0F2182189EC05252B470ABFAFE9" Name="ime">
+                    <Component Id="cmp01037C754E7E45A1AB73DD0FDE48BA73" Guid="{F5D163E2-A279-4136-8A4C-E32B512B32EA}">
+                        <File Id="fil6A0D03FDE496599A1CDB2D4C92746CA3" KeyPath="yes" Source="$(var.FlagTipSource)\resources\ime\eng_dark.png" />
+                    </Component>
+                    <Component Id="cmpF6987B552DA0AF09A7AE64D9C2E27B5F" Guid="{883A7B1E-4EAF-4216-A351-2EC010605DCD}">
+                        <File Id="filB47CF7E747166ADEF605D2F486867B25" KeyPath="yes" Source="$(var.FlagTipSource)\resources\ime\eng_edge.png" />
+                    </Component>
+                    <Component Id="cmpFD32369FB5087CDBB733BCF5572BA852" Guid="{133F1561-1A55-476A-9445-B8F56C439FDB}">
+                        <File Id="filA050BEBB719BA09BAB96C1B68C4C0AFD" KeyPath="yes" Source="$(var.FlagTipSource)\resources\ime\eng_light.png" />
+                    </Component>
+                    <Component Id="cmp2FD1018E92F9AA3884D17366952174B5" Guid="{36995DEE-23F3-4580-96F8-082112178329}">
+                        <File Id="fil4ACDDE76BC78A9D2EB8DCD134770FAF2" KeyPath="yes" Source="$(var.FlagTipSource)\resources\ime\kor_dark.png" />
+                    </Component>
+                    <Component Id="cmp633AF07052B9E9B275ADCD5229595BA9" Guid="{13DC6869-ECE3-434F-8DC5-656335FCF09C}">
+                        <File Id="fil7C14A0D309BE2E3AC41C298B020262D2" KeyPath="yes" Source="$(var.FlagTipSource)\resources\ime\kor_edge.png" />
+                    </Component>
+                    <Component Id="cmpD6D521A07DDE98DDDE2340594F734DCB" Guid="{23AB808D-55B3-4C4E-B5B1-849E6CBF7A17}">
+                        <File Id="filD04E1C6ED741098584800B70DB8DF73D" KeyPath="yes" Source="$(var.FlagTipSource)\resources\ime\kor_light.png" />
+                    </Component>
+                </Directory>
+            </Directory>
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <ComponentGroup Id="FlagTipFiles">
+            <ComponentRef Id="cmp51650DE65974E66B20D50C0F4BBA83BA" />
+            <ComponentRef Id="cmp0D350ACA06B05EFD2F61BCC3B1CDDAC5" />
+            <ComponentRef Id="cmpD9ADA924F33687DA9F568D81EE0EF7BD" />
+            <ComponentRef Id="cmpFF270796B5ECFDCA6FBC9A5B42997622" />
+            <ComponentRef Id="cmp9AD59129D493FC811D1909EC103DE2BF" />
+            <ComponentRef Id="cmp3DFC18D4D943F85478550903679F0803" />
+            <ComponentRef Id="cmp3130C45B39F42CB4532BE4BED6757D8E" />
+            <ComponentRef Id="cmpA748C45814948C0E47F0962CF5A9E2C5" />
+            <ComponentRef Id="cmp43B367B7670D98D184AF521921EF1F06" />
+            <ComponentRef Id="cmp08EBD8C605FF27A4F0FCEC5A1317087B" />
+            <ComponentRef Id="cmp251DA74A1D672DDB1A86F605778E45AE" />
+            <ComponentRef Id="cmpB20E1011DEB08F88C4923BC6A6C03832" />
+            <ComponentRef Id="cmp642ED5B0D0BD1F16347D1310992C55A0" />
+            <ComponentRef Id="cmpCA76CA3139BC1AFF84F4D7B62A0A2E50" />
+            <ComponentRef Id="cmp89AE5ECEB789ECF60BE6CC568D60B2F9" />
+            <ComponentRef Id="cmp7F4E1743772CD37619404A9AC36DC178" />
+            <ComponentRef Id="cmpAFCF21A15F6EDA45A32D147050609285" />
+            <ComponentRef Id="cmpC91BFEFF501F5C69C8F325CE32921C40" />
+            <ComponentRef Id="cmpED18B6653ED03B97E3353F581E179044" />
+            <ComponentRef Id="cmpD95EE1D2525C4A73CAC6892A6354C63C" />
+            <ComponentRef Id="cmp1B1DF445C550E08FDA0A1FB001D98941" />
+            <ComponentRef Id="cmpB91362A6DAC47FB9BE68A6304193F3DF" />
+            <ComponentRef Id="cmp70937868F169C8A5A3DB59B6F6CF2E22" />
+            <ComponentRef Id="cmp5B1780CAB5A05FC4DE2A310CA2D95593" />
+            <ComponentRef Id="cmp7071C8C96CB7A2A4E756C3478B562CA9" />
+            <ComponentRef Id="cmpFB94E106996496C96258AB3628CAB0FB" />
+            <ComponentRef Id="cmpE4A712AFAFE23D5C57C2FA3D8F7D6537" />
+            <ComponentRef Id="cmpF0D2B8CC1DE8A99EAB90DFD06704913E" />
+            <ComponentRef Id="cmp0E4ED62926C6A1D7C888CFE87DE51D3F" />
+            <ComponentRef Id="cmp01037C754E7E45A1AB73DD0FDE48BA73" />
+            <ComponentRef Id="cmpF6987B552DA0AF09A7AE64D9C2E27B5F" />
+            <ComponentRef Id="cmpFD32369FB5087CDBB733BCF5572BA852" />
+            <ComponentRef Id="cmp2FD1018E92F9AA3884D17366952174B5" />
+            <ComponentRef Id="cmp633AF07052B9E9B275ADCD5229595BA9" />
+            <ComponentRef Id="cmpD6D521A07DDE98DDDE2340594F734DCB" />
+        </ComponentGroup>
+    </Fragment>
+</Wix>

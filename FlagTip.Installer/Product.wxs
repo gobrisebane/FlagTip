@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+	<?define FlagTipSource = ..\FlagTip\bin\Release ?>
+
+	<Product
+    Id="*"
+    Name="FlagTip"
+    Language="1042"
+    Codepage="949"
+    Version="1.0.1.0"
+    Manufacturer="FlagTip.com"
+    UpgradeCode="f1ecfada-b85b-4900-8417-5a37230a08dc">
+
+		<Package
+        InstallerVersion="500"
+        Compressed="yes"
+        InstallScope="perMachine"
+        InstallPrivileges="elevated"
+        SummaryCodepage="949" />
+
+		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		<MediaTemplate />
+
+
+
+		<WixVariable
+			Id="WixUILicenseRtf"
+			Value="license.rtf" />
+
+		<Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+		
+
+
+
+		<CustomAction
+    Id="LaunchFlagTip"
+    Directory="INSTALLFOLDER"
+    ExeCommand="&quot;[INSTALLFOLDER]FlagTip.exe&quot;"
+    Execute="immediate"
+    Return="asyncNoWait" />
+
+	
+
+		<!-- UI 설정 -->
+		<UI>
+			<UIRef Id="WixUI_InstallDir" />
+			
+
+			<Publish
+				Dialog="ExitDialog"
+				Control="Finish"
+				Event="DoAction"
+				Value="LaunchFlagTip">
+				NOT Installed
+			</Publish>
+		</UI>
+		<Feature Id="ProductFeature" Title="FlagTip" Level="1">
+			<ComponentGroupRef Id="FlagTipFiles" />
+			<ComponentRef Id="DesktopShortcut" />
+		</Feature>
+
+	</Product>
+
+	<!-- 설치 경로 -->
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+
+			<Directory Id="ProgramFilesFolder">
+				<Directory Id="INSTALLFOLDER" Name="FlagTip" />
+			</Directory>
+
+			<!-- ⭐ 추가 -->
+			<Directory Id="DesktopFolder" Name="Desktop" />
+
+		</Directory>	
+	</Fragment>
+	<Fragment>
+		<DirectoryRef Id="DesktopFolder">
+			<Component Id="DesktopShortcut"
+					   Guid="{A1B2C3D4-1111-2222-3333-444455556666}">
+				<Shortcut
+					Id="DesktopShortcut"
+					Name="FlagTip"
+					Description="FlagTip 실행"
+					Target="[INSTALLFOLDER]FlagTip.exe"
+					WorkingDirectory="INSTALLFOLDER" />
+				<RemoveFolder Id="RemoveDesktopShortcut" On="uninstall" />
+				<RegistryValue
+					Root="HKCU"
+					Key="Software\FlagTip"
+					Name="DesktopShortcut"
+					Type="integer"
+					Value="1"
+					KeyPath="yes" />
+			</Component>
+		</DirectoryRef>
+	</Fragment>
+
+
+</Wix>
+

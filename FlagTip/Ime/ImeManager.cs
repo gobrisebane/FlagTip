@@ -138,7 +138,6 @@ namespace FlagTip.Ime
         {
             try
             {
-                Console.WriteLine("hello");
                 // 1. 현재 UI Automation이 포커스하고 있는 요소 가져오기
                 AutomationElement focusedElement = AutomationElement.FocusedElement;
 
@@ -163,7 +162,7 @@ namespace FlagTip.Ime
             catch (Exception ex)
             {
                 // UI Automation 접근 중 요소가 사라지거나 에러가 날 경우 처리
-                Console.WriteLine($"Error checking IME: {ex.Message}");
+                // Console.WriteLine($"Error checking IME: {ex.Message}");
             }
 
             return ImeState.UNKNOWN;
@@ -235,7 +234,7 @@ namespace FlagTip.Ime
             }
             catch (Exception ex)
             {
-                Console.WriteLine("레지스트리 수정 권한이 없습니다: " + ex.Message);
+                // Console.WriteLine("레지스트리 수정 권한이 없습니다: " + ex.Message);
             }
 
 

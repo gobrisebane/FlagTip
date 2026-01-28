@@ -119,8 +119,7 @@ namespace FlagTip.Utils
             ImmGetConversionStatus(hIMC, out int conversion, out int sentence);
             ImmReleaseContext(hwnd, hIMC);
 
-            Console.WriteLine("IME_CMODE_NATIVE : " + IME_CMODE_NATIVE);
-
+            
             // IME_CMODE_NATIVE = 한글
             return (conversion & IME_CMODE_NATIVE) != 0;
         }
