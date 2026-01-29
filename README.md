@@ -18,7 +18,6 @@ FlagTip은 현재 입력 중인 위치를 추적하여
 1. 아래 AppInstaller 파일을 다운로드
 2. 더블 클릭 후 설치
 
-> Windows SmartScreen이 경고할 수 있습니다.  
 
 ---
 
