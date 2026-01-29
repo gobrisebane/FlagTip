@@ -3,6 +3,8 @@
 FlagTip은 현재 입력 중인 위치를 추적하여  
 현재 언어 상태를 깃발로 출력하는 프로그램입니다.
 
+![FlagTip Screenshot](assets/screenshot.png)
+
 
 ---
 
