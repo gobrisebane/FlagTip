@@ -3,13 +3,14 @@
 <Package
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:uap5="http://schemas.microsoft.com/appx/manifest/uap/windows10/5"
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
-  IgnorableNamespaces="uap rescap">
+  IgnorableNamespaces="uap uap5 rescap">
 
   <Identity
     Name="FlagTip.FlagTip"
     Publisher="CN=16759B5B-6B9A-4593-9F7A-FD503D048B54"
-    Version="1.0.19.0" />
+    Version="1.0.30.0" />
 
   <Properties>
     <DisplayName>FlagTip</DisplayName>
@@ -17,10 +18,14 @@
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
-  <Dependencies>
-    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.0.0" MaxVersionTested="10.0.0.0" />
-    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.14393.0" MaxVersionTested="10.0.14393.0" />
-  </Dependencies>
+	<Dependencies>
+		<TargetDeviceFamily Name="Windows.Universal"
+							MinVersion="10.0.17763.0"
+							MaxVersionTested="10.0.26100.0" />
+		<TargetDeviceFamily Name="Windows.Desktop"
+							MinVersion="10.0.17763.0"
+							MaxVersionTested="10.0.26100.0" />
+	</Dependencies>
 
   <Resources>
     <Resource Language="x-generate"/>
@@ -29,7 +34,18 @@
   <Applications>
     <Application Id="App"
       Executable="$targetnametoken$.exe"
-      EntryPoint="$targetentrypoint$">
+      EntryPoint="Windows.FullTrustApplication"
+				 >
+		
+	<Extensions>
+		<uap5:Extension Category="windows.startupTask">
+			<uap5:StartupTask
+			  TaskId="FlagTipStartup"
+			  Enabled="true"
+			  DisplayName="FlagTip" />
+		</uap5:Extension>
+    </Extensions>
+			
       <uap:VisualElements
         DisplayName="FlagTip"
         Description="플래그팁 어플리케이션"

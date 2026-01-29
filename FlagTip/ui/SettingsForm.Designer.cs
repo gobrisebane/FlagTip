@@ -230,7 +230,7 @@
             this.linkLabelWebsite.Size = new System.Drawing.Size(780, 31);
             this.linkLabelWebsite.TabIndex = 4;
             this.linkLabelWebsite.TabStop = true;
-            this.linkLabelWebsite.Text = "www.flagtip.com";
+            this.linkLabelWebsite.Text = "https://flagtip.com/";
             this.linkLabelWebsite.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.linkLabelWebsite.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 

@@ -54,8 +54,6 @@ namespace FlagTip.UI
             trackOffsetY.Scroll += TrackOffsetY_Scroll;
 
 
-
-
             chkRunAtStartup.Checked = IsRunAtStartupEnabled();
             chkRunAtStartup.CheckedChanged += ChkRunAtStartup_CheckedChanged;
         }
@@ -155,6 +153,8 @@ namespace FlagTip.UI
                 MessageBox.Show("자동 실행 설정 중 오류 발생: " + ex.Message);
             }
         }
+
+
 
 
 
