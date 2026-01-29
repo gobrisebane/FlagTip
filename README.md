@@ -37,3 +37,4 @@ MIT License
 ## 👤 만든 사람
 
 **최강규**  
+gobrisebane@gmail.com
