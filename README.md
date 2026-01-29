@@ -3,9 +3,9 @@
 FlagTip은 현재 입력 중인 위치를 추적하여  
 현재 언어 상태를 깃발로 출력하는 프로그램입니다.
 
-![FlagTip Screenshot](assets/screenshot.png)
+![FlagTip Screenshot]([assets/screenshot.png](https://github.com/gobrisebane/FlagTip/blob/main/FlagTip/resources/Demo/demo1.png))
 
-
+![FlagTip Screenshot]([assets/screenshot.png](https://github.com/gobrisebane/FlagTip/blob/main/FlagTip/resources/Demo/demo2.png))
 ---
 
 ## 🧠 왜 만들었나요?
