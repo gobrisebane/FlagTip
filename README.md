@@ -1,7 +1,6 @@
 # FlagTip 🚩  
-**Caret-aware text helper for Windows**
 
-FlagTip은 **현재 입력 중인 캐럿(caret) 위치를 추적**하여  
+FlagTip은 현재 입력 중인 위치를 추적하여  
 현재 언어 상태를 깃발로 출력하는 프로그램입니다.
 
 
