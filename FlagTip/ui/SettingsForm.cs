@@ -54,8 +54,6 @@ namespace FlagTip.UI
             trackOffsetY.Scroll += TrackOffsetY_Scroll;
 
 
-            chkRunAtStartup.Checked = IsRunAtStartupEnabled();
-            chkRunAtStartup.CheckedChanged += ChkRunAtStartup_CheckedChanged;
         }
 
         private void TrackOpacity_Scroll(object sender, EventArgs e)
@@ -123,37 +121,7 @@ namespace FlagTip.UI
             _caretController.SetCursorFollowEnabled(enabled);
         }
 
-        private bool IsRunAtStartupEnabled()
-        {
-            var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(
-                @"Software\Microsoft\Windows\CurrentVersion\Run", false);
-            if (key == null) return false;
-
-            bool enabled = key.GetValue("FlagTip") != null;
-            key.Close();
-            return enabled;
-        }
-
-        private void ChkRunAtStartup_CheckedChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(
-                    @"Software\Microsoft\Windows\CurrentVersion\Run", true);
-
-                if (chkRunAtStartup.Checked)
-                    key.SetValue("FlagTip", Application.ExecutablePath);
-                else
-                    key.DeleteValue("FlagTip", false);
-
-                key.Close();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("자동 실행 설정 중 오류 발생: " + ex.Message);
-            }
-        }
-
+ 
 
 
 
@@ -226,15 +194,36 @@ namespace FlagTip.UI
             });
         }
 
-        private void linkLabelEmail_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void linkLabel1_LinkClicked_1(object sender, LinkLabelLinkClickedEventArgs e)
         {
+            var url = linkLabel1.Text;
+
+            // http/https 없으면 자동 보정
+            if (!url.StartsWith("http"))
+                url = "https://" + url;
 
             Process.Start(new ProcessStartInfo
             {
-                FileName = "mailto:gobrisebane@gmail.com",
+                FileName = url,
                 UseShellExecute = true
             });
         }
+
+        private void labelEmail_Click(object sender, EventArgs e)
+        {
+            const string email = "gobrisebane@gmail.com";
+
+            Clipboard.SetText(email);
+
+            MessageBox.Show(
+                "이메일 주소가 클립보드에 복사되었습니다.",
+                "복사 완료",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+        }
+
+    
 
         private void chromeErrorLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
@@ -246,6 +235,6 @@ namespace FlagTip.UI
             });
         }
 
-
+      
     }
 }

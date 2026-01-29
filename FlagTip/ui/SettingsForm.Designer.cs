@@ -30,11 +30,12 @@
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabOption = new System.Windows.Forms.TabPage();
+            this.chkFollowCursor = new System.Windows.Forms.CheckBox();
+            this.chromeErrorLink = new System.Windows.Forms.LinkLabel();
             this.trackOffsetY = new System.Windows.Forms.TrackBar();
             this.lblOffsetY = new System.Windows.Forms.Label();
             this.lblOffsetX = new System.Windows.Forms.Label();
             this.trackOffsetX = new System.Windows.Forms.TrackBar();
-            this.chkRunAtStartup = new System.Windows.Forms.CheckBox();
             this.lblOpacity = new System.Windows.Forms.Label();
             this.trackOpacity = new System.Windows.Forms.TrackBar();
             this.tabAbout = new System.Windows.Forms.TabPage();
@@ -45,8 +46,6 @@
             this.linkLabelWebsite = new System.Windows.Forms.LinkLabel();
             this.linkLabelEmail = new System.Windows.Forms.LinkLabel();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-            this.chromeErrorLink = new System.Windows.Forms.LinkLabel();
-            this.chkFollowCursor = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabOption.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackOffsetY)).BeginInit();
@@ -75,7 +74,6 @@
             this.tabOption.Controls.Add(this.lblOffsetY);
             this.tabOption.Controls.Add(this.lblOffsetX);
             this.tabOption.Controls.Add(this.trackOffsetX);
-            this.tabOption.Controls.Add(this.chkRunAtStartup);
             this.tabOption.Controls.Add(this.lblOpacity);
             this.tabOption.Controls.Add(this.trackOpacity);
             this.tabOption.Location = new System.Drawing.Point(4, 22);
@@ -86,6 +84,26 @@
             this.tabOption.Text = "옵션";
             this.tabOption.UseVisualStyleBackColor = true;
             this.tabOption.Click += new System.EventHandler(this.tabPage1_Click);
+            // 
+            // chkFollowCursor
+            // 
+            this.chkFollowCursor.Location = new System.Drawing.Point(328, 49);
+            this.chkFollowCursor.Name = "chkFollowCursor";
+            this.chkFollowCursor.Size = new System.Drawing.Size(263, 43);
+            this.chkFollowCursor.TabIndex = 9;
+            this.chkFollowCursor.Text = "미지원프로그램에서 플래그가 커서를 따라가게 하기 (포토샵, 일러스트레이터, 왓츠앱)";
+            this.chkFollowCursor.UseVisualStyleBackColor = true;
+            // 
+            // chromeErrorLink
+            // 
+            this.chromeErrorLink.AutoSize = true;
+            this.chromeErrorLink.Location = new System.Drawing.Point(326, 104);
+            this.chromeErrorLink.Name = "chromeErrorLink";
+            this.chromeErrorLink.Size = new System.Drawing.Size(209, 12);
+            this.chromeErrorLink.TabIndex = 8;
+            this.chromeErrorLink.TabStop = true;
+            this.chromeErrorLink.Text = "크롬, 엣지에 비정상 동작 시 대응방법";
+            this.chromeErrorLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.chromeErrorLink_LinkClicked);
             // 
             // trackOffsetY
             // 
@@ -120,16 +138,6 @@
             this.trackOffsetX.Name = "trackOffsetX";
             this.trackOffsetX.Size = new System.Drawing.Size(266, 45);
             this.trackOffsetX.TabIndex = 3;
-            // 
-            // chkRunAtStartup
-            // 
-            this.chkRunAtStartup.AutoSize = true;
-            this.chkRunAtStartup.Location = new System.Drawing.Point(331, 49);
-            this.chkRunAtStartup.Name = "chkRunAtStartup";
-            this.chkRunAtStartup.Size = new System.Drawing.Size(160, 16);
-            this.chkRunAtStartup.TabIndex = 2;
-            this.chkRunAtStartup.Text = "윈도우 시작 시 자동 실행";
-            this.chkRunAtStartup.UseVisualStyleBackColor = true;
             // 
             // lblOpacity
             // 
@@ -247,7 +255,7 @@
             this.linkLabelEmail.TabStop = true;
             this.linkLabelEmail.Text = "gobrisebane@gmail.com";
             this.linkLabelEmail.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.linkLabelEmail.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelEmail_LinkClicked);
+            this.linkLabelEmail.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.labelEmail_Click);
             // 
             // linkLabel1
             // 
@@ -260,26 +268,7 @@
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "https://github.com/gobrisebane/FlagTip";
             this.linkLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // chromeErrorLink
-            // 
-            this.chromeErrorLink.AutoSize = true;
-            this.chromeErrorLink.Location = new System.Drawing.Point(329, 131);
-            this.chromeErrorLink.Name = "chromeErrorLink";
-            this.chromeErrorLink.Size = new System.Drawing.Size(209, 12);
-            this.chromeErrorLink.TabIndex = 8;
-            this.chromeErrorLink.TabStop = true;
-            this.chromeErrorLink.Text = "크롬, 엣지에 비정상 동작 시 대응방법";
-            this.chromeErrorLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.chromeErrorLink_LinkClicked);
-            // 
-            // chkFollowCursor
-            // 
-            this.chkFollowCursor.Location = new System.Drawing.Point(331, 76);
-            this.chkFollowCursor.Name = "chkFollowCursor";
-            this.chkFollowCursor.Size = new System.Drawing.Size(263, 43);
-            this.chkFollowCursor.TabIndex = 9;
-            this.chkFollowCursor.Text = "미지원프로그램에서 플래그가 커서를 따라가게 하기 (포토샵, 일러스트레이터, 왓츠앱)";
-            this.chkFollowCursor.UseVisualStyleBackColor = true;
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked_1);
             // 
             // SettingsForm
             // 
@@ -315,7 +304,6 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Label lblOpacity;
         private System.Windows.Forms.TrackBar trackOpacity;
-        private System.Windows.Forms.CheckBox chkRunAtStartup;
         private System.Windows.Forms.TrackBar trackOffsetX;
         private System.Windows.Forms.TrackBar trackOffsetY;
         private System.Windows.Forms.Label lblOffsetY;

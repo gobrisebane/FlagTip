@@ -24,8 +24,6 @@ namespace FlagTip.Helpers
     {
 
 
-
-
         internal static bool TryGetCaretFromGUIThreadInfo(IntPtr hwnd, out RECT rect, String processName)
         {
             rect = new RECT();
