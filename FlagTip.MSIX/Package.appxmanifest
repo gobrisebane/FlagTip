@@ -10,7 +10,7 @@
   <Identity
     Name="FlagTip.FlagTip"
     Publisher="CN=16759B5B-6B9A-4593-9F7A-FD503D048B54"
-    Version="1.0.30.0" />
+    Version="1.0.32.0" />
 
   <Properties>
     <DisplayName>FlagTip</DisplayName>
