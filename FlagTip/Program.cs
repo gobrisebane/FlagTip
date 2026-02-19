@@ -33,7 +33,6 @@ namespace FlagTip
 
             Thread.Sleep(3000);
 
-            //WaitForExplorer();
 
             
             SetProcessDpiAwarenessContext(
@@ -55,13 +54,7 @@ namespace FlagTip
 
 
 
-        static void WaitForExplorer()
-        {
-            while (Process.GetProcessesByName("explorer").Length == 0)
-            {
-                Thread.Sleep(500);
-            }
-        }
+       
 
 
 
