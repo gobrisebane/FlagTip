@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 using System.Windows.Automation;
 using static FlagTip.Utils.CommonUtils;
 using static FlagTip.Utils.NativeMethods;
-using static OpenCvSharp.ML.LogisticRegression;
 using PowerPoint = Microsoft.Office.Interop.PowerPoint;
 
 

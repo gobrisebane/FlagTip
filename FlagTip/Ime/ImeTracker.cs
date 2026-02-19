@@ -1,7 +1,5 @@
 ﻿using FlagTip.Models;
 using FlagTip.Utils;
-using OpenCvSharp;
-using OpenCvSharp.Extensions;
 using System;
 using System.ComponentModel; // 추가
 using System.Diagnostics;
@@ -13,9 +11,9 @@ using System.Windows.Forms;
 using static FlagTip.Utils.CommonUtils;
 using static FlagTip.Utils.NativeMethods;
 using static FlagTip.Ime.ImeManager;
-
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-
+//using OpenCvSharp;
+//using OpenCvSharp.Extensions;
 
 namespace FlagTip.Ime
 {
@@ -24,63 +22,49 @@ namespace FlagTip.Ime
 
 
 
-
-
     public class ImeTracker
     {
 
-        
-        private Mat _korEdge;
-        private Mat _engEdge;
 
-        
-
-        public ImeTracker()
-        {
-            string basePath = AppDomain.CurrentDomain.BaseDirectory;
+        //private Mat _korEdge;
+        //private Mat _engEdge;
 
 
-            Mat kernel = Cv2.GetStructuringElement(
-                MorphShapes.Rect,
-                new OpenCvSharp.Size(2, 2));
-            
-            /*
-                _korEdge = Cv2.ImRead(
-                    Path.Combine(basePath, "resources/ime/kor_dark.png"),
-                    ImreadModes.Grayscale);
-                Cv2.Canny(_korEdge, _korEdge, 20, 80);
-                Cv2.Dilate(_korEdge, _korEdge, kernel);   // ⭐ 핵심
+        /*
 
-                _engEdge = Cv2.ImRead(
-                    Path.Combine(basePath, "resources/ime/eng_dark.png"),
-                    ImreadModes.Grayscale);
-                Cv2.Canny(_engEdge, _engEdge, 20, 80);
-                Cv2.Dilate(_engEdge, _engEdge, kernel);   // ⭐ 핵심
-            */
+                public ImeTracker()
+                {
+                    string basePath = AppDomain.CurrentDomain.BaseDirectory;
 
 
-            _korEdge = Cv2.ImRead(
-                Path.Combine(basePath, "resources/ime/kor_edge.png"),
-                ImreadModes.Grayscale);
-
-            if (_korEdge.Empty())
-                throw new Exception("kor_edge.png 로드 실패");
-
-            // --- ENG EDGE 템플릿 (미리 생성된 파일) ---
-            _engEdge = Cv2.ImRead(
-                Path.Combine(basePath, "resources/ime/eng_edge.png"),
-                ImreadModes.Grayscale);
-
-
-            if (_engEdge.Empty())
-                throw new Exception("eng_edge.png 로드 실패");
+                    Mat kernel = Cv2.GetStructuringElement(
+                        MorphShapes.Rect,
+                        new OpenCvSharp.Size(2, 2));
 
 
 
-        }
+                    _korEdge = Cv2.ImRead(
+                        Path.Combine(basePath, "resources/ime/kor_edge.png"),
+                        ImreadModes.Grayscale);
+
+                    if (_korEdge.Empty())
+                        throw new Exception("kor_edge.png 로드 실패");
+
+                    // --- ENG EDGE 템플릿 (미리 생성된 파일) ---
+                    _engEdge = Cv2.ImRead(
+                        Path.Combine(basePath, "resources/ime/eng_edge.png"),
+                        ImreadModes.Grayscale);
 
 
-    
+                    if (_engEdge.Empty())
+                        throw new Exception("eng_edge.png 로드 실패");
+
+
+
+                }
+        */
+
+
 
         public ImeState DetectIme()
         {
@@ -89,111 +73,10 @@ namespace FlagTip.Ime
 
             imeResult = WindowsImeDetector.GetWindowsImeState();
 
-            /*
-
-                        ImeState imeResult = ImeState.UNKNOWN;
+          
 
 
-                        //Console.WriteLine("A2. NOT BROWSER");
-
-                        //SaveTemplateEdge(_korEdge, "kor_edge.png");
-                        //SaveTemplateEdge(_engEdge, "eng_edge.png");
-
-                        Bitmap captured = CaptureImeIcon();
-                        if (captured == null)
-                            return WindowsImeDetector.GetWindowsImeState();
-
-                        using (Mat src = BitmapConverter.ToMat(captured))
-                        using (Mat gray = new Mat())
-                        using (Mat edges = new Mat())
-                        {
-                            Cv2.CvtColor(src, gray, ColorConversionCodes.BGR2GRAY);
-                            Cv2.Canny(gray, edges, 20, 80);
-
-                            var kernel = Cv2.GetStructuringElement(
-                            MorphShapes.Rect,
-                            new OpenCvSharp.Size(2, 2));
-                            Cv2.Dilate(edges, edges, kernel);
-
-                            // 🔍 디버그용 저장 
-                            //SaveDebugCapture(src);
-
-                            if (Match(edges, _engEdge, "eng"))
-                            {
-                                if (CommonUtils.IsCapsLockOn())
-                                    imeResult = ImeState.ENG_UP;
-                                else
-                                    imeResult = ImeState.ENG_LO;
-                            }
-                            else if (Match(edges, _korEdge, "kor"))
-                            {
-                                imeResult = ImeState.KOR;
-                            }
-                            else
-                            {
-                                imeResult = WindowsImeDetector.GetWindowsImeState();
-                            }
-                        }
-
-                        */
-
-
-            /*
-
-            if (IsProcessBrowserApp())
-            {
-                //Console.WriteLine("A1. CHROME BROWSER");
-
-                imeResult = WindowsImeDetector.GetWindowsImeState();
-
-                //imeResult = ImeManager.GetChromeImeMode();
-
-            }
-            else
-            {
-
-                //Console.WriteLine("A2. NOT BROWSER");
-
-                //SaveTemplateEdge(_korEdge, "kor_edge.png");
-                //SaveTemplateEdge(_engEdge, "eng_edge.png");
-
-                Bitmap captured = CaptureImeIcon();
-                if (captured == null)
-                    return WindowsImeDetector.GetWindowsImeState();
-
-                using (Mat src = BitmapConverter.ToMat(captured))
-                using (Mat gray = new Mat())
-                using (Mat edges = new Mat())
-                {
-                    Cv2.CvtColor(src, gray, ColorConversionCodes.BGR2GRAY);
-                    Cv2.Canny(gray, edges, 20, 80);
-
-                    var kernel = Cv2.GetStructuringElement(
-                    MorphShapes.Rect,
-                    new OpenCvSharp.Size(2, 2));
-                    Cv2.Dilate(edges, edges, kernel);
-
-                    // 🔍 디버그용 저장 
-                    //SaveDebugCapture(src);
-
-                    if (Match(edges, _engEdge, "eng"))
-                    {
-                        if (CommonUtils.IsCapsLockOn())
-                            imeResult = ImeState.ENG_UP;
-                        else
-                            imeResult = ImeState.ENG_LO;
-                    }
-                    else if (Match(edges, _korEdge, "kor"))
-                    {
-                        imeResult = ImeState.KOR;
-                    }
-                    else
-                    {
-                        imeResult = WindowsImeDetector.GetWindowsImeState();
-                    }
-                }
-            }
-            */
+          
 
 
             //ImeState imeResult = ImeState.UNKNOWN;
@@ -224,7 +107,7 @@ namespace FlagTip.Ime
 
 
 
-        private bool Match(Mat source, Mat template, string name)
+       /* private bool Match(Mat source, Mat template, string name)
         {
             if (source is null || source.Empty()) return false;
             if (template is null || template.Empty()) return false;
@@ -251,8 +134,8 @@ namespace FlagTip.Ime
                         Cv2.MinMaxLoc(result, out _, out double maxVal, out _, out _);
 
                         
-/*                        Console.WriteLine(
-                         $"[IME] method={name} scale={scale:F2}, score={maxVal:F3}");*/
+*//*                        Console.WriteLine(
+                         $"[IME] method={name} scale={scale:F2}, score={maxVal:F3}");*//*
                         
 
                           if (maxVal >= 0.65)
@@ -261,7 +144,10 @@ namespace FlagTip.Ime
                 }
             }
             return false;
-        }
+        }*/
+
+
+
 
         private Bitmap CaptureImeIcon()
         {
@@ -351,52 +237,54 @@ namespace FlagTip.Ime
             return dst;
         }
 
-        private void SaveDebugCapture(Mat src)
-        {
-            try
-            {
-                string dir = Path.Combine(
-                    AppDomain.CurrentDomain.BaseDirectory,
-                    "debug_captures");
 
-                Directory.CreateDirectory(dir);
-                Cv2.ImWrite(Path.Combine(dir, "ime_capture.png"), src);
-            }
-            catch { }
-        }
+        /*
+                private void SaveDebugCapture(Mat src)
+                {
+                    try
+                    {
+                        string dir = Path.Combine(
+                            AppDomain.CurrentDomain.BaseDirectory,
+                            "debug_captures");
 
-        private void SaveDebugEdge(Mat edge)
-        {
-            try
-            {
-                string dir = Path.Combine(
-                    AppDomain.CurrentDomain.BaseDirectory,
-                    "debug_captures");
+                        Directory.CreateDirectory(dir);
+                        Cv2.ImWrite(Path.Combine(dir, "ime_capture.png"), src);
+                    }
+                    catch { }
+                }
 
-                Directory.CreateDirectory(dir);
-                Cv2.ImWrite(Path.Combine(dir, "ime_edge.png"), edge);
-            }
-            catch { }
-        }
-        private void SaveTemplateEdge(Mat edge, string fileName)
-        {
-            try
-            {
-                string dir = Path.Combine(
-                    AppDomain.CurrentDomain.BaseDirectory,
-                    "debug_captures");
+                private void SaveDebugEdge(Mat edge)
+                {
+                    try
+                    {
+                        string dir = Path.Combine(
+                            AppDomain.CurrentDomain.BaseDirectory,
+                            "debug_captures");
 
-                Directory.CreateDirectory(dir);
+                        Directory.CreateDirectory(dir);
+                        Cv2.ImWrite(Path.Combine(dir, "ime_edge.png"), edge);
+                    }
+                    catch { }
+                }
+                private void SaveTemplateEdge(Mat edge, string fileName)
+                {
+                    try
+                    {
+                        string dir = Path.Combine(
+                            AppDomain.CurrentDomain.BaseDirectory,
+                            "debug_captures");
 
-                Cv2.ImWrite(Path.Combine(dir, fileName), edge);
-            }
-            catch { }
-        }
+                        Directory.CreateDirectory(dir);
+
+                        Cv2.ImWrite(Path.Combine(dir, fileName), edge);
+                    }
+                    catch { }
+                }
+
+                */
 
 
 
-
-      
 
 
 

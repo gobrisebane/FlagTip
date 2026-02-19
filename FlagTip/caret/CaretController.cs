@@ -6,7 +6,6 @@ using FlagTip.Models;
 using FlagTip.Tracking;
 using FlagTip.UI;
 using FlagTip.Utils;
-using OpenCvSharp;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
