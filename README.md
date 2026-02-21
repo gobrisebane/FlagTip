@@ -42,4 +42,7 @@ MIT License
 ## 👤 만든 사람
 
 **최강규**  
-gobrisebane@gmail.com
+1@twepo.com
+
+https://flagtip.com
+https://twepo.com
