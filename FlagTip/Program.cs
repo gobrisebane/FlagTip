@@ -12,57 +12,42 @@ using System.Windows.Forms;
 using static FlagTip.Hooking.MouseHook;
 using static FlagTip.Utils.NativeMethods;
 
-
-
 namespace FlagTip
 {
     internal class Program
     {
-
         [DllImport("user32.dll")]
         static extern bool SetProcessDpiAwarenessContext(IntPtr value);
 
         static readonly IntPtr DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2
             = new IntPtr(-4);
 
+        private static Mutex _mutex;  // ← ? 제거
 
         // -------------------- Main --------------------
         [STAThread]
         static void Main(string[] args)
         {
+            const string mutexName = @"Local\FlagTip.SingleInstance";
+
+            bool createdNew;
+            _mutex = new Mutex(true, mutexName, out createdNew);
+
+            if (!createdNew)
+            {
+                return;
+            }
 
             Thread.Sleep(3000);
 
-
-            
-            SetProcessDpiAwarenessContext(
-        DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+            SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
-
-
             Application.Run(new MainForm());
 
-
-
-            
-
-
+            _mutex.ReleaseMutex();
         }
-
-
-
-       
-
-
-
-
-
-
-
-
     }
 }
 

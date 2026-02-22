@@ -211,7 +211,7 @@ namespace FlagTip.UI
 
         private void labelEmail_Click(object sender, EventArgs e)
         {
-            const string email = "gobrisebane@gmail.com";
+            const string email = "1@twepo.com";
 
             Clipboard.SetText(email);
 

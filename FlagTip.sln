@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlagTip", "FlagTip\FlagTip.
 EndProject
 Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "FlagTip.MSIX", "FlagTip.MSIX\FlagTip.MSIX.wapproj", "{02CCB1BF-99F8-45F1-8A5F-57D6DFF65FD9}"
 EndProject
-Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "FlagTip.Installer", "FlagTip.Installer\FlagTip.Installer.wixproj", "{0602B27E-189F-46B7-AB87-68D1724681CD}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,26 +71,6 @@ Global
 		{02CCB1BF-99F8-45F1-8A5F-57D6DFF65FD9}.Release|x86.ActiveCfg = Release|x86
 		{02CCB1BF-99F8-45F1-8A5F-57D6DFF65FD9}.Release|x86.Build.0 = Release|x86
 		{02CCB1BF-99F8-45F1-8A5F-57D6DFF65FD9}.Release|x86.Deploy.0 = Release|x86
-		{0602B27E-189F-46B7-AB87-68D1724681CD}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{0602B27E-189F-46B7-AB87-68D1724681CD}.Debug|Any CPU.Build.0 = Debug|x86
-		{0602B27E-189F-46B7-AB87-68D1724681CD}.Debug|ARM.ActiveCfg = Debug|x86
-		{0602B27E-189F-46B7-AB87-68D1724681CD}.Debug|ARM.Build.0 = Debug|x86
-		{0602B27E-189F-46B7-AB87-68D1724681CD}.Debug|ARM64.ActiveCfg = Debug|x86
-		{0602B27E-189F-46B7-AB87-68D1724681CD}.Debug|ARM64.Build.0 = Debug|x86
-		{0602B27E-189F-46B7-AB87-68D1724681CD}.Debug|x64.ActiveCfg = Debug|x86
-		{0602B27E-189F-46B7-AB87-68D1724681CD}.Debug|x64.Build.0 = Debug|x86
-		{0602B27E-189F-46B7-AB87-68D1724681CD}.Debug|x86.ActiveCfg = Debug|x86
-		{0602B27E-189F-46B7-AB87-68D1724681CD}.Debug|x86.Build.0 = Debug|x86
-		{0602B27E-189F-46B7-AB87-68D1724681CD}.Release|Any CPU.ActiveCfg = Release|x86
-		{0602B27E-189F-46B7-AB87-68D1724681CD}.Release|Any CPU.Build.0 = Release|x86
-		{0602B27E-189F-46B7-AB87-68D1724681CD}.Release|ARM.ActiveCfg = Release|x86
-		{0602B27E-189F-46B7-AB87-68D1724681CD}.Release|ARM.Build.0 = Release|x86
-		{0602B27E-189F-46B7-AB87-68D1724681CD}.Release|ARM64.ActiveCfg = Release|x86
-		{0602B27E-189F-46B7-AB87-68D1724681CD}.Release|ARM64.Build.0 = Release|x86
-		{0602B27E-189F-46B7-AB87-68D1724681CD}.Release|x64.ActiveCfg = Release|x86
-		{0602B27E-189F-46B7-AB87-68D1724681CD}.Release|x64.Build.0 = Release|x86
-		{0602B27E-189F-46B7-AB87-68D1724681CD}.Release|x86.ActiveCfg = Release|x86
-		{0602B27E-189F-46B7-AB87-68D1724681CD}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

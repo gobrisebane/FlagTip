@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <StoreAssociation xmlns="http://schemas.microsoft.com/appx/2010/storeassociation">
-  <Publisher>CN=16759B5B-6B9A-4593-9F7A-FD503D048B54</Publisher>
-  <PublisherDisplayName>FlagTip</PublisherDisplayName>
+  <Publisher>CN=TWEPO.COM</Publisher>
+  <PublisherDisplayName>TWEPO.COM</PublisherDisplayName>
   <DeveloperAccountType>MSA</DeveloperAccountType>
   <GeneratePackageHash>http://www.w3.org/2001/04/xmlenc#sha256</GeneratePackageHash>
   <SupportedLocales>

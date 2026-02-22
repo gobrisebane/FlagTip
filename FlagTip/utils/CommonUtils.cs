@@ -2,6 +2,7 @@
 using FlagTip.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -156,7 +157,7 @@ namespace FlagTip.Utils
         }
 
 
-
+        [Conditional("DEBUG")]
         public static void Log(string msg)
         {
             File.AppendAllText(
@@ -168,24 +169,7 @@ namespace FlagTip.Utils
         }
 
 
-        public static void Log2(string msg)
-        {
-            var dir = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "FlagTip");
-
-            Directory.CreateDirectory(dir);
-
-            var path = Path.Combine(dir, "startup.log");
-
-            var newLine = $"{DateTime.Now:HH:mm:ss} {msg}\n";
-
-            string oldText = File.Exists(path)
-                ? File.ReadAllText(path)
-                : string.Empty;
-
-            File.WriteAllText(path, newLine + oldText);
-        }
+        
 
 
         public static string LangIdToString(ushort langId)

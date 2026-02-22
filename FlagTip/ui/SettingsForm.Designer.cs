@@ -253,7 +253,7 @@
             this.linkLabelEmail.Size = new System.Drawing.Size(780, 79);
             this.linkLabelEmail.TabIndex = 7;
             this.linkLabelEmail.TabStop = true;
-            this.linkLabelEmail.Text = "gobrisebane@gmail.com";
+            this.linkLabelEmail.Text = "1@twepo.com";
             this.linkLabelEmail.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.linkLabelEmail.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.labelEmail_Click);
             // 
