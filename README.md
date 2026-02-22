@@ -6,10 +6,8 @@ FlagTip은 현재 입력 중인 위치를 추적하여
 <img width="884" height="702" alt="demo1" src="https://github.com/user-attachments/assets/1f39443c-69d9-42e3-a365-0450986e6e55" />
 &nbsp;&nbsp;&nbsp;
 <img width="886" height="703" alt="demo2" src="https://github.com/user-attachments/assets/f9c91569-08e4-49b3-8aea-b1f7fc9af391" />
-TESTING
-
-<img width="886" height="703" alt="demo2" src="https://github.com/user-attachments/assets/844ca1cf-dfac-4f85-8d7a-38d175f15451" />
-
+&nbsp;&nbsp;&nbsp;
+<img width="886" height="703" alt="demo2" src="https://github.com/user-attachments/assets/e159334f-2afc-4391-83d0-aa9d978bc19d" />
 ---
 
 ## 🧠 왜 만들었나요?
