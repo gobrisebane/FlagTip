@@ -1,7 +1,7 @@
-# FlagTip 🚩  
+# FlagTip 플래그팁🚩  
 
 FlagTip은 현재 입력 중인 위치를 추적하여  
-현재 언어 상태를 깃발로 출력하는 프로그램입니다.
+언어 상태를 깃발로 출력하는 프로그램입니다.
 
 <img width="884" height="702" alt="demo1" src="https://github.com/user-attachments/assets/1f39443c-69d9-42e3-a365-0450986e6e55" />
 &nbsp;&nbsp;&nbsp;
