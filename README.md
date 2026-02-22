@@ -9,6 +9,7 @@ FlagTip은 현재 입력 중인 위치를 추적하여
 &nbsp;&nbsp;&nbsp;
 <img width="886" height="703" alt="demo2" src="https://github.com/user-attachments/assets/e159334f-2afc-4391-83d0-aa9d978bc19d" />
 ---
+<img width="800" height="614" alt="Image" src="https://github.com/user-attachments/assets/d4ead16a-135d-4a45-80f9-28cd0160feec" />
 
 ## 🧠 왜 만들었나요?
 
