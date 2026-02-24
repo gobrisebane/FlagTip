@@ -10,7 +10,7 @@
   <Identity
     Name="FlagTip.FlagTip"
 	Publisher="CN=TWEPO.COM, O=TWEPO.COM, L=Guri-si, S=Gyeonggi-do, C=KR"
-    Version="1.0.53.0" />
+    Version="1.0.54.0" />
 
   <Properties>
     <DisplayName>FlagTip</DisplayName>

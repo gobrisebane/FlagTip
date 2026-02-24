@@ -157,19 +157,38 @@ namespace FlagTip.Utils
         }
 
 
+
+
         [Conditional("DEBUG")]
         public static void Log(string msg)
         {
-            File.AppendAllText(
-                Path.Combine(
+            try
+            {
+                string dir = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                    "FlagTip\\startup.log"),
-                $"{DateTime.Now:HH:mm:ss} {msg}\n"
-            );
+                    "FlagTip"
+                );
+
+                Directory.CreateDirectory(dir); // ★ 없으면 생성
+
+                string path = Path.Combine(dir, "startup.log");
+
+                File.AppendAllText(
+                    path,
+                    $"{DateTime.Now:HH:mm:ss} {msg}{Environment.NewLine}"
+                );
+            }
+            catch
+            {
+                // DEBUG 로깅 실패로 앱이 죽지 않게 무시
+                // 필요하면 Debug.WriteLine(...) 정도만 남겨도 됨
+            }
         }
 
 
-        
+
+
+
 
 
         public static string LangIdToString(ushort langId)

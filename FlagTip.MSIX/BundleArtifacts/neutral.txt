@@ -1,3 +1,3 @@
-MainPackage=C:\PC_WORK\_PROJECT\FlagTip\FlagTip.MSIX\bin\AnyCPU\Release\FlagTip.MSIX_1.0.53.0_AnyCPU.msix
-SymbolPackage=C:\PC_WORK\_PROJECT\FlagTip\FlagTip.MSIX\obj\Release\Symbols\FlagTip.MSIX_1.0.53.0_AnyCPU.appxsym
-ResourcePack=C:\PC_WORK\_PROJECT\FlagTip\FlagTip.MSIX\bin\AnyCPU\Release\FlagTip.MSIX_1.0.53.0_scale-100.msix
+MainPackage=C:\P14\PROJECT\FlagTip\FlagTip.MSIX\bin\AnyCPU\Release\FlagTip.MSIX_1.0.54.0_AnyCPU.msix
+SymbolPackage=C:\P14\PROJECT\FlagTip\FlagTip.MSIX\obj\Release\Symbols\FlagTip.MSIX_1.0.54.0_AnyCPU.appxsym
+ResourcePack=C:\P14\PROJECT\FlagTip\FlagTip.MSIX\bin\AnyCPU\Release\FlagTip.MSIX_1.0.54.0_scale-100.msix
