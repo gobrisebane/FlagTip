@@ -12,7 +12,7 @@
       <Value Profile="(Default)">20</Value>
     </Setting>
     <Setting Name="FollowCursor" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>
 </SettingsFile>
