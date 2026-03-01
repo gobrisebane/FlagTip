@@ -52,8 +52,12 @@ https://twepo.com
 해당 에러는 새로 업데이트된 윈도우기능의 문제이므로 해당 기능을 이전모드로 바꿔주셔야 합니다. 
 이전모드로 바꾸어도 윈도우 이용에 문제 없습니다.
 
-1번 방법)
+
 <img width="277" height="56" alt="Image" src="https://github.com/user-attachments/assets/2e553688-d748-4422-ad76-e38e352ccb2a" />
+
+
+1번 방법)
+
 윈도우 오른쪽 하단 가 혹은 A로 표시된 부분 오른쪽 클릭
 -> 설정 클릭 -> 이전 버전의 Microsoft Ime 켜기
 
