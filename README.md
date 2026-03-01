@@ -15,7 +15,7 @@ FlagTip은 현재 입력 중인 위치를 추적하여
 
 ### MSIX (권장)
 
-1. 아래 AppInstaller 파일을 다운로드 후 설치
+1. 링크의 AppInstaller 파일을 다운로드 후 설치
 https://github.com/gobrisebane/FlagTip/releases
 
 
