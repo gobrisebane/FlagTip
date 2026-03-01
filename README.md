@@ -54,6 +54,8 @@ https://twepo.com
 
 
 <img width="277" height="56" alt="Image" src="https://github.com/user-attachments/assets/2e553688-d748-4422-ad76-e38e352ccb2a" />
+<img width="275" height="50" alt="CHECK2" src="https://github.com/user-attachments/assets/b56c1f80-bf00-4ecf-8b8c-2befabdccafc" />
+
 
 
 1번 방법)
