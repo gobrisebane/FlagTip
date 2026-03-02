@@ -53,9 +53,14 @@ https://twepo.com
 
 ---
 
-## 크롬에서 깃발이 제대로 반영 안되는 현상
+##버그
+
+### 크롬에서 깃발이 제대로 반영 안되는 현상
 해당 에러는 새로 업데이트된 윈도우기능의 문제이므로 해당 기능을 이전모드로 바꿔주셔야 합니다. 
 
-이전모드로 바꾸어도 윈도우 이용에 문제 없습니다.
+아래 링크에서 설정 가능합니다
 
-https://velog.io/@flagtip/d1
+[https://velog.io/@flagtip/d1](https://velog.io/@flagtip/d1)
+
+### 한컴오피스 (아래아한글) 미작동
+[https://velog.io/@flagtip/d1](https://velog.io/@flagtip/hw1)
