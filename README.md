@@ -36,8 +36,7 @@ MIT License
 
 ## 👤 만든 사람
 
-**최강규**  
-1@twepo.com
+**최강규**  1@twepo.com
 
 공식블로그 :
 https://flagtip.com
