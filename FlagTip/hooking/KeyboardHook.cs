@@ -230,7 +230,7 @@ namespace FlagTip.Hooking
 
                 if (key == Keys.Enter)
                 {
-                    TriggerSafe(() => caretController.MultiSelectModeBrowser(8));
+                    TriggerSafe(() => caretController.MultiSelectModeBrowser(4));
                 }
 
                 return CallNextHookEx(hookID, nCode, wParam, lParam);
@@ -277,8 +277,7 @@ namespace FlagTip.Hooking
                 if (_winDown)
                 {
 
-                    //TriggerSafe(() => caretController.MultiSelectMode());
-                    TriggerSafe(() => caretController.MultiSelectMode(5));
+                    TriggerSafe(() => caretController.MultiSelectMode(4));
 
                     return CallNextHookEx(hookID, nCode, wParam, lParam);
                 }

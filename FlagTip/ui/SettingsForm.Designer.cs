@@ -29,6 +29,14 @@
         private void InitializeComponent()
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabAbout = new System.Windows.Forms.TabPage();
+            this.label2 = new System.Windows.Forms.Label();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.label3 = new System.Windows.Forms.Label();
+            this.labelVersion = new System.Windows.Forms.Label();
+            this.linkLabelWebsite = new System.Windows.Forms.LinkLabel();
+            this.linkLabelEmail = new System.Windows.Forms.LinkLabel();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.tabOption = new System.Windows.Forms.TabPage();
             this.chkFollowCursor = new System.Windows.Forms.CheckBox();
             this.chromeErrorLink = new System.Windows.Forms.LinkLabel();
@@ -38,126 +46,29 @@
             this.trackOffsetX = new System.Windows.Forms.TrackBar();
             this.lblOpacity = new System.Windows.Forms.Label();
             this.trackOpacity = new System.Windows.Forms.TrackBar();
-            this.tabAbout = new System.Windows.Forms.TabPage();
-            this.label2 = new System.Windows.Forms.Label();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.label3 = new System.Windows.Forms.Label();
-            this.labelVersion = new System.Windows.Forms.Label();
-            this.linkLabelWebsite = new System.Windows.Forms.LinkLabel();
-            this.linkLabelEmail = new System.Windows.Forms.LinkLabel();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.grpFlagSize = new System.Windows.Forms.GroupBox();
+            this.rdoFlagSizeSmall = new System.Windows.Forms.RadioButton();
+            this.rdoFlagSizeMedium = new System.Windows.Forms.RadioButton();
             this.tabControl1.SuspendLayout();
+            this.tabAbout.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
             this.tabOption.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackOffsetY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackOffsetX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackOpacity)).BeginInit();
-            this.tabAbout.SuspendLayout();
-            this.tableLayoutPanel1.SuspendLayout();
+            this.grpFlagSize.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
             // 
-            this.tabControl1.Controls.Add(this.tabOption);
             this.tabControl1.Controls.Add(this.tabAbout);
+            this.tabControl1.Controls.Add(this.tabOption);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(800, 450);
             this.tabControl1.TabIndex = 0;
-            // 
-            // tabOption
-            // 
-            this.tabOption.Controls.Add(this.chkFollowCursor);
-            this.tabOption.Controls.Add(this.chromeErrorLink);
-            this.tabOption.Controls.Add(this.trackOffsetY);
-            this.tabOption.Controls.Add(this.lblOffsetY);
-            this.tabOption.Controls.Add(this.lblOffsetX);
-            this.tabOption.Controls.Add(this.trackOffsetX);
-            this.tabOption.Controls.Add(this.lblOpacity);
-            this.tabOption.Controls.Add(this.trackOpacity);
-            this.tabOption.Location = new System.Drawing.Point(4, 22);
-            this.tabOption.Name = "tabOption";
-            this.tabOption.Padding = new System.Windows.Forms.Padding(3);
-            this.tabOption.Size = new System.Drawing.Size(792, 424);
-            this.tabOption.TabIndex = 0;
-            this.tabOption.Text = "옵션";
-            this.tabOption.UseVisualStyleBackColor = true;
-            this.tabOption.Click += new System.EventHandler(this.tabPage1_Click);
-            // 
-            // chkFollowCursor
-            // 
-            this.chkFollowCursor.Location = new System.Drawing.Point(328, 49);
-            this.chkFollowCursor.Name = "chkFollowCursor";
-            this.chkFollowCursor.Size = new System.Drawing.Size(263, 43);
-            this.chkFollowCursor.TabIndex = 9;
-            this.chkFollowCursor.Text = "미지원프로그램에서 플래그가 커서를 따라가게 하기 (포토샵, 일러스트레이터, 왓츠앱)";
-            this.chkFollowCursor.UseVisualStyleBackColor = true;
-            // 
-            // chromeErrorLink
-            // 
-            this.chromeErrorLink.AutoSize = true;
-            this.chromeErrorLink.Location = new System.Drawing.Point(326, 104);
-            this.chromeErrorLink.Name = "chromeErrorLink";
-            this.chromeErrorLink.Size = new System.Drawing.Size(209, 12);
-            this.chromeErrorLink.TabIndex = 8;
-            this.chromeErrorLink.TabStop = true;
-            this.chromeErrorLink.Text = "크롬, 엣지에 비정상 동작 시 대응방법";
-            this.chromeErrorLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.chromeErrorLink_LinkClicked);
-            // 
-            // trackOffsetY
-            // 
-            this.trackOffsetY.Location = new System.Drawing.Point(40, 215);
-            this.trackOffsetY.Maximum = 30;
-            this.trackOffsetY.Name = "trackOffsetY";
-            this.trackOffsetY.Size = new System.Drawing.Size(264, 45);
-            this.trackOffsetY.TabIndex = 6;
-            // 
-            // lblOffsetY
-            // 
-            this.lblOffsetY.AutoSize = true;
-            this.lblOffsetY.Location = new System.Drawing.Point(38, 197);
-            this.lblOffsetY.Name = "lblOffsetY";
-            this.lblOffsetY.Size = new System.Drawing.Size(38, 12);
-            this.lblOffsetY.TabIndex = 5;
-            this.lblOffsetY.Text = "label5";
-            // 
-            // lblOffsetX
-            // 
-            this.lblOffsetX.AutoSize = true;
-            this.lblOffsetX.Location = new System.Drawing.Point(36, 111);
-            this.lblOffsetX.Name = "lblOffsetX";
-            this.lblOffsetX.Size = new System.Drawing.Size(38, 12);
-            this.lblOffsetX.TabIndex = 4;
-            this.lblOffsetX.Text = "label1";
-            // 
-            // trackOffsetX
-            // 
-            this.trackOffsetX.Location = new System.Drawing.Point(38, 131);
-            this.trackOffsetX.Maximum = 30;
-            this.trackOffsetX.Name = "trackOffsetX";
-            this.trackOffsetX.Size = new System.Drawing.Size(266, 45);
-            this.trackOffsetX.TabIndex = 3;
-            // 
-            // lblOpacity
-            // 
-            this.lblOpacity.AutoSize = true;
-            this.lblOpacity.Location = new System.Drawing.Point(36, 30);
-            this.lblOpacity.Name = "lblOpacity";
-            this.lblOpacity.Size = new System.Drawing.Size(61, 12);
-            this.lblOpacity.TabIndex = 1;
-            this.lblOpacity.Text = "lblOpacity";
-            // 
-            // trackOpacity
-            // 
-            this.trackOpacity.Location = new System.Drawing.Point(40, 49);
-            this.trackOpacity.Maximum = 100;
-            this.trackOpacity.Minimum = 10;
-            this.trackOpacity.Name = "trackOpacity";
-            this.trackOpacity.Size = new System.Drawing.Size(266, 45);
-            this.trackOpacity.TabIndex = 0;
-            this.trackOpacity.Value = 70;
-            this.trackOpacity.Scroll += new System.EventHandler(this.TrackOpacity_Scroll);
             // 
             // tabAbout
             // 
@@ -270,6 +181,133 @@
             this.linkLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked_1);
             // 
+            // tabOption
+            // 
+            this.tabOption.Controls.Add(this.grpFlagSize);
+            this.tabOption.Controls.Add(this.chkFollowCursor);
+            this.tabOption.Controls.Add(this.chromeErrorLink);
+            this.tabOption.Controls.Add(this.trackOffsetY);
+            this.tabOption.Controls.Add(this.lblOffsetY);
+            this.tabOption.Controls.Add(this.lblOffsetX);
+            this.tabOption.Controls.Add(this.trackOffsetX);
+            this.tabOption.Controls.Add(this.lblOpacity);
+            this.tabOption.Controls.Add(this.trackOpacity);
+            this.tabOption.Location = new System.Drawing.Point(4, 22);
+            this.tabOption.Name = "tabOption";
+            this.tabOption.Padding = new System.Windows.Forms.Padding(3);
+            this.tabOption.Size = new System.Drawing.Size(792, 424);
+            this.tabOption.TabIndex = 0;
+            this.tabOption.Text = "옵션";
+            this.tabOption.UseVisualStyleBackColor = true;
+            this.tabOption.Click += new System.EventHandler(this.tabPage1_Click);
+            // 
+            // chkFollowCursor
+            // 
+            this.chkFollowCursor.Location = new System.Drawing.Point(328, 49);
+            this.chkFollowCursor.Name = "chkFollowCursor";
+            this.chkFollowCursor.Size = new System.Drawing.Size(263, 43);
+            this.chkFollowCursor.TabIndex = 9;
+            this.chkFollowCursor.Text = "미지원프로그램에서 플래그가 커서를 따라가게 하기 (포토샵, 일러스트레이터, 왓츠앱)";
+            this.chkFollowCursor.UseVisualStyleBackColor = true;
+            // 
+            // chromeErrorLink
+            // 
+            this.chromeErrorLink.AutoSize = true;
+            this.chromeErrorLink.Location = new System.Drawing.Point(326, 104);
+            this.chromeErrorLink.Name = "chromeErrorLink";
+            this.chromeErrorLink.Size = new System.Drawing.Size(209, 12);
+            this.chromeErrorLink.TabIndex = 8;
+            this.chromeErrorLink.TabStop = true;
+            this.chromeErrorLink.Text = "크롬, 엣지에 비정상 동작 시 대응방법";
+            this.chromeErrorLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.chromeErrorLink_LinkClicked);
+            // 
+            // trackOffsetY
+            // 
+            this.trackOffsetY.Location = new System.Drawing.Point(40, 215);
+            this.trackOffsetY.Maximum = 30;
+            this.trackOffsetY.Name = "trackOffsetY";
+            this.trackOffsetY.Size = new System.Drawing.Size(264, 45);
+            this.trackOffsetY.TabIndex = 6;
+            // 
+            // lblOffsetY
+            // 
+            this.lblOffsetY.AutoSize = true;
+            this.lblOffsetY.Location = new System.Drawing.Point(38, 197);
+            this.lblOffsetY.Name = "lblOffsetY";
+            this.lblOffsetY.Size = new System.Drawing.Size(38, 12);
+            this.lblOffsetY.TabIndex = 5;
+            this.lblOffsetY.Text = "label5";
+            // 
+            // lblOffsetX
+            // 
+            this.lblOffsetX.AutoSize = true;
+            this.lblOffsetX.Location = new System.Drawing.Point(36, 111);
+            this.lblOffsetX.Name = "lblOffsetX";
+            this.lblOffsetX.Size = new System.Drawing.Size(38, 12);
+            this.lblOffsetX.TabIndex = 4;
+            this.lblOffsetX.Text = "label1";
+            // 
+            // trackOffsetX
+            // 
+            this.trackOffsetX.Location = new System.Drawing.Point(38, 131);
+            this.trackOffsetX.Maximum = 30;
+            this.trackOffsetX.Name = "trackOffsetX";
+            this.trackOffsetX.Size = new System.Drawing.Size(266, 45);
+            this.trackOffsetX.TabIndex = 3;
+            // 
+            // lblOpacity
+            // 
+            this.lblOpacity.AutoSize = true;
+            this.lblOpacity.Location = new System.Drawing.Point(36, 30);
+            this.lblOpacity.Name = "lblOpacity";
+            this.lblOpacity.Size = new System.Drawing.Size(61, 12);
+            this.lblOpacity.TabIndex = 1;
+            this.lblOpacity.Text = "lblOpacity";
+            // 
+            // trackOpacity
+            // 
+            this.trackOpacity.Location = new System.Drawing.Point(40, 49);
+            this.trackOpacity.Maximum = 100;
+            this.trackOpacity.Minimum = 10;
+            this.trackOpacity.Name = "trackOpacity";
+            this.trackOpacity.Size = new System.Drawing.Size(266, 45);
+            this.trackOpacity.TabIndex = 0;
+            this.trackOpacity.Value = 70;
+            this.trackOpacity.Scroll += new System.EventHandler(this.TrackOpacity_Scroll);
+            // 
+            // grpFlagSize
+            // 
+            this.grpFlagSize.Controls.Add(this.rdoFlagSizeMedium);
+            this.grpFlagSize.Controls.Add(this.rdoFlagSizeSmall);
+            this.grpFlagSize.Location = new System.Drawing.Point(383, 162);
+            this.grpFlagSize.Name = "grpFlagSize";
+            this.grpFlagSize.Size = new System.Drawing.Size(167, 76);
+            this.grpFlagSize.TabIndex = 10;
+            this.grpFlagSize.TabStop = false;
+            this.grpFlagSize.Text = "플래그(표시언어) 크기";
+            // 
+            // rdoFlagSizeSmall
+            // 
+            this.rdoFlagSizeSmall.AutoSize = true;
+            this.rdoFlagSizeSmall.Checked = true;
+            this.rdoFlagSizeSmall.Location = new System.Drawing.Point(26, 35);
+            this.rdoFlagSizeSmall.Name = "rdoFlagSizeSmall";
+            this.rdoFlagSizeSmall.Size = new System.Drawing.Size(47, 16);
+            this.rdoFlagSizeSmall.TabIndex = 0;
+            this.rdoFlagSizeSmall.TabStop = true;
+            this.rdoFlagSizeSmall.Text = "소형";
+            this.rdoFlagSizeSmall.UseVisualStyleBackColor = true;
+            // 
+            // rdoFlagSizeMedium
+            // 
+            this.rdoFlagSizeMedium.AutoSize = true;
+            this.rdoFlagSizeMedium.Location = new System.Drawing.Point(93, 35);
+            this.rdoFlagSizeMedium.Name = "rdoFlagSizeMedium";
+            this.rdoFlagSizeMedium.Size = new System.Drawing.Size(47, 16);
+            this.rdoFlagSizeMedium.TabIndex = 1;
+            this.rdoFlagSizeMedium.Text = "중형";
+            this.rdoFlagSizeMedium.UseVisualStyleBackColor = true;
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
@@ -279,15 +317,17 @@
             this.Name = "SettingsForm";
             this.Text = "SettingsForm";
             this.tabControl1.ResumeLayout(false);
+            this.tabAbout.ResumeLayout(false);
+            this.tabAbout.PerformLayout();
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel1.PerformLayout();
             this.tabOption.ResumeLayout(false);
             this.tabOption.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackOffsetY)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackOffsetX)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackOpacity)).EndInit();
-            this.tabAbout.ResumeLayout(false);
-            this.tabAbout.PerformLayout();
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
+            this.grpFlagSize.ResumeLayout(false);
+            this.grpFlagSize.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -312,5 +352,8 @@
         private System.Windows.Forms.LinkLabel linkLabel1;
         private System.Windows.Forms.LinkLabel chromeErrorLink;
         private System.Windows.Forms.CheckBox chkFollowCursor;
+        private System.Windows.Forms.GroupBox grpFlagSize;
+        private System.Windows.Forms.RadioButton rdoFlagSizeMedium;
+        private System.Windows.Forms.RadioButton rdoFlagSizeSmall;
     }
 }

@@ -43,7 +43,6 @@ namespace FlagTip.UI
             trackOpacity.Scroll += TrackOpacity_Scroll;
 
 
-
             trackOffsetX.Value = Properties.Settings.Default.OffsetX;
             lblOffsetX.Text = $"가로 위치 (기본값:3): {trackOffsetX.Value}";
             trackOffsetX.Scroll += TrackOffsetX_Scroll;
@@ -54,6 +53,39 @@ namespace FlagTip.UI
             trackOffsetY.Scroll += TrackOffsetY_Scroll;
 
 
+            LoadFlagSizeSetting();
+
+            rdoFlagSizeSmall.CheckedChanged += FlagSizeChanged;
+            rdoFlagSizeMedium.CheckedChanged += FlagSizeChanged;
+
+        }
+
+
+        private void LoadFlagSizeSetting()
+        {
+            int flagSize = Properties.Settings.Default.FlagSize;
+
+            if (flagSize == 0)
+                rdoFlagSizeSmall.Checked = true;
+            else
+                rdoFlagSizeMedium.Checked = true;
+        }
+
+
+        private void FlagSizeChanged(object sender, EventArgs e)
+        {
+            if (rdoFlagSizeSmall.Checked)
+            {
+                Properties.Settings.Default.FlagSize = 0;
+                _indicatorForm.SetFlagSizeSmall();
+            }
+            else if (rdoFlagSizeMedium.Checked)
+            {
+                Properties.Settings.Default.FlagSize = 1;
+                _indicatorForm.SetFlagSizeMedium();
+            }
+
+            Properties.Settings.Default.Save();
         }
 
         private void TrackOpacity_Scroll(object sender, EventArgs e)

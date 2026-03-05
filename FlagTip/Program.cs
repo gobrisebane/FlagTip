@@ -38,7 +38,7 @@ namespace FlagTip
                 return;
             }
 
-            Thread.Sleep(3000);
+            Thread.Sleep(2000);
 
             SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
 

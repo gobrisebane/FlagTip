@@ -70,5 +70,17 @@ namespace FlagTip.Properties {
                 this["FollowCursor"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int FlagSize {
+            get {
+                return ((int)(this["FlagSize"]));
+            }
+            set {
+                this["FlagSize"] = value;
+            }
+        }
     }
 }

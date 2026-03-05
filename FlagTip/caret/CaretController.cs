@@ -39,13 +39,12 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
 namespace FlagTip.Caret
 {
 
-
-
-
-
+   
 
     public class CaretController
     {
+
+
 
         private readonly SemaphoreSlim _selectLock = new SemaphoreSlim(1, 1);
 
@@ -247,7 +246,7 @@ namespace FlagTip.Caret
   
 
 
-        public async Task MultiSelectMode(int count = 3)
+        public async Task MultiSelectMode(int count = 2)
         {
 
          
@@ -268,7 +267,7 @@ namespace FlagTip.Caret
 
         }
 
-        public async Task MultiSelectModeBrowser(int count = 3)
+        public async Task MultiSelectModeBrowser(int count = 2)
         {
 
             if( IsProcessBrowserApp() )
@@ -375,7 +374,7 @@ namespace FlagTip.Caret
 
 
 
-            FixForSpecialApps();
+            await FixForSpecialApps();
 
 
 
@@ -425,7 +424,7 @@ namespace FlagTip.Caret
 
 
 
-        public void FixForSpecialApps()
+        public async Task FixForSpecialApps()
         {
             
             // 메모장 더블클릭 때문에 추가
@@ -441,7 +440,7 @@ namespace FlagTip.Caret
          
 
 
-            CheckClickImeButton();
+            await CheckClickImeButton();
 
 
         }
@@ -644,10 +643,22 @@ namespace FlagTip.Caret
 
 
 
+           
+            //UIAExplorerHelper.TryGetCaretFromUIAExplorer(_hwnd, out _rect, _processName);
+            //_method = CaretMethod.UIAExplorer;
 
-       
+            //MSAAHelper.TryGetCaretFromMSAA(_hwnd, out _rect);
+            //_method = CaretMethod.MSAA;
+
+            // 작동 x
+            //UIAHelper.TryGetCaretFromUIA(out _rect);
+            //_method = CaretMethod.UIA;
+
+            //GUIThreadHelper.TryGetCaretFromGUIThreadInfo(_hwnd, out _rect, _processName);
+            //_method = CaretMethod.GUIThreadInfo;
 
 
+         
 
         }
 
