@@ -1,4 +1,5 @@
 ﻿using FlagTip.Caret;
+using FlagTip.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -76,17 +77,18 @@ namespace FlagTip.UI
         {
             if (rdoFlagSizeSmall.Checked)
             {
-                Properties.Settings.Default.FlagSize = 0;
-                _indicatorForm.SetFlagSizeSmall();
+                Properties.Settings.Default.FlagSize = (int)FlagSizeMode.Small;
             }
             else if (rdoFlagSizeMedium.Checked)
             {
-                Properties.Settings.Default.FlagSize = 1;
-                _indicatorForm.SetFlagSizeMedium();
+                Properties.Settings.Default.FlagSize = (int)FlagSizeMode.Medium;
             }
 
             Properties.Settings.Default.Save();
+
+            _indicatorForm.ApplyFlagSize();
         }
+
 
         private void TrackOpacity_Scroll(object sender, EventArgs e)
         {

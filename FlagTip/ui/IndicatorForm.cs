@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Messaging;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static FlagTip.Utils.CommonUtils;
@@ -25,7 +26,7 @@ namespace FlagTip.UI
         private ForegroundWatcher _foregroundWatcher;
 
         private PictureBox _flagBox;
-        
+
         private ImeState _curImeState;
 
         private const int GWL_EXSTYLE = -20;
@@ -42,24 +43,13 @@ namespace FlagTip.UI
 
 
 
-        private const int INDICATOR_WIDTH = 16;
-        private const int INDICATOR_HEIGHT = 11;
-        
-        private Image _korFlag;
-        private Image _jpnFlag;
-
-        private Image _engLowerFlag;
-        private Image _engUpperFlag;
-
-
-
         private Image _korFlagSmall;
         private Image _jpnFlagSmall;
         private Image _engLowerFlagSmall;
         private Image _engUpperFlagSmall;
 
         private Image _korFlagMedium;
-        private Image _jpnFlagMedium;        
+        private Image _jpnFlagMedium;
         private Image _engLowerFlagMedium;
         private Image _engUpperFlagMedium;
 
@@ -92,6 +82,7 @@ namespace FlagTip.UI
         private readonly ImeTracker _imeTracker;
 
         protected override bool ShowWithoutActivation => true;
+        private CancellationTokenSource _fgCts;
 
         protected override CreateParams CreateParams
         {
@@ -102,14 +93,14 @@ namespace FlagTip.UI
                     WS_EX_TOOLWINDOW |
                     WS_EX_NOACTIVATE |
                     WS_EX_LAYERED |
-                    WS_EX_TRANSPARENT; 
+                    WS_EX_TRANSPARENT;
                 return cp;
             }
         }
 
 
 
-       public IndicatorForm(ImeTracker imeTracker)
+        public IndicatorForm(ImeTracker imeTracker)
         {
 
             _foregroundWatcher = new ForegroundWatcher();
@@ -118,10 +109,6 @@ namespace FlagTip.UI
             TopMost = true;
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.Manual;
-
-
-            Width = 16;
-            Height = 11;
 
 
             BackColor = Color.FromArgb(245, 245, 245);
@@ -141,11 +128,6 @@ namespace FlagTip.UI
             {
                 string basePath = AppDomain.CurrentDomain.BaseDirectory;
                 Log($"BasePath = {basePath}");
-
-                _korFlag = LoadImageSafe(Path.Combine(basePath, "resources/flag/flag_kor.png"));
-                _jpnFlag = LoadImageSafe(Path.Combine(basePath, "resources/flag/flag_jpn.png"));
-                _engLowerFlag = LoadImageSafe(Path.Combine(basePath, "resources/flag/flag_eng_lo.png"));
-                _engUpperFlag = LoadImageSafe(Path.Combine(basePath, "resources/flag/flag_eng_up.png"));
 
 
                 _korFlagSmall = LoadImageSafe(Path.Combine(basePath, "resources/flag/flag_kor_small.png"));
@@ -174,7 +156,7 @@ namespace FlagTip.UI
             }
 
 
-       
+
             _flagBox = new PictureBox
             {
                 Dock = DockStyle.Fill,
@@ -323,47 +305,7 @@ namespace FlagTip.UI
         }
 
 
-        private Image GetSmallFlag(ImeState state)
-        {
-            switch (state)
-            {
-                case ImeState.KOR:
-                    return _korFlagSmall;
 
-                case ImeState.JPN:
-                    return _jpnFlagSmall;
-
-                case ImeState.ENG_LO:
-                    return _engLowerFlagSmall;
-
-                case ImeState.ENG_UP:
-                    return _engUpperFlagSmall;
-
-                default:
-                    return null;
-            }
-        }
-
-        private Image GetMediumFlag(ImeState state)
-        {
-            switch (state)
-            {
-                case ImeState.KOR:
-                    return _korFlagMedium;
-
-                case ImeState.JPN:
-                    return _jpnFlagMedium;
-
-                case ImeState.ENG_LO:
-                    return _engLowerFlagMedium;
-
-                case ImeState.ENG_UP:
-                    return _engUpperFlagMedium;
-
-                default:
-                    return null;
-            }
-        }
 
 
 
@@ -412,7 +354,7 @@ namespace FlagTip.UI
         private async void IndicatorForm_HandleCreated(object sender, EventArgs e)
         {
 
-            
+
             try
             {
                 await SetFlag();
@@ -421,7 +363,7 @@ namespace FlagTip.UI
             {
                 Log($"[HandleCreated SetFlag ERROR] {ex}");
             }
-            
+
 
             _foregroundWatcher.ForegroundChanged += OnForegroundChanged;
             _foregroundWatcher.Start();
@@ -433,16 +375,20 @@ namespace FlagTip.UI
 
 
 
-   
+
         private void OnForegroundChanged(IntPtr hwnd, uint pid, string processName)
         {
 
             if (!IsHandleCreated)
                 return;
-            
+
             BeginInvoke(new Action(() =>
             {
-                _ = HandleForegroundAsync(hwnd, pid,  processName);
+                _fgCts?.Cancel();
+                _fgCts?.Dispose();
+                _fgCts = new CancellationTokenSource();
+
+                _ = HandleForegroundAsync(hwnd, pid, processName, _fgCts.Token);
             }));
 
 
@@ -454,27 +400,25 @@ namespace FlagTip.UI
         private bool _hasFlag = false;
         public event Action ForegroundHandled;
 
-
-        private async Task HandleForegroundAsync(IntPtr hwnd, uint pid, string processName)
+        private async Task HandleForegroundAsync(IntPtr hwnd, uint pid, string processName, CancellationToken ct)
         {
 
 
             _hasFlag = false;
 
-            await Task.Delay(50);
+            await Task.Delay(50, ct);
             await SetFlag();
-            ForegroundHandled?.Invoke();
 
-
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < 5; i++)
             {
-                await Task.Delay(150);
+                await Task.Delay(160, ct);
                 await SetFlag();
             }
 
 
-
+            ForegroundHandled?.Invoke();
         }
+
 
         protected override void OnShown(EventArgs e)
         {
@@ -482,10 +426,10 @@ namespace FlagTip.UI
             EnsureTopMost();
         }
 
-  
 
-  
-        public async Task SetPosition(int x, int y, int width, 
+
+
+        public async Task SetPosition(int x, int y, int width,
             int height, String processName = null)
         {
 
@@ -497,7 +441,7 @@ namespace FlagTip.UI
 
                 if (!_hasFlag)
                 {
-                            // 크롬-파일업로드 대비
+                    // 크롬-파일업로드 대비
                     _hasFlag = true;
                     await SetFlag();
                 }
@@ -509,7 +453,7 @@ namespace FlagTip.UI
                 HideIndicator();
 
 
-          
+
             }
 
 
@@ -521,18 +465,24 @@ namespace FlagTip.UI
 
 
 
+        private ImeState _lastAppliedImeState = (ImeState)(-1);
+
         public async Task SetFlag()
         {
             try
             {
-                await Task.Delay(50);
+                // ✅ 여기 Task.Delay(50)는 가능하면 제거/외부에서만 조절 권장
                 ImeState imeState = _imeTracker.DetectIme();
 
+                if (imeState == _lastAppliedImeState)
+                    return; // ✅ 동일 상태면 아무 것도 안 함 (CPU/리페인트 절약)
+
+                _lastAppliedImeState = imeState;
                 _hasFlag = true;
                 _curImeState = imeState;
 
                 var img = GetFlag(imeState);
-                if (img != null)
+                if (img != null && !ReferenceEquals(_flagBox.Image, img))
                     _flagBox.Image = img;
             }
             catch (Exception ex)
@@ -540,6 +490,7 @@ namespace FlagTip.UI
                 Log($"[SetFlag ERROR] {ex}");
             }
         }
+
         private Image LoadImageSafe(string path)
         {
             using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
