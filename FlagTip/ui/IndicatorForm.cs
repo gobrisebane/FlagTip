@@ -471,11 +471,11 @@ namespace FlagTip.UI
         {
             try
             {
-                // ✅ 여기 Task.Delay(50)는 가능하면 제거/외부에서만 조절 권장
+                await Task.Delay(50);
                 ImeState imeState = _imeTracker.DetectIme();
 
                 if (imeState == _lastAppliedImeState)
-                    return; // ✅ 동일 상태면 아무 것도 안 함 (CPU/리페인트 절약)
+                    return; // 동일 상태면 아무 것도 안 함 (CPU/리페인트 절약)
 
                 _lastAppliedImeState = imeState;
                 _hasFlag = true;
