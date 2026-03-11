@@ -38,7 +38,9 @@
             this.linkLabelEmail = new System.Windows.Forms.LinkLabel();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.tabOption = new System.Windows.Forms.TabPage();
-            this.chkFollowCursor = new System.Windows.Forms.CheckBox();
+            this.grpFlagSize = new System.Windows.Forms.GroupBox();
+            this.rdoFlagSizeMedium = new System.Windows.Forms.RadioButton();
+            this.rdoFlagSizeSmall = new System.Windows.Forms.RadioButton();
             this.chromeErrorLink = new System.Windows.Forms.LinkLabel();
             this.trackOffsetY = new System.Windows.Forms.TrackBar();
             this.lblOffsetY = new System.Windows.Forms.Label();
@@ -46,17 +48,14 @@
             this.trackOffsetX = new System.Windows.Forms.TrackBar();
             this.lblOpacity = new System.Windows.Forms.Label();
             this.trackOpacity = new System.Windows.Forms.TrackBar();
-            this.grpFlagSize = new System.Windows.Forms.GroupBox();
-            this.rdoFlagSizeSmall = new System.Windows.Forms.RadioButton();
-            this.rdoFlagSizeMedium = new System.Windows.Forms.RadioButton();
             this.tabControl1.SuspendLayout();
             this.tabAbout.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.tabOption.SuspendLayout();
+            this.grpFlagSize.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackOffsetY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackOffsetX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackOpacity)).BeginInit();
-            this.grpFlagSize.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -184,7 +183,6 @@
             // tabOption
             // 
             this.tabOption.Controls.Add(this.grpFlagSize);
-            this.tabOption.Controls.Add(this.chkFollowCursor);
             this.tabOption.Controls.Add(this.chromeErrorLink);
             this.tabOption.Controls.Add(this.trackOffsetY);
             this.tabOption.Controls.Add(this.lblOffsetY);
@@ -201,14 +199,38 @@
             this.tabOption.UseVisualStyleBackColor = true;
             this.tabOption.Click += new System.EventHandler(this.tabPage1_Click);
             // 
-            // chkFollowCursor
+            // grpFlagSize
             // 
-            this.chkFollowCursor.Location = new System.Drawing.Point(328, 49);
-            this.chkFollowCursor.Name = "chkFollowCursor";
-            this.chkFollowCursor.Size = new System.Drawing.Size(263, 43);
-            this.chkFollowCursor.TabIndex = 9;
-            this.chkFollowCursor.Text = "미지원프로그램에서 플래그가 커서를 따라가게 하기 (포토샵, 일러스트레이터, 왓츠앱)";
-            this.chkFollowCursor.UseVisualStyleBackColor = true;
+            this.grpFlagSize.Controls.Add(this.rdoFlagSizeMedium);
+            this.grpFlagSize.Controls.Add(this.rdoFlagSizeSmall);
+            this.grpFlagSize.Location = new System.Drawing.Point(383, 162);
+            this.grpFlagSize.Name = "grpFlagSize";
+            this.grpFlagSize.Size = new System.Drawing.Size(167, 76);
+            this.grpFlagSize.TabIndex = 10;
+            this.grpFlagSize.TabStop = false;
+            this.grpFlagSize.Text = "플래그(표시언어) 크기";
+            // 
+            // rdoFlagSizeMedium
+            // 
+            this.rdoFlagSizeMedium.AutoSize = true;
+            this.rdoFlagSizeMedium.Location = new System.Drawing.Point(93, 35);
+            this.rdoFlagSizeMedium.Name = "rdoFlagSizeMedium";
+            this.rdoFlagSizeMedium.Size = new System.Drawing.Size(47, 16);
+            this.rdoFlagSizeMedium.TabIndex = 1;
+            this.rdoFlagSizeMedium.Text = "중형";
+            this.rdoFlagSizeMedium.UseVisualStyleBackColor = true;
+            // 
+            // rdoFlagSizeSmall
+            // 
+            this.rdoFlagSizeSmall.AutoSize = true;
+            this.rdoFlagSizeSmall.Checked = true;
+            this.rdoFlagSizeSmall.Location = new System.Drawing.Point(26, 35);
+            this.rdoFlagSizeSmall.Name = "rdoFlagSizeSmall";
+            this.rdoFlagSizeSmall.Size = new System.Drawing.Size(47, 16);
+            this.rdoFlagSizeSmall.TabIndex = 0;
+            this.rdoFlagSizeSmall.TabStop = true;
+            this.rdoFlagSizeSmall.Text = "소형";
+            this.rdoFlagSizeSmall.UseVisualStyleBackColor = true;
             // 
             // chromeErrorLink
             // 
@@ -275,39 +297,6 @@
             this.trackOpacity.Value = 70;
             this.trackOpacity.Scroll += new System.EventHandler(this.TrackOpacity_Scroll);
             // 
-            // grpFlagSize
-            // 
-            this.grpFlagSize.Controls.Add(this.rdoFlagSizeMedium);
-            this.grpFlagSize.Controls.Add(this.rdoFlagSizeSmall);
-            this.grpFlagSize.Location = new System.Drawing.Point(383, 162);
-            this.grpFlagSize.Name = "grpFlagSize";
-            this.grpFlagSize.Size = new System.Drawing.Size(167, 76);
-            this.grpFlagSize.TabIndex = 10;
-            this.grpFlagSize.TabStop = false;
-            this.grpFlagSize.Text = "플래그(표시언어) 크기";
-            // 
-            // rdoFlagSizeSmall
-            // 
-            this.rdoFlagSizeSmall.AutoSize = true;
-            this.rdoFlagSizeSmall.Checked = true;
-            this.rdoFlagSizeSmall.Location = new System.Drawing.Point(26, 35);
-            this.rdoFlagSizeSmall.Name = "rdoFlagSizeSmall";
-            this.rdoFlagSizeSmall.Size = new System.Drawing.Size(47, 16);
-            this.rdoFlagSizeSmall.TabIndex = 0;
-            this.rdoFlagSizeSmall.TabStop = true;
-            this.rdoFlagSizeSmall.Text = "소형";
-            this.rdoFlagSizeSmall.UseVisualStyleBackColor = true;
-            // 
-            // rdoFlagSizeMedium
-            // 
-            this.rdoFlagSizeMedium.AutoSize = true;
-            this.rdoFlagSizeMedium.Location = new System.Drawing.Point(93, 35);
-            this.rdoFlagSizeMedium.Name = "rdoFlagSizeMedium";
-            this.rdoFlagSizeMedium.Size = new System.Drawing.Size(47, 16);
-            this.rdoFlagSizeMedium.TabIndex = 1;
-            this.rdoFlagSizeMedium.Text = "중형";
-            this.rdoFlagSizeMedium.UseVisualStyleBackColor = true;
-            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
@@ -323,11 +312,11 @@
             this.tableLayoutPanel1.PerformLayout();
             this.tabOption.ResumeLayout(false);
             this.tabOption.PerformLayout();
+            this.grpFlagSize.ResumeLayout(false);
+            this.grpFlagSize.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackOffsetY)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackOffsetX)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackOpacity)).EndInit();
-            this.grpFlagSize.ResumeLayout(false);
-            this.grpFlagSize.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -351,7 +340,6 @@
         private System.Windows.Forms.LinkLabel linkLabelEmail;
         private System.Windows.Forms.LinkLabel linkLabel1;
         private System.Windows.Forms.LinkLabel chromeErrorLink;
-        private System.Windows.Forms.CheckBox chkFollowCursor;
         private System.Windows.Forms.GroupBox grpFlagSize;
         private System.Windows.Forms.RadioButton rdoFlagSizeMedium;
         private System.Windows.Forms.RadioButton rdoFlagSizeSmall;
