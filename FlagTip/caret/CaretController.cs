@@ -313,19 +313,20 @@ namespace FlagTip.Caret
                 _method = CaretContext.LastMethod;
                 _rect = CaretContext.LastRect;
 
+
+                
+
                 bool isCursorApp = CursorAppList.Contains(_processName);
 
                 if (isCursorApp)
                 {
-                    Console.WriteLine("a1");
                     ShowCursor();
                 }
                 else
                 {
-                    Console.WriteLine("a2");
                     await ShowCaret(delayMs);
                 }
-
+                
 
                 CaretContext.LastRect = _rect;
                 CaretContext.LastClassName = _className;

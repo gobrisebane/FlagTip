@@ -38,6 +38,7 @@ namespace FlagTip.Helpers
         private void UpdateCursor()
         {
 
+            
             Point cursorPos = Cursor.Position;
             int x = cursorPos.X + offsetX;
             int y = cursorPos.Y + offsetY;
@@ -54,13 +55,11 @@ namespace FlagTip.Helpers
         public void Start()
         {
 
-            Console.WriteLine("START CURSOR..0");
 
 
             if (!Enabled || IsRunning)
                 return;
 
-            Console.WriteLine("START CURSOR..1");
 
             _indicatorForm.BeginInvoke(new Action(() =>
             {
