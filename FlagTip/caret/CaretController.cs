@@ -65,8 +65,9 @@ namespace FlagTip.Caret
         {
             _indicatorForm = indicatorForm;
             _imeTracker =  imeTracker;
-            _cursorHelper = new CursorHelper(_indicatorForm);
 
+            // 리소스 때문에 우선 정지
+            //_cursorHelper = new CursorHelper(_indicatorForm);
 
             _indicatorForm.ForegroundHandled += OnForegroundHandled;
         }
@@ -314,18 +315,10 @@ namespace FlagTip.Caret
                 _method = CaretContext.LastMethod;
                 _rect = CaretContext.LastRect;
 
-                bool isCursorApp = CursorAppList.Contains(_processName);
 
-                if (isCursorApp)
-                {
-                    ShowCursor();
-                }
-                else
-                {
-                    await ShowCaret(delayMs);
-                }
+                await ShowCaret(delayMs);
 
-
+                
                 CaretContext.LastRect = _rect;
                 CaretContext.LastClassName = _className;
                 CaretContext.LastMethod = _method;
