@@ -75,11 +75,7 @@ namespace FlagTip
             _indicatorForm.Show();
 
             _caretController = new CaretController(_indicatorForm, _imeTracker);
-            /*
-            _caretController.SetCursorFollowEnabled(
-                Properties.Settings.Default.FollowCursor
-            );*/
-
+      
 
             _mouseProc = (nCode, wParam, lParam) =>
                 MouseHookCallback(nCode, wParam, lParam, _mouseHook, _caretController);

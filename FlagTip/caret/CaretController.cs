@@ -52,7 +52,6 @@ namespace FlagTip.Caret
 
         private IndicatorForm _indicatorForm;
         private ImeTracker _imeTracker;
-        private CursorHelper _cursorHelper;
         private CaretMethod _method;
         private IntPtr _hwnd;
         private string _processName;
@@ -66,8 +65,6 @@ namespace FlagTip.Caret
             _indicatorForm = indicatorForm;
             _imeTracker =  imeTracker;
 
-            // 리소스 때문에 우선 정지
-            //_cursorHelper = new CursorHelper(_indicatorForm);
 
             _indicatorForm.ForegroundHandled += OnForegroundHandled;
         }
@@ -336,7 +333,6 @@ namespace FlagTip.Caret
 
         public async Task ShowCaret(int delayMs)
         {
-            _cursorHelper.Stop();
             await Task.Delay(delayMs);
 
 
@@ -480,12 +476,6 @@ namespace FlagTip.Caret
 
 
 
-        public void ShowCursor()
-        {
-            _cursorHelper.Start();
-            _method = CaretMethod.Cursor;
-        }
-
 
 
 
@@ -571,14 +561,6 @@ namespace FlagTip.Caret
 
             }
             ));
-        }
-
-        public void SetCursorFollowEnabled(bool enabled)
-        {
-            _cursorHelper.Enabled = enabled;
-
-            if (!enabled)
-                _cursorHelper.Stop();
         }
 
 
