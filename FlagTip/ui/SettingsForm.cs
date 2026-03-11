@@ -36,6 +36,7 @@ namespace FlagTip.UI
             StartPosition = FormStartPosition.CenterScreen;
 
             InitializeAboutTab();
+            InitializeOptionTab();
 
 
             trackOpacity.Value = (int)(Properties.Settings.Default.Opacity * 100);
@@ -138,6 +139,10 @@ namespace FlagTip.UI
             labelVersion.TextAlign = ContentAlignment.MiddleCenter;
         }
 
+        private void InitializeOptionTab()
+        {
+            chkFollowCursor.Checked = Properties.Settings.Default.FollowCursor;
+        }
      
  
 

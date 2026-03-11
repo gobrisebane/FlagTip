@@ -52,6 +52,7 @@ namespace FlagTip.Caret
 
         private IndicatorForm _indicatorForm;
         private ImeTracker _imeTracker;
+        private CursorHelper _cursorHelper;
         private CaretMethod _method;
         private IntPtr _hwnd;
         private string _processName;
@@ -311,10 +312,18 @@ namespace FlagTip.Caret
                 _method = CaretContext.LastMethod;
                 _rect = CaretContext.LastRect;
 
+                bool isCursorApp = CursorAppList.Contains(_processName);
 
-                await ShowCaret(delayMs);
+                if (isCursorApp)
+                {
+                    ShowCursor();
+                }
+                else
+                {
+                    await ShowCaret(delayMs);
+                }
 
-                
+
                 CaretContext.LastRect = _rect;
                 CaretContext.LastClassName = _className;
                 CaretContext.LastMethod = _method;
@@ -332,6 +341,7 @@ namespace FlagTip.Caret
 
         public async Task ShowCaret(int delayMs)
         {
+            _cursorHelper.Stop();
             await Task.Delay(delayMs);
 
 
@@ -474,6 +484,11 @@ namespace FlagTip.Caret
 
 
 
+        public void ShowCursor()
+        {
+            _cursorHelper.Start();
+            _method = CaretMethod.Cursor;
+        }
 
 
 
@@ -562,6 +577,13 @@ namespace FlagTip.Caret
             ));
         }
 
+        public void SetCursorFollowEnabled(bool enabled)
+        {
+            _cursorHelper.Enabled = enabled;
+
+            if (!enabled)
+                _cursorHelper.Stop();
+        }
 
 
 

@@ -233,6 +233,12 @@
             this.rdoFlagSizeMedium.Text = "중형";
             this.rdoFlagSizeMedium.UseVisualStyleBackColor = true;
             // 
+            this.chkFollowCursor.Location = new System.Drawing.Point(328, 49);
+            this.chkFollowCursor.Name = "chkFollowCursor";
+            this.chkFollowCursor.Size = new System.Drawing.Size(263, 43);
+            this.chkFollowCursor.TabIndex = 9;
+            this.chkFollowCursor.Text = "미지원프로그램에서 플래그가 커서를 따라가게 하기 (포토샵, 일러스트레이터, 왓츠앱)";
+            this.chkFollowCursor.UseVisualStyleBackColor = true;
             // rdoFlagSizeSmall
             // 
             this.rdoFlagSizeSmall.AutoSize = true;
@@ -353,6 +359,7 @@
         private System.Windows.Forms.LinkLabel linkLabelEmail;
         private System.Windows.Forms.LinkLabel linkLabel1;
         private System.Windows.Forms.LinkLabel chromeErrorLink;
+        private System.Windows.Forms.CheckBox chkFollowCursor;
         private System.Windows.Forms.GroupBox grpFlagSize;
         private System.Windows.Forms.RadioButton rdoFlagSizeMedium;
         private System.Windows.Forms.RadioButton rdoFlagSizeSmall;
