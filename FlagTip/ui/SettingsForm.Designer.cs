@@ -38,6 +38,7 @@
             this.linkLabelEmail = new System.Windows.Forms.LinkLabel();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.tabOption = new System.Windows.Forms.TabPage();
+            this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.grpFlagSize = new System.Windows.Forms.GroupBox();
             this.rdoFlagSizeMedium = new System.Windows.Forms.RadioButton();
             this.rdoFlagSizeSmall = new System.Windows.Forms.RadioButton();
@@ -182,6 +183,7 @@
             // 
             // tabOption
             // 
+            this.tabOption.Controls.Add(this.linkLabel2);
             this.tabOption.Controls.Add(this.grpFlagSize);
             this.tabOption.Controls.Add(this.chromeErrorLink);
             this.tabOption.Controls.Add(this.trackOffsetY);
@@ -199,11 +201,22 @@
             this.tabOption.UseVisualStyleBackColor = true;
             this.tabOption.Click += new System.EventHandler(this.tabPage1_Click);
             // 
+            // linkLabel2
+            // 
+            this.linkLabel2.AutoSize = true;
+            this.linkLabel2.Location = new System.Drawing.Point(335, 92);
+            this.linkLabel2.Name = "linkLabel2";
+            this.linkLabel2.Size = new System.Drawing.Size(207, 12);
+            this.linkLabel2.TabIndex = 11;
+            this.linkLabel2.TabStop = true;
+            this.linkLabel2.Text = "2. 한컴오피스에서 미작동시 대응방법";
+            this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.hancomErrorLink_LinkClicked);
+            // 
             // grpFlagSize
             // 
             this.grpFlagSize.Controls.Add(this.rdoFlagSizeMedium);
             this.grpFlagSize.Controls.Add(this.rdoFlagSizeSmall);
-            this.grpFlagSize.Location = new System.Drawing.Point(383, 162);
+            this.grpFlagSize.Location = new System.Drawing.Point(383, 170);
             this.grpFlagSize.Name = "grpFlagSize";
             this.grpFlagSize.Size = new System.Drawing.Size(167, 76);
             this.grpFlagSize.TabIndex = 10;
@@ -235,12 +248,12 @@
             // chromeErrorLink
             // 
             this.chromeErrorLink.AutoSize = true;
-            this.chromeErrorLink.Location = new System.Drawing.Point(326, 104);
+            this.chromeErrorLink.Location = new System.Drawing.Point(335, 55);
             this.chromeErrorLink.Name = "chromeErrorLink";
-            this.chromeErrorLink.Size = new System.Drawing.Size(209, 12);
+            this.chromeErrorLink.Size = new System.Drawing.Size(283, 12);
             this.chromeErrorLink.TabIndex = 8;
             this.chromeErrorLink.TabStop = true;
-            this.chromeErrorLink.Text = "크롬, 엣지에 비정상 동작 시 대응방법";
+            this.chromeErrorLink.Text = "1. 크롬,엣지 브라우저에서 비정상 동작 시 대응방법";
             this.chromeErrorLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.chromeErrorLink_LinkClicked);
             // 
             // trackOffsetY
@@ -343,5 +356,6 @@
         private System.Windows.Forms.GroupBox grpFlagSize;
         private System.Windows.Forms.RadioButton rdoFlagSizeMedium;
         private System.Windows.Forms.RadioButton rdoFlagSizeSmall;
+        private System.Windows.Forms.LinkLabel linkLabel2;
     }
 }

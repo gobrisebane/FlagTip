@@ -299,7 +299,6 @@ namespace FlagTip.Caret
         public async Task SelectMode(int delayMs = 50)
         {
 
-            
 
 
             if (!await _selectLock.WaitAsync(0))

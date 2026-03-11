@@ -96,9 +96,11 @@ namespace FlagTip
 
 
 
+            
             _tracker = new CaretTracker(_caretController);
             _caretController.AttachTracker(_tracker);
             _tracker.Start();
+
 
 
 

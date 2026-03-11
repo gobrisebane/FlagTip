@@ -62,6 +62,7 @@ namespace FlagTip.Tracking
                     await _caretController.SelectMode();
                     await Task.Delay(600, token);
 
+
                 }
                 catch (OperationCanceledException)
                 {

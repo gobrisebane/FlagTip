@@ -241,18 +241,30 @@ namespace FlagTip.UI
             );
         }
 
-    
+
 
         private void chromeErrorLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-
             Process.Start(new ProcessStartInfo
             {
-                FileName = "ms-settings:regionlanguage",
+                FileName = "https://velog.io/@flagtip/d1",
                 UseShellExecute = true
             });
         }
 
-      
+
+        private void hancomErrorLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "https://velog.io/@flagtip/hw1",
+                UseShellExecute = true
+            });
+        }
+
+
+
+
+
     }
 }
