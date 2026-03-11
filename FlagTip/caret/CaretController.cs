@@ -66,6 +66,7 @@ namespace FlagTip.Caret
             _indicatorForm = indicatorForm;
             _imeTracker =  imeTracker;
 
+            _cursorHelper = new CursorHelper(_indicatorForm);
 
             _indicatorForm.ForegroundHandled += OnForegroundHandled;
         }
@@ -316,10 +317,12 @@ namespace FlagTip.Caret
 
                 if (isCursorApp)
                 {
+                    Console.WriteLine("a1");
                     ShowCursor();
                 }
                 else
                 {
+                    Console.WriteLine("a2");
                     await ShowCaret(delayMs);
                 }
 

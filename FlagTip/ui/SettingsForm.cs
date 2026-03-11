@@ -142,9 +142,31 @@ namespace FlagTip.UI
         private void InitializeOptionTab()
         {
             chkFollowCursor.Checked = Properties.Settings.Default.FollowCursor;
+            chkFollowCursor.CheckedChanged += ChkFollowCursor_CheckedChanged;
         }
-     
- 
+
+        /*private void ChkFollowCursor_CheckedChanged(object sender, EventArgs e)
+        {
+            bool enabled = chkFollowCursor.Checked;
+
+            Properties.Settings.Default.FollowCursor = enabled;
+            Properties.Settings.Default.Save();
+
+            _cursorHelper.Enabled = enabled;
+
+            if (enabled)
+                _cursorHelper.Start();
+            else
+                _cursorHelper.Stop();
+        }*/
+
+        private void ChkFollowCursor_CheckedChanged(object sender, EventArgs e) { 
+            bool enabled = chkFollowCursor.Checked; Properties.Settings.Default.FollowCursor = enabled; 
+            Properties.Settings.Default.Save(); 
+            _caretController.SetCursorFollowEnabled(enabled); 
+        }
+
+
 
 
 

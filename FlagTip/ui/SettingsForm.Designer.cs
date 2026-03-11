@@ -49,6 +49,7 @@
             this.trackOffsetX = new System.Windows.Forms.TrackBar();
             this.lblOpacity = new System.Windows.Forms.Label();
             this.trackOpacity = new System.Windows.Forms.TrackBar();
+            this.chkFollowCursor = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabAbout.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -183,6 +184,7 @@
             // 
             // tabOption
             // 
+            this.tabOption.Controls.Add(this.chkFollowCursor);
             this.tabOption.Controls.Add(this.linkLabel2);
             this.tabOption.Controls.Add(this.grpFlagSize);
             this.tabOption.Controls.Add(this.chromeErrorLink);
@@ -233,12 +235,6 @@
             this.rdoFlagSizeMedium.Text = "중형";
             this.rdoFlagSizeMedium.UseVisualStyleBackColor = true;
             // 
-            this.chkFollowCursor.Location = new System.Drawing.Point(328, 49);
-            this.chkFollowCursor.Name = "chkFollowCursor";
-            this.chkFollowCursor.Size = new System.Drawing.Size(263, 43);
-            this.chkFollowCursor.TabIndex = 9;
-            this.chkFollowCursor.Text = "미지원프로그램에서 플래그가 커서를 따라가게 하기 (포토샵, 일러스트레이터, 왓츠앱)";
-            this.chkFollowCursor.UseVisualStyleBackColor = true;
             // rdoFlagSizeSmall
             // 
             this.rdoFlagSizeSmall.AutoSize = true;
@@ -316,6 +312,16 @@
             this.trackOpacity.Value = 70;
             this.trackOpacity.Scroll += new System.EventHandler(this.TrackOpacity_Scroll);
             // 
+            // chkFollowCursor
+            // 
+            this.chkFollowCursor.AutoSize = true;
+            this.chkFollowCursor.Location = new System.Drawing.Point(337, 131);
+            this.chkFollowCursor.Name = "chkFollowCursor";
+            this.chkFollowCursor.Size = new System.Drawing.Size(124, 16);
+            this.chkFollowCursor.TabIndex = 12;
+            this.chkFollowCursor.Text = "마우스커서 활성화";
+            this.chkFollowCursor.UseVisualStyleBackColor = true;
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
@@ -359,10 +365,10 @@
         private System.Windows.Forms.LinkLabel linkLabelEmail;
         private System.Windows.Forms.LinkLabel linkLabel1;
         private System.Windows.Forms.LinkLabel chromeErrorLink;
-        private System.Windows.Forms.CheckBox chkFollowCursor;
         private System.Windows.Forms.GroupBox grpFlagSize;
         private System.Windows.Forms.RadioButton rdoFlagSizeMedium;
         private System.Windows.Forms.RadioButton rdoFlagSizeSmall;
         private System.Windows.Forms.LinkLabel linkLabel2;
+        private System.Windows.Forms.CheckBox chkFollowCursor;
     }
 }
