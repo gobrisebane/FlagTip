@@ -68,75 +68,75 @@ namespace FlagTip
 
         private void Init()
         {
-
-            _imeTracker = new ImeTracker();
-
-            _indicatorForm = new IndicatorForm(_imeTracker);
-            _indicatorForm.Show();
-
-            _caretController = new CaretController(_indicatorForm, _imeTracker);
             
-            _caretController.SetCursorFollowEnabled(
-                Properties.Settings.Default.FollowCursor
-            );
-      
+                        _imeTracker = new ImeTracker();
 
-            _mouseProc = (nCode, wParam, lParam) =>
-                MouseHookCallback(nCode, wParam, lParam, _mouseHook, _caretController);
+                        _indicatorForm = new IndicatorForm(_imeTracker);
+                        _indicatorForm.Show();
 
-            _mouseHook = SetMouseHook(_mouseProc);
+                        _caretController = new CaretController(_indicatorForm, _imeTracker);
 
-
-
-            _keyboardProc = (nCode, wParam, lParam) =>
-                    KeyboardHook.KeyboardHookCallback(
-                    nCode,
-                    wParam,
-                    lParam,
-                    _keyboardHook,
-                    _caretController);
-
-            _keyboardHook = KeyboardHook.SetKeyboardHook(_keyboardProc);
-
-
+                        _caretController.SetCursorFollowEnabled(
+                            Properties.Settings.Default.FollowCursor
+                        );
 
             
-            _tracker = new CaretTracker(_caretController);
-            _caretController.AttachTracker(_tracker);
-            _tracker.Start();
+                        _mouseProc = (nCode, wParam, lParam) =>
+                            MouseHookCallback(nCode, wParam, lParam, _mouseHook, _caretController);
+
+                        _mouseHook = SetMouseHook(_mouseProc);
+
+
+
+                        _keyboardProc = (nCode, wParam, lParam) =>
+                                KeyboardHook.KeyboardHookCallback(
+                                nCode,
+                                wParam,
+                                lParam,
+                                _keyboardHook,
+                                _caretController);
+
+                        _keyboardHook = KeyboardHook.SetKeyboardHook(_keyboardProc);
+
+            
+
+
+                        _tracker = new CaretTracker(_caretController);
+                        _caretController.AttachTracker(_tracker);
+                        _tracker.Start();
 
 
 
 
-            _appWatcher = new AppWindowWatcher();
-            _appWatcher.ForegroundChanged += hwnd =>
-            {
-                _indicatorForm.BeginInvoke(new Action(() =>
-                {
-                    _ = _caretController.OnForegroundAppCreatedAsync(hwnd);
-                }));
-            };
-            _appWatcher.Start();
+                        _appWatcher = new AppWindowWatcher();
+                        _appWatcher.ForegroundChanged += hwnd =>
+                        {
+                            _indicatorForm.BeginInvoke(new Action(() =>
+                            {
+                                _ = _caretController.OnForegroundAppCreatedAsync(hwnd);
+                            }));
+                        };
+                        _appWatcher.Start();
 
 
 
-            _trayController = new TrayController();
+                        _trayController = new TrayController();
 
 
 
-            _trayController.OptionRequested += () =>
-            {
-                ShowSettingsOption();
-            };
-            _trayController.AboutRequested += () =>
-            {
-                ShowSettingsAbout();
-            };
+                        _trayController.OptionRequested += () =>
+                        {
+                            ShowSettingsOption();
+                        };
+                        _trayController.AboutRequested += () =>
+                        {
+                            ShowSettingsAbout();
+                        };
 
 
 
-            _settingsForm = new SettingsForm(_indicatorForm, _caretController);
-
+                        _settingsForm = new SettingsForm(_indicatorForm, _caretController);
+            
 
 
         }

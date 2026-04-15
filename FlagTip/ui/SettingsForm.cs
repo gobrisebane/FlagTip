@@ -143,6 +143,7 @@ namespace FlagTip.UI
         {
             chkFollowCursor.Checked = Properties.Settings.Default.FollowCursor;
             chkFollowCursor.CheckedChanged += ChkFollowCursor_CheckedChanged;
+            chkFollowCursor.Visible = false;
         }
 
         /*private void ChkFollowCursor_CheckedChanged(object sender, EventArgs e)
@@ -289,9 +290,9 @@ namespace FlagTip.UI
             });
         }
 
+        private void chkFollowCursor_CheckedChanged_1(object sender, EventArgs e)
+        {
 
-
-
-
+        }
     }
 }

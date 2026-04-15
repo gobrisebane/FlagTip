@@ -314,9 +314,10 @@ namespace FlagTip.Caret
                 _rect = CaretContext.LastRect;
 
 
-                
 
-                bool isCursorApp = CursorAppList.Contains(_processName);
+
+                /*
+                 * bool isCursorApp = CursorAppList.Contains(_processName);
 
                 if (isCursorApp)
                 {
@@ -326,7 +327,10 @@ namespace FlagTip.Caret
                 {
                     await ShowCaret(delayMs);
                 }
-                
+                */
+
+                await ShowCaret(delayMs);
+
 
                 CaretContext.LastRect = _rect;
                 CaretContext.LastClassName = _className;

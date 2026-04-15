@@ -38,6 +38,7 @@
             this.linkLabelEmail = new System.Windows.Forms.LinkLabel();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.tabOption = new System.Windows.Forms.TabPage();
+            this.chkFollowCursor = new System.Windows.Forms.CheckBox();
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.grpFlagSize = new System.Windows.Forms.GroupBox();
             this.rdoFlagSizeMedium = new System.Windows.Forms.RadioButton();
@@ -49,7 +50,6 @@
             this.trackOffsetX = new System.Windows.Forms.TrackBar();
             this.lblOpacity = new System.Windows.Forms.Label();
             this.trackOpacity = new System.Windows.Forms.TrackBar();
-            this.chkFollowCursor = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabAbout.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -203,6 +203,17 @@
             this.tabOption.UseVisualStyleBackColor = true;
             this.tabOption.Click += new System.EventHandler(this.tabPage1_Click);
             // 
+            // chkFollowCursor
+            // 
+            this.chkFollowCursor.AutoSize = true;
+            this.chkFollowCursor.Location = new System.Drawing.Point(337, 131);
+            this.chkFollowCursor.Name = "chkFollowCursor";
+            this.chkFollowCursor.Size = new System.Drawing.Size(124, 16);
+            this.chkFollowCursor.TabIndex = 12;
+            this.chkFollowCursor.Text = "마우스커서 활성화";
+            this.chkFollowCursor.UseVisualStyleBackColor = true;
+            this.chkFollowCursor.CheckedChanged += new System.EventHandler(this.chkFollowCursor_CheckedChanged_1);
+            // 
             // linkLabel2
             // 
             this.linkLabel2.AutoSize = true;
@@ -311,16 +322,6 @@
             this.trackOpacity.TabIndex = 0;
             this.trackOpacity.Value = 70;
             this.trackOpacity.Scroll += new System.EventHandler(this.TrackOpacity_Scroll);
-            // 
-            // chkFollowCursor
-            // 
-            this.chkFollowCursor.AutoSize = true;
-            this.chkFollowCursor.Location = new System.Drawing.Point(337, 131);
-            this.chkFollowCursor.Name = "chkFollowCursor";
-            this.chkFollowCursor.Size = new System.Drawing.Size(124, 16);
-            this.chkFollowCursor.TabIndex = 12;
-            this.chkFollowCursor.Text = "마우스커서 활성화";
-            this.chkFollowCursor.UseVisualStyleBackColor = true;
             // 
             // SettingsForm
             // 

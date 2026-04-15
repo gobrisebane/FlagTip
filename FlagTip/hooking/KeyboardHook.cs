@@ -134,22 +134,29 @@ namespace FlagTip.Hooking
 
             if (key == Keys.HangulMode)
             {
+
                 if (isKeyDown)
                 {
-                    if (_hangulKeyPressed)
-                    {
-                        return CallNextHookEx(hookID, nCode, wParam, lParam);
-                    }
-
-                    _hangulKeyPressed = true;
-                    _ = caretController.NotifyImeToggle();
-                }
-                else
-                {
-                    _hangulKeyPressed = false;
                     _ = caretController.NotifyImeToggle();
                 }
 
+                /*
+                                if (isKeyDown)
+                                {
+                                    if (_hangulKeyPressed)
+                                    {
+                                        return CallNextHookEx(hookID, nCode, wParam, lParam);
+                                    }
+
+                                    _hangulKeyPressed = true;
+                                    _ = caretController.NotifyImeToggle();
+                                }
+                                else
+                                {
+                                    _hangulKeyPressed = false;
+                                    _ = caretController.NotifyImeToggle();
+                                }
+                */
                 return CallNextHookEx(hookID, nCode, wParam, lParam);
             }
 
